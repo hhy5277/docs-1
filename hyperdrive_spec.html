@@ -1,41 +1,31 @@
 <!doctype html>
 <html lang="en">
 <head>
-<title>The Dat Project</title>
+<title>Dat Data</title>
 <meta charset="utf-8">
 
 <link rel="stylesheet" href="/bundle.css">
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
 <div id="choo-root" class="minidocs">
-    <div class="_8680596b minidocs-sidebar">
+    <div class="_68ad6959 minidocs-sidebar">
     <div class="minidocs-header">
-      <h1><a href="/"><img src="dat-data.png" alt="The Dat Project" class="minidocs-logo" /></a></h1>
+      <h1><a href="/"><img src="/dat-data-logo.png" alt="Dat Data" class="minidocs-logo" /></a></h1>
     </div>
-    <div class="minidocs-contents">
-      <div class="h1">Introduction</div><div>
-          <a href="/welcome" class="content-link active">Welcome to Dat</a>
-        </div><div>
-          <a href="/how-dat-works" class="content-link ">How Dat Works</a>
-        </div><div class="h1">Ecosystem</div><div>
-          <a href="/ecosystem" class="content-link ">Overview</a>
-        </div><div class="h1">Specification</div><div>
-          <a href="/hyperdrive" class="content-link ">hyperdrive</a>
-        </div><div>
-          <a href="/meta.dat" class="content-link ">meta.dat</a>
-        </div><div class="h1">References</div><div>
-          <a href="/api" class="content-link ">API</a>
-        </div><div>
-          <a href="/diy-dat" class="content-link ">DIY Dat</a>
-        </div>
-      <br />
-      <br />
+    <div class="_df8df972 minidocs-contents">
+    <button class="minidocs-menu-toggle">Menu</button>
+    <div class="minidocs-menu menu-closed menu-small">
+      <div class="minidocs-menu-wrapper">
+        <div class="h1">Introduction</div><div><a href="/welcome" class="content-link ">Welcome to Dat</a></div><div><a href="/how-dat-works" class="content-link ">How Dat Works</a></div><div class="h1">Specification</div><div><a href="/hyperdrive_spec" class="content-link active">hyperdrive spec</a></div><div><a href="/sleep" class="content-link ">sleep</a></div><div class="h1">References</div><div><a href="/api" class="content-link ">API</a></div><div><a href="/diy-dat" class="content-link ">DIY Dat</a></div><div class="h1">Modules</div><div><a href="/ecosystem" class="content-link ">Overview</a></div><div class="h2">Interface</div><div><a href="/dat" class="content-link ">Dat Command Line</a></div><div><a href="/dat.land" class="content-link ">dat.land</a></div><div><a href="/dat-desktop" class="content-link ">Dat Desktop</a></div><div class="h2">Core</div><div><a href="/hyperdrive" class="content-link ">Hyperdrive</a></div><div><a href="/hypercore" class="content-link ">Hypercore</a></div>
+      </div>
     </div>
   </div>
-    <div class="_3b73b4b8 minidocs-main">
+  </div>
+    <div class="_6781b8a1 minidocs-main">
       <div class="markdown-body">
-        <div class="_b525f68d minidocs-content">
+        <div class="_d706bf45 minidocs-content">
+    
     
     <div><h1 id="hyperdrive-hypercore-specification">Hyperdrive + Hypercore Specification</h1>
 <h2 id="draft-version-1">DRAFT Version 1</h2>
@@ -51,13 +41,13 @@
 <p>A Flat In-Order Tree is a simple way represent a binary tree as a list. It also allows you to identify every node of a binary tree with a numeric index. Both of these properties makes it useful in distributed applications to simplify wire protocols that uses tree structures.</p>
 <p>Flat trees are described in <a href="https://datatracker.ietf.org/doc/rfc7574/?include_text=1">PPSP RFC 7574 as &quot;Bin numbers&quot;</a> and a node version is available through the <a href="https://github.com/mafintosh/flat-tree">flat-tree</a> module.</p>
 <p>A sample flat tree spanning 4 blocks of data looks like this:</p>
-<pre><code>0
-  1
-2
-    3
-4
-  5
-6
+<pre><code><span class="hljs-number">0</span>
+  <span class="hljs-number">1</span>
+<span class="hljs-number">2</span>
+    <span class="hljs-number">3</span>
+<span class="hljs-number">4</span>
+  <span class="hljs-number">5</span>
+<span class="hljs-number">6</span>
 </code></pre><p>The even numbered entries represent data blocks (leaf nodes) and odd numbered entries represent parent nodes that have two children.</p>
 <p>The depth of an tree node can be calculated by counting the number of trailing 1s a node has in binary notation.</p>
 <pre><code><span class="hljs-symbol">5 </span>in binary = <span class="hljs-number">101</span> (one trailing <span class="hljs-number">1</span>)
@@ -66,17 +56,17 @@
 </code></pre><p>1 is the parent of (0, 2), 5 is the parent of (4, 6), and 3 is the parent of (1, 5).</p>
 <p>If the number of leaf nodes is a power of 2 the flat tree will only have a single root.</p>
 <p>Otherwise it&#39;ll have more than one. As an example here is a tree with 6 leafs:</p>
-<pre><code>0
-  1
-2
-    3
-4
-  5
-6
+<pre><code><span class="hljs-number">0</span>
+  <span class="hljs-number">1</span>
+<span class="hljs-number">2</span>
+    <span class="hljs-number">3</span>
+<span class="hljs-number">4</span>
+  <span class="hljs-number">5</span>
+<span class="hljs-number">6</span>
 
-8
-  9
-10
+<span class="hljs-number">8</span>
+  <span class="hljs-number">9</span>
+<span class="hljs-number">10</span>
 </code></pre><p>The roots spanning all the above leafs are 3 an 9. Throughout this document we&#39;ll use following tree terminology:</p>
 <ul>
 <li><code>parent</code> - a node that has two children (odd numbered)</li>
@@ -89,26 +79,26 @@
 <p>Merkle trees are useful for ensuring the integrity of content.</p>
 <p>Let&#39;s look at an example. Assume we have 4 data blocks, <code>(a, b, c, d)</code> and let <code>h(x)</code> be a hash function (the hyperdrive stack uses sha256 per default).</p>
 <p>Using flat-tree notation the merkle tree spanning these data blocks looks like this:</p>
-<pre><code><span class="hljs-number">0</span> = h(<span class="hljs-name">a</span>)
+<pre><code><span class="hljs-number">0</span> = h(a)
   <span class="hljs-number">1</span> = h(<span class="hljs-number">0</span> + <span class="hljs-number">2</span>)
-<span class="hljs-number">2</span> = h(<span class="hljs-name">b</span>)
+<span class="hljs-number">2</span> = h(b)
     <span class="hljs-number">3</span> = h(<span class="hljs-number">1</span> + <span class="hljs-number">5</span>)
-<span class="hljs-number">4</span> = h(<span class="hljs-name">c</span>)
+<span class="hljs-number">4</span> = h(c)
   <span class="hljs-number">5</span> = h(<span class="hljs-number">4</span> + <span class="hljs-number">6</span>)
-<span class="hljs-number">6</span> = h(<span class="hljs-name">d</span>)
+<span class="hljs-number">6</span> = h(d)
 </code></pre><p>An interesting property of merkle trees is that the node 3 hashes the entire data set. Therefore we only need to trust node 3 to verify all data. However as we learned above there will only be a single root if there is a power of two data blocks.</p>
 <p>Again lets expand our data set to contain 6 items <code>(a, b, c, d, e, f)</code>:</p>
-<pre><code><span class="hljs-number">0</span> = h(<span class="hljs-name">a</span>)
+<pre><code><span class="hljs-number">0</span> = h(a)
   <span class="hljs-number">1</span> = h(<span class="hljs-number">0</span> + <span class="hljs-number">2</span>)
-<span class="hljs-number">2</span> = h(<span class="hljs-name">b</span>)
+<span class="hljs-number">2</span> = h(b)
     <span class="hljs-number">3</span> = h(<span class="hljs-number">1</span> + <span class="hljs-number">5</span>)
-<span class="hljs-number">4</span> = h(<span class="hljs-name">c</span>)
+<span class="hljs-number">4</span> = h(c)
   <span class="hljs-number">5</span> = h(<span class="hljs-number">4</span> + <span class="hljs-number">6</span>)
-<span class="hljs-number">6</span> = h(<span class="hljs-name">d</span>)
+<span class="hljs-number">6</span> = h(d)
 
-<span class="hljs-number">8</span> = h(<span class="hljs-name">e</span>)
+<span class="hljs-number">8</span> = h(e)
   <span class="hljs-number">9</span> = h(<span class="hljs-number">8</span> + <span class="hljs-number">10</span>)
-<span class="hljs-number">10</span> = h(<span class="hljs-name">f</span>)
+<span class="hljs-number">10</span> = h(f)
 </code></pre><p>To ensure always have only a single root we&#39;ll simply hash all the roots together again. At most there will be <code>log2(number of data blocks)</code>.</p>
 <p>In addition to hashing the roots we&#39;ll also include a bin endian uint64 binary representation of the corresponding node index.</p>
 <p>Using the two above examples the final hashes would be:</p>
@@ -116,11 +106,11 @@
 hash2 = h(<span class="hljs-name">uint64be</span>(<span class="hljs-name">#9</span>) + <span class="hljs-number">9</span> + uint64be(<span class="hljs-name">#3</span>) + <span class="hljs-number">3</span>)
 </code></pre><p>Each of these hashes can be used to fully verify each of the trees. Let&#39;s look at another example. Assume we trust <code>hash1</code> and another person wants to send block <code>0</code> to us. To verify block <code>0</code> the other person would also have to send the sibling hash and uncles until it reaches a root and the other missing root hashes. For the first tree that would mean hashes <code>(2, 5)</code>.</p>
 <p>Using these hashes we can reproduce <code>hash1</code> in the following way:</p>
-<pre><code><span class="hljs-number">0</span> = h(<span class="hljs-name">block</span> received)
+<pre><code><span class="hljs-number">0</span> = h(block received)
   <span class="hljs-number">1</span> = h(<span class="hljs-number">0</span> + <span class="hljs-number">2</span>)
-<span class="hljs-number">2</span> = (<span class="hljs-name">hash</span> received)
+<span class="hljs-number">2</span> = (hash received)
     <span class="hljs-number">3</span> = h(<span class="hljs-number">1</span> + <span class="hljs-number">5</span>)
-  <span class="hljs-number">5</span> = (<span class="hljs-name">hash</span> received)
+  <span class="hljs-number">5</span> = (hash received)
 </code></pre><p>If <code>h(uint64be(#3) + 3) == hash1</code> then we know that data we received from the other person is correct. They sent us <code>a</code> and the corresponding hashes.</p>
 <p>Since we only need uncle hashes to verify the block the amount of hashes we need is at worst <code>log2(number-of-blocks)</code> and the roots of the merkle trees which has the same complexity.</p>
 <p>A merkle tree generator is available on npm through the <a href="https://github.com/mafintosh/merkle-tree-stream">merkle-tree-stream</a> module.</p>
@@ -131,15 +121,15 @@ hash2 = h(<span class="hljs-name">uint64be</span>(<span class="hljs-name">#9</sp
 (<span class="hljs-selector-tag">a</span>, <span class="hljs-selector-tag">b</span>, c, d, f)
 </code></pre><p>These two datasets are the same except their last element is different. When generating merkle trees for the two data sets you&#39;d get two different root hashes out.</p>
 <p>However if we look a the flat-tree notation for the two trees:</p>
-<pre><code>0
-  1
-2
-    3
-4
-  5
-6
+<pre><code><span class="hljs-number">0</span>
+  <span class="hljs-number">1</span>
+<span class="hljs-number">2</span>
+    <span class="hljs-number">3</span>
+<span class="hljs-number">4</span>
+  <span class="hljs-number">5</span>
+<span class="hljs-number">6</span>
 
-8
+<span class="hljs-number">8</span>
 </code></pre><p>We&#39;ll notice that the hash stored at 3 will be the same for both trees since the first four blocks are the same. Since we also send uncle hashes when sending a block of data we&#39;ll receive the hash for 3 when we request any block. If we maintain a simple index that maps a hash into the range of data it covers we can detect that we already have the data spanning 3 and we won&#39;t need to re-download that from another person.</p>
 <pre><code><span class="hljs-symbol">1 </span>-&gt; (a, b)
 <span class="hljs-symbol">3 </span>-&gt; (a, b, c, d)
@@ -163,7 +153,7 @@ hash2 = h(<span class="hljs-name">uint64be</span>(<span class="hljs-name">#9</sp
 <h2 id="block-tree-digest">Block Tree Digest</h2>
 <p>When asking for a block of data we want to reduce the amount of duplicate hashes that are sent back.</p>
 <p>In the merkle tree example for from earlier we ended up sending two hashes <code>(2, 5)</code> to verify block <code>0</code>.</p>
-<pre><code>// <span class="hljs-keyword">If</span> we trust <span class="hljs-number">3</span> <span class="hljs-keyword">then</span> <span class="hljs-number">2</span> <span class="hljs-literal">and</span> <span class="hljs-number">5</span> are needed <span class="hljs-keyword">to</span> verify <span class="hljs-number">0</span>
+<pre><code><span class="hljs-comment">// If we trust 3 then 2 and 5 are needed to verify 0</span>
 
 <span class="hljs-number">0</span>
   <span class="hljs-number">1</span>

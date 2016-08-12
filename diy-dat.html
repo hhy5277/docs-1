@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<title>Dat Data</title>
+<meta charset="utf-8">
+
+<link rel="stylesheet" href="/bundle.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<div id="choo-root" class="minidocs">
+    <div class="_68ad6959 minidocs-sidebar">
+    <div class="minidocs-header">
+      <h1><a href="/"><img src="/dat-data-logo.png" alt="Dat Data" class="minidocs-logo" /></a></h1>
+    </div>
+    <div class="_df8df972 minidocs-contents">
+    <button class="minidocs-menu-toggle">Menu</button>
+    <div class="minidocs-menu menu-closed menu-small">
+      <div class="minidocs-menu-wrapper">
+        <div class="h1">Introduction</div><div><a href="/welcome" class="content-link ">Welcome to Dat</a></div><div><a href="/how-dat-works" class="content-link ">How Dat Works</a></div><div class="h1">Specification</div><div><a href="/hyperdrive_spec" class="content-link ">hyperdrive spec</a></div><div><a href="/sleep" class="content-link ">sleep</a></div><div class="h1">References</div><div><a href="/api" class="content-link ">API</a></div><div><a href="/diy-dat" class="content-link active">DIY Dat</a></div><div class="h1">Modules</div><div><a href="/ecosystem" class="content-link ">Overview</a></div><div class="h2">Interface</div><div><a href="/dat" class="content-link ">Dat Command Line</a></div><div><a href="/dat.land" class="content-link ">dat.land</a></div><div><a href="/dat-desktop" class="content-link ">Dat Desktop</a></div><div class="h2">Core</div><div><a href="/hyperdrive" class="content-link ">Hyperdrive</a></div><div><a href="/hypercore" class="content-link ">Hypercore</a></div>
+      </div>
+    </div>
+  </div>
+  </div>
+    <div class="_6781b8a1 minidocs-main">
+      <div class="markdown-body">
+        <div class="_d706bf45 minidocs-content">
+    
+    
+    <div><h1 id="diy-dat">DIY Dat</h1>
+<p>This document shows how to write your own compatible <code>dat</code> client using node modules.</p>
+<p>The three essential node modules are called <a href="https://npmjs.org/hyperdrive">hyperdrive</a>, <a href="https://npmjs.org/hyperdrive-archive-swarm">hyperdrive-archive-swarm</a> and <a href="https://npmjs.org/level">level</a>. Hyperdrive does file synchronization and versioning, hyperdrive-archive-swarm does peer discovery over local networks and the Internet, and level provides a local LevelDB for storing metadata. More details are available in <a href="how-dat-works.md">How Dat Works</a>. The <a href="https://npmjs.org/dat">dat</a> module itself is just some code that combines these modules and wraps them in a command-line API.</p>
+<p>Here&#39;s the minimal code needed to download data from a dat:</p>
+<pre><code class="lang-js"><span class="hljs-comment">// run this like: node thisfile.js 4c325f7874b4070blahblahetc</span>
+<span class="hljs-comment">// the dat link someone sent us, we want to download the data from it</span>
+<span class="hljs-keyword">var</span> link = <span class="hljs-keyword">new</span> Buffer(process.argv[<span class="hljs-number">2</span>], <span class="hljs-string">'hex'</span>)
+
+<span class="hljs-keyword">var</span> Hyperdrive = <span class="hljs-built_in">require</span>(<span class="hljs-string">'hyperdrive'</span>)
+<span class="hljs-keyword">var</span> Swarm = <span class="hljs-built_in">require</span>(<span class="hljs-string">'hyperdrive-archive-swarm'</span>)
+<span class="hljs-keyword">var</span> level = <span class="hljs-built_in">require</span>(<span class="hljs-string">'level'</span>)
+<span class="hljs-keyword">var</span> raf = <span class="hljs-built_in">require</span>(<span class="hljs-string">'random-access-file'</span>)
+<span class="hljs-keyword">var</span> each = <span class="hljs-built_in">require</span>(<span class="hljs-string">'stream-each'</span>)
+
+<span class="hljs-keyword">var</span> db = level(<span class="hljs-string">'./dat.db'</span>)
+<span class="hljs-keyword">var</span> drive = Hyperdrive(db)
+<span class="hljs-keyword">var</span> archive = drive.createArchive(link, {
+  file: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">name</span>) </span>{
+    <span class="hljs-keyword">return</span> raf(path.join(self.dir, name))
+  }
+})
+<span class="hljs-keyword">var</span> swarm = Swarm(archive)
+
+archive.open(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err</span>) </span>{
+  <span class="hljs-keyword">if</span> (err) <span class="hljs-keyword">return</span> <span class="hljs-built_in">console</span>.error(err)
+  each(archive.list({live: archive.live}), <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">data, next</span>) </span>{
+    <span class="hljs-keyword">var</span> startBytes = self.stats.bytesDown
+    archive.download(data, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err</span>) </span>{
+      <span class="hljs-keyword">if</span> (err) <span class="hljs-keyword">return</span> <span class="hljs-built_in">console</span>.error(err)
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'file downloaded'</span>, data.relname)
+      next()
+    })
+  }, done)
+})
+</code></pre>
+</div>
+  </div>
+      </div>
+    </div>
+  </div>
+<script src="/bundle.js"></script>
+</body>
+</html>

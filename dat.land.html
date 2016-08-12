@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<title>Dat Data</title>
+<meta charset="utf-8">
+
+<link rel="stylesheet" href="/bundle.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<div id="choo-root" class="minidocs">
+    <div class="_68ad6959 minidocs-sidebar">
+    <div class="minidocs-header">
+      <h1><a href="/"><img src="/dat-data-logo.png" alt="Dat Data" class="minidocs-logo" /></a></h1>
+    </div>
+    <div class="_df8df972 minidocs-contents">
+    <button class="minidocs-menu-toggle">Menu</button>
+    <div class="minidocs-menu menu-closed menu-small">
+      <div class="minidocs-menu-wrapper">
+        <div class="h1">Introduction</div><div><a href="/welcome" class="content-link ">Welcome to Dat</a></div><div><a href="/how-dat-works" class="content-link ">How Dat Works</a></div><div class="h1">Specification</div><div><a href="/hyperdrive_spec" class="content-link ">hyperdrive spec</a></div><div><a href="/sleep" class="content-link ">sleep</a></div><div class="h1">References</div><div><a href="/api" class="content-link ">API</a></div><div><a href="/diy-dat" class="content-link ">DIY Dat</a></div><div class="h1">Modules</div><div><a href="/ecosystem" class="content-link ">Overview</a></div><div class="h2">Interface</div><div><a href="/dat" class="content-link ">Dat Command Line</a></div><div><a href="/dat.land" class="content-link active">dat.land</a></div><div><a href="/dat-desktop" class="content-link ">Dat Desktop</a></div><div class="h2">Core</div><div><a href="/hyperdrive" class="content-link ">Hyperdrive</a></div><div><a href="/hypercore" class="content-link ">Hypercore</a></div>
+      </div>
+    </div>
+  </div>
+  </div>
+    <div class="_6781b8a1 minidocs-main">
+      <div class="markdown-body">
+        <div class="_d706bf45 minidocs-content">
+    
+    
+    <div><h1 id="dat-land">dat.land</h1>
+<p>An online place for dats.</p>
+<p><a href="https://travis-ci.org/datproject/dat.land"><img src="https://travis-ci.org/datproject/dat.land.svg?branch=master" alt="Build Status"></a></p>
+<p><a href="http://dat.land">Try dat.land now</a></p>
+<h2 id="news">News</h2>
+<p>We were recently awarded a <a href="http://www.knightfoundation.org/grants/201551933/">$420,000 grant by the Knight Foundation</a> to get started on this project. It will be undergiong heavy development for the next few months.</p>
+<h3 id="develop">develop</h3>
+<pre><code>npm <span class="hljs-keyword">install</span>
+</code></pre><p>Do all of the below (watch assets and start server) in one command:</p>
+<pre><code>npm <span class="hljs-built_in">run</span> dev
+</code></pre><p>Start the server:</p>
+<pre><code><span class="hljs-built_in">npm</span> start
+</code></pre><p>To watch and build scss and javascript changes as you go (in a separate terminal):</p>
+<pre><code>npm <span class="hljs-built_in">run</span> watch-css
+npm <span class="hljs-built_in">run</span> watch-js
+</code></pre><h3 id="build-for-production">build for production</h3>
+<pre><code>npm <span class="hljs-built_in">run</span> build
+npm <span class="hljs-built_in">run</span> minify
+npm <span class="hljs-built_in">run</span> <span class="hljs-built_in">version</span>
+</code></pre><h3 id="using-shipit-for-deployment-and-install">using shipit for deployment and install</h3>
+<p><a href="https://github.com/shipitjs/shipit">shipit</a> and <a href="https://github.com/shipitjs/shipit-deploy">shipit-deploy</a> depends on rsync version 3+, git version 1.7.8+, and OpenSSH version 5+. To upgrade rsync on a macosx machine, <a href="https://static.afp548.com/mactips/rsync.html">follow instructions here</a> (see &quot;compile rsync 3.0.7&quot; section).</p>
+<p>install shipit-cli locally, globally:</p>
+<pre><code>npm <span class="hljs-keyword">install </span><span class="hljs-keyword">shipit-cli </span>-g
+</code></pre><p>the config file is <code>shipitfile.js</code>. you&#39;ll need to set the environment var <code>DATLAND_USER</code> in your local shell for it to know which account to use to access the server.</p>
+<p>to test your access to machine via shipit from your local command line, call shipit, then the environment (in this case <code>uat</code>, which is tracking the master branch), then the actual command which corresponds to tasks defined in the shipitfile:</p>
+<pre><code>shipit uat <span class="hljs-built_in">pwd</span>
+</code></pre><p>to deploy and install a build on remote machine (note that shipit pulls build source from github, not your local project dir):</p>
+<pre><code>npm <span class="hljs-built_in">run</span> deploy
+</code></pre></div>
+  </div>
+      </div>
+    </div>
+  </div>
+<script src="/bundle.js"></script>
+</body>
+</html>

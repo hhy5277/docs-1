@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<title>Dat Data</title>
+<meta charset="utf-8">
+
+<link rel="stylesheet" href="/bundle.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<div id="choo-root" class="minidocs">
+    <div class="_68ad6959 minidocs-sidebar">
+    <div class="minidocs-header">
+      <h1><a href="/"><img src="/dat-data-logo.png" alt="Dat Data" class="minidocs-logo" /></a></h1>
+    </div>
+    <div class="_df8df972 minidocs-contents">
+    <button class="minidocs-menu-toggle">Menu</button>
+    <div class="minidocs-menu menu-closed menu-small">
+      <div class="minidocs-menu-wrapper">
+        <div class="h1">Introduction</div><div><a href="/welcome" class="content-link ">Welcome to Dat</a></div><div><a href="/how-dat-works" class="content-link ">How Dat Works</a></div><div class="h1">Specification</div><div><a href="/hyperdrive_spec" class="content-link ">hyperdrive spec</a></div><div><a href="/sleep" class="content-link ">sleep</a></div><div class="h1">References</div><div><a href="/api" class="content-link active">API</a></div><div><a href="/diy-dat" class="content-link ">DIY Dat</a></div><div class="h1">Modules</div><div><a href="/ecosystem" class="content-link ">Overview</a></div><div class="h2">Interface</div><div><a href="/dat" class="content-link ">Dat Command Line</a></div><div><a href="/dat.land" class="content-link ">dat.land</a></div><div><a href="/dat-desktop" class="content-link ">Dat Desktop</a></div><div class="h2">Core</div><div><a href="/hyperdrive" class="content-link ">Hyperdrive</a></div><div><a href="/hypercore" class="content-link ">Hypercore</a></div>
+      </div>
+    </div>
+  </div>
+  </div>
+    <div class="_6781b8a1 minidocs-main">
+      <div class="markdown-body">
+        <div class="_d706bf45 minidocs-content">
+    
+    
+    <div><h2 id="1-0-architecture-design">1.0 Architecture Design</h2>
+<ul>
+<li>dat: command-line api</li>
+<li>dat-desk: desktop application</li>
+<li>hyperdrive: storage layer</li>
+<li>discovery-swarm: dat network swarm discovery mechanism</li>
+</ul>
+<h2 id="dat">dat</h2>
+<p>Command-line interface for dat</p>
+<h4 id="-dat-share-dir-"><code>dat share DIR</code></h4>
+<p>Create a new dat link for the contents of the given directory. Prints a URL, which is a unique public key feed. This public key feed can be appended to. </p>
+<h6 id="options">Options</h6>
+<ul>
+<li><code>--append=URL</code>: Adds the new URL to the public key feed.</li>
+<li><code>--static</code>: Ensures that the URL cannot be appended to.</li>
+</ul>
+<h4 id="-dat-url-dir-"><code>dat URL DIR</code></h4>
+<p>Downloads the link to the given directory, and then exits. </p>
+<h6 id="options">Options</h6>
+<ul>
+<li><code>--seed</code>: Downloads the link to the given directory and opens up a server that seeds it to the dat peer network.</li>
+<li><code>--list</code>: Fetches the metadata for the link and prints out the file list in the console.</li>
+</ul>
+</div>
+  </div>
+      </div>
+    </div>
+  </div>
+<script src="/bundle.js"></script>
+</body>
+</html>

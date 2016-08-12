@@ -1,41 +1,31 @@
 <!doctype html>
 <html lang="en">
 <head>
-<title>The Dat Project</title>
+<title>Dat Data</title>
 <meta charset="utf-8">
 
 <link rel="stylesheet" href="/bundle.css">
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
 <div id="choo-root" class="minidocs">
-    <div class="_8680596b minidocs-sidebar">
+    <div class="_68ad6959 minidocs-sidebar">
     <div class="minidocs-header">
-      <h1><a href="/"><img src="dat-data.png" alt="The Dat Project" class="minidocs-logo" /></a></h1>
+      <h1><a href="/"><img src="/dat-data-logo.png" alt="Dat Data" class="minidocs-logo" /></a></h1>
     </div>
-    <div class="minidocs-contents">
-      <div class="h1">Introduction</div><div>
-          <a href="/welcome" class="content-link active">Welcome to Dat</a>
-        </div><div>
-          <a href="/how-dat-works" class="content-link ">How Dat Works</a>
-        </div><div class="h1">Ecosystem</div><div>
-          <a href="/ecosystem" class="content-link ">Overview</a>
-        </div><div class="h1">Specification</div><div>
-          <a href="/hyperdrive" class="content-link ">hyperdrive</a>
-        </div><div>
-          <a href="/meta.dat" class="content-link ">meta.dat</a>
-        </div><div class="h1">References</div><div>
-          <a href="/api" class="content-link ">API</a>
-        </div><div>
-          <a href="/diy-dat" class="content-link ">DIY Dat</a>
-        </div>
-      <br />
-      <br />
+    <div class="_df8df972 minidocs-contents">
+    <button class="minidocs-menu-toggle">Menu</button>
+    <div class="minidocs-menu menu-closed menu-small">
+      <div class="minidocs-menu-wrapper">
+        <div class="h1">Introduction</div><div><a href="/welcome" class="content-link ">Welcome to Dat</a></div><div><a href="/how-dat-works" class="content-link active">How Dat Works</a></div><div class="h1">Specification</div><div><a href="/hyperdrive_spec" class="content-link ">hyperdrive spec</a></div><div><a href="/sleep" class="content-link ">sleep</a></div><div class="h1">References</div><div><a href="/api" class="content-link ">API</a></div><div><a href="/diy-dat" class="content-link ">DIY Dat</a></div><div class="h1">Modules</div><div><a href="/ecosystem" class="content-link ">Overview</a></div><div class="h2">Interface</div><div><a href="/dat" class="content-link ">Dat Command Line</a></div><div><a href="/dat.land" class="content-link ">dat.land</a></div><div><a href="/dat-desktop" class="content-link ">Dat Desktop</a></div><div class="h2">Core</div><div><a href="/hyperdrive" class="content-link ">Hyperdrive</a></div><div><a href="/hypercore" class="content-link ">Hypercore</a></div>
+      </div>
     </div>
   </div>
-    <div class="_3b73b4b8 minidocs-main">
+  </div>
+    <div class="_6781b8a1 minidocs-main">
       <div class="markdown-body">
-        <div class="_b525f68d minidocs-content">
+        <div class="_d706bf45 minidocs-content">
+    
     
     <div><h1 id="how-dat-works">How Dat Works</h1>
 <p>Note this is about Dat 1.0 and later. For historical info about earlier incarnations of Dat (Alpha, Beta) check out <a href="http://dat-data.com/blog/2016-01-19-brief-history-of-dat">this post</a>.</p>
@@ -56,13 +46,13 @@
 <p>The short version of how Hyperdrive works is: It breaks file contents up in to pieces, hashes each piece and then constructs a <a href="https://en.wikipedia.org/wiki/Merkle_tree">Merkle tree</a> out of all of the pieces. This ultimately gives us the Dat link, which is the top level hash of the Merkle tree.</p>
 <p>Here&#39;s the long version:</p>
 <p>Hyperdrive shares and synchronizes a set of files, similar to rsync or Dropbox. For each file in the drive we use a technique called Rabin fingerprinting to break the file up into pieces. Rabin fingerprints are a specific strategy for what is called Content Defined Chunking. Here&#39;s an example:</p>
-<p><img src="https://raw.githubusercontent.com/datproject/docs/master/meta/cdc.png" alt="cdc diagram"></p>
+<p><img src="https://raw.githubusercontent.com/datproject/docs/master/assets/cdc.png" alt="cdc diagram"></p>
 <p>We have configured our Rabin chunker to produce chunks that are around 16KB on average. So if you share a folder containing a single 1MB JPG you will get around 64 chunks.</p>
 <p>After feeding the file contents through the chunker, we take the chunks and calculate the SHA256 hash of each one. We then arrange these hashes into a special data structure we developed that we call the Flat In-Order Merkle Tree.</p>
 <h3 id="flat-in-order-merkle-tree">Flat In-Order Merkle Tree</h3>
-<pre><code>      3
-  1       5
-0   2   4   6
+<pre><code>      <span class="hljs-number">3</span>
+  <span class="hljs-number">1</span>       <span class="hljs-number">5</span>
+<span class="hljs-number">0</span>   <span class="hljs-number">2</span>   <span class="hljs-number">4</span>   <span class="hljs-number">6</span>
 </code></pre><p>Want to go lower level? Check out <a href="hyperdrive.md#how-hypercore-works">How Hypercore Works</a></p>
 <p>When two peers connect to each other and begin speaking the Hyperdrive protocol they can efficiently determine if they have chunks the other one wants, and begin exchanging those chunks directly. Hyperdrive gives us the flexibility to have random access to any portion of a file while still verifying the other side isnt sending us bad data. We can also download different sections of files in parallel across all of the sources simultaneously, which increases overall download speed dramatically.</p>
 <h2 id="phase-4-data-archiving">Phase 4: Data archiving</h2>
@@ -72,7 +62,7 @@
 <p>If the original source who shared the data goes offline it&#39;s OK, as long as other sources are available. As part of the mission as a not-for-profit we will be working with various institutions to ensure there are always sources available to accept new copies of data and stay online to serve those copies for important datasets such as scientific research data, open government data etc.</p>
 <p>Because Dat is built on a foundation of strong cryptographic data integrity and content addressable storage it gives us the possibility of implementing some really interesting version control techniques in the future. In that scenario archival data sources could choose to offer more disk space and archive every version of a Dat repository, whereas normal Dat users might only download and share one version that they happen to be interested in.</p>
 <h2 id="implementations">Implementations</h2>
-<p>This covered a lot of ground. If you want to go deeper and see the implementations we are using in the <a href="https://github.com/maxogden/dat">Dat command-line tool</a>, go to the <a href="ecosystem.md">Dependencies</a> page</p>
+<p>This covered a lot of ground. If you want to go deeper and see the implementations we are using in the <a href="https://github.com/maxogden/dat">Dat command-line tool</a>, go to the <a href="ecosystem">Dependencies</a> page</p>
 </div>
   </div>
       </div>
