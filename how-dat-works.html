@@ -17,7 +17,7 @@
     <button class="minidocs-menu-toggle">Menu</button>
     <div class="minidocs-menu menu-closed menu-small">
       <div class="minidocs-menu-wrapper">
-        <div class="h1">Introduction</div><div><a href="/welcome" class="content-link ">Welcome to Dat</a></div><div><a href="/how-dat-works" class="content-link active">How Dat Works</a></div><div class="h1">Specification</div><div><a href="/hyperdrive_spec" class="content-link ">hyperdrive spec</a></div><div><a href="/sleep" class="content-link ">sleep</a></div><div class="h1">References</div><div><a href="/api" class="content-link ">API</a></div><div><a href="/diy-dat" class="content-link ">DIY Dat</a></div><div class="h1">Modules</div><div><a href="/ecosystem" class="content-link ">Overview</a></div><div class="h2">Interface</div><div><a href="/dat" class="content-link ">Dat Command Line</a></div><div><a href="/dat.land" class="content-link ">dat.land</a></div><div><a href="/dat-desktop" class="content-link ">Dat Desktop</a></div><div class="h2">Core</div><div><a href="/hyperdrive" class="content-link ">Hyperdrive</a></div><div><a href="/hypercore" class="content-link ">Hypercore</a></div>
+        <div class="h1">Dat</div><div><a href="/dat" class="content-link ">Introduction</a></div><div><a href="/how-dat-works" class="content-link active">How Dat Works</a></div><div><a href="/faq" class="content-link ">FAQ</a></div><div class="h1">Cookbook</div><div><a href="/browser" class="content-link ">Browser Dat</a></div><div><a href="/diy-dat" class="content-link ">DIY Dat</a></div><div class="h1">Ecosystem</div><div><a href="/ecosystem" class="content-link ">Overview</a></div><div><a href="/sleep" class="content-link ">SLEEP</a></div><div><a href="/hyperdrive" class="content-link ">Hyperdrive</a></div><div><a href="/hypercore" class="content-link ">Hypercore</a></div>
       </div>
     </div>
   </div>
@@ -29,7 +29,7 @@
     
     <div><h1 id="how-dat-works">How Dat Works</h1>
 <p>Note this is about Dat 1.0 and later. For historical info about earlier incarnations of Dat (Alpha, Beta) check out <a href="http://dat-data.com/blog/2016-01-19-brief-history-of-dat">this post</a>.</p>
-<p>When someone starts downloading data with the <a href="https://github.com/maxogden/dat">Dat command-line tool</a>, here&#39;s what happens:</p>
+<p>When someone starts downloading data with the <a href="https://github.com/datproject/dat">Dat command-line tool</a>, here&#39;s what happens:</p>
 <h2 id="phase-1-source-discovery">Phase 1: Source discovery</h2>
 <p>Dat links look like this: <code>dat.land/c3fcbcdcf03360529b47df32ccfb9bc1d7f64aaaa41cca43ca9ac7f6778db8da</code>. The domain, dat.land, is there so if someone opens the link in a browser we can provide them with download instructions, and as an easy way for people to visually distinguish and remember Dat links. Dat itself doesn&#39;t actually use the dat.land part, it just needs the last part of the link which is a fingerprint of the data that is being shared. The first thing that happens when you go to download data using one of these links is you ask various discovery networks if they can tell you where to find sources that have a copy of the data you need.</p>
 <p>Source discovery means finding the IP and port of all the known data sources online that have a copy of that data you are looking for. You can then connect to them and begin exchanging data. By introducing this discovery phase we are able to create a network where data can be discovered even if the original data source disappears.</p>
@@ -53,8 +53,8 @@
 <pre><code>      <span class="hljs-number">3</span>
   <span class="hljs-number">1</span>       <span class="hljs-number">5</span>
 <span class="hljs-number">0</span>   <span class="hljs-number">2</span>   <span class="hljs-number">4</span>   <span class="hljs-number">6</span>
-</code></pre><p>Want to go lower level? Check out <a href="hyperdrive.md#how-hypercore-works">How Hypercore Works</a></p>
-<p>When two peers connect to each other and begin speaking the Hyperdrive protocol they can efficiently determine if they have chunks the other one wants, and begin exchanging those chunks directly. Hyperdrive gives us the flexibility to have random access to any portion of a file while still verifying the other side isnt sending us bad data. We can also download different sections of files in parallel across all of the sources simultaneously, which increases overall download speed dramatically.</p>
+</code></pre><p>Want to go lower level? Check out <a href="https://github.com/datproject/docs/blob/master/docs/hyperdrive_spec.md#how-hypercore-works">How Hypercore Works</a></p>
+<p>When two peers connect to each other and begin speaking the hyperdrive protocol they can efficiently determine if they have chunks the other one wants, and begin exchanging those chunks directly. Hyperdrive gives us the flexibility to have random access to any portion of a file while still verifying the other side isn&#39;t sending us bad data. We can also download different sections of files in parallel across all of the sources simultaneously, which increases overall download speed dramatically.</p>
 <h2 id="phase-4-data-archiving">Phase 4: Data archiving</h2>
 <p>So now that you&#39;ve discovered, connected, and downloaded a copy of some data you can stick around for a while and serve up copies of the data to others who come along and want to download it.</p>
 <p>The first phase, source discovery, is actually an ongoing process. When you first search for data sources you only get the sources available at the time you did your search, so we make sure to perform discovery searches as often is practically possible to make sure new sources can be found and connected to.</p>
@@ -62,7 +62,7 @@
 <p>If the original source who shared the data goes offline it&#39;s OK, as long as other sources are available. As part of the mission as a not-for-profit we will be working with various institutions to ensure there are always sources available to accept new copies of data and stay online to serve those copies for important datasets such as scientific research data, open government data etc.</p>
 <p>Because Dat is built on a foundation of strong cryptographic data integrity and content addressable storage it gives us the possibility of implementing some really interesting version control techniques in the future. In that scenario archival data sources could choose to offer more disk space and archive every version of a Dat repository, whereas normal Dat users might only download and share one version that they happen to be interested in.</p>
 <h2 id="implementations">Implementations</h2>
-<p>This covered a lot of ground. If you want to go deeper and see the implementations we are using in the <a href="https://github.com/maxogden/dat">Dat command-line tool</a>, go to the <a href="ecosystem">Dependencies</a> page</p>
+<p>This covered a lot of ground. If you want to go deeper and see the implementations we are using in the <a href="https://github.com/datproject/dat">Dat command-line tool</a>, go to the <a href="/ecosystem">Dependencies</a> page</p>
 </div>
   </div>
       </div>

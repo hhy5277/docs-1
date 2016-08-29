@@ -17,7 +17,7 @@
     <button class="minidocs-menu-toggle">Menu</button>
     <div class="minidocs-menu menu-closed menu-small">
       <div class="minidocs-menu-wrapper">
-        <div class="h1">Introduction</div><div><a href="/welcome" class="content-link ">Welcome to Dat</a></div><div><a href="/how-dat-works" class="content-link ">How Dat Works</a></div><div class="h1">Specification</div><div><a href="/hyperdrive_spec" class="content-link ">hyperdrive spec</a></div><div><a href="/sleep" class="content-link active">sleep</a></div><div class="h1">References</div><div><a href="/api" class="content-link ">API</a></div><div><a href="/diy-dat" class="content-link ">DIY Dat</a></div><div class="h1">Modules</div><div><a href="/ecosystem" class="content-link ">Overview</a></div><div class="h2">Interface</div><div><a href="/dat" class="content-link ">Dat Command Line</a></div><div><a href="/dat.land" class="content-link ">dat.land</a></div><div><a href="/dat-desktop" class="content-link ">Dat Desktop</a></div><div class="h2">Core</div><div><a href="/hyperdrive" class="content-link ">Hyperdrive</a></div><div><a href="/hypercore" class="content-link ">Hypercore</a></div>
+        <div class="h1">Dat</div><div><a href="/dat" class="content-link ">Introduction</a></div><div><a href="/how-dat-works" class="content-link ">How Dat Works</a></div><div><a href="/faq" class="content-link ">FAQ</a></div><div class="h1">Cookbook</div><div><a href="/browser" class="content-link ">Browser Dat</a></div><div><a href="/diy-dat" class="content-link ">DIY Dat</a></div><div class="h1">Ecosystem</div><div><a href="/ecosystem" class="content-link ">Overview</a></div><div><a href="/sleep" class="content-link active">SLEEP</a></div><div><a href="/hyperdrive" class="content-link ">Hyperdrive</a></div><div><a href="/hypercore" class="content-link ">Hypercore</a></div>
       </div>
     </div>
   </div>
@@ -125,7 +125,7 @@ hash(<span class="hljs-name">d</span>)
 <p>The above representation of the tree is in JSON. However due to the properties of the in-order node indexes we can represent the same data in a flat index while still allowing traversals.</p>
 <h1 id="file-format">File format</h1>
 <p>SLEEP files should be named <code>sleep.dat</code> and have the following format:</p>
-<pre><code>&lt;<span class="hljs-keyword">Header</span>&gt;&lt;Register Index<span class="hljs-attr">...</span>&gt;&lt;Register <span class="hljs-built_in">Data</span><span class="hljs-attr">...</span>&gt;
+<pre><code>&lt;<span class="hljs-keyword">Header</span>&gt;&lt;Register Index<span class="hljs-params">...</span>&gt;&lt;Register <span class="hljs-built_in">Data</span><span class="hljs-params">...</span>&gt;
 </code></pre><p>The format is a header followed by the register index. Order of the index is determined by an in-order node traversal. After the register index, the actual register entry data follows. The header length is variable width, prefixed with a varint. The Register Index is composed of fixed width metadata entries. The Register Data is composed of concatenated non-fixed width data pieces.</p>
 <h3 id="header-format">Header format</h3>
 <pre><code><span class="hljs-section">&lt;varint header-length&gt;</span><span class="hljs-section">&lt;header protobuf&gt;</span>

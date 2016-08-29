@@ -17,7 +17,7 @@
     <button class="minidocs-menu-toggle">Menu</button>
     <div class="minidocs-menu menu-closed menu-small">
       <div class="minidocs-menu-wrapper">
-        <div class="h1">Introduction</div><div><a href="/welcome" class="content-link ">Welcome to Dat</a></div><div><a href="/how-dat-works" class="content-link ">How Dat Works</a></div><div class="h1">Specification</div><div><a href="/hyperdrive_spec" class="content-link ">hyperdrive spec</a></div><div><a href="/sleep" class="content-link ">sleep</a></div><div class="h1">References</div><div><a href="/api" class="content-link ">API</a></div><div><a href="/diy-dat" class="content-link ">DIY Dat</a></div><div class="h1">Modules</div><div><a href="/ecosystem" class="content-link ">Overview</a></div><div class="h2">Interface</div><div><a href="/dat" class="content-link ">Dat Command Line</a></div><div><a href="/dat.land" class="content-link ">dat.land</a></div><div><a href="/dat-desktop" class="content-link ">Dat Desktop</a></div><div class="h2">Core</div><div><a href="/hyperdrive" class="content-link active">Hyperdrive</a></div><div><a href="/hypercore" class="content-link ">Hypercore</a></div>
+        <div class="h1">Dat</div><div><a href="/dat" class="content-link ">Introduction</a></div><div><a href="/how-dat-works" class="content-link ">How Dat Works</a></div><div><a href="/faq" class="content-link ">FAQ</a></div><div class="h1">Cookbook</div><div><a href="/browser" class="content-link ">Browser Dat</a></div><div><a href="/diy-dat" class="content-link ">DIY Dat</a></div><div class="h1">Ecosystem</div><div><a href="/ecosystem" class="content-link ">Overview</a></div><div><a href="/sleep" class="content-link ">SLEEP</a></div><div><a href="/hyperdrive" class="content-link active">Hyperdrive</a></div><div><a href="/hypercore" class="content-link ">Hypercore</a></div>
       </div>
     </div>
   </div>
@@ -31,7 +31,7 @@
 <p>A file sharing network based on <a href="https://github.com/maxogden/rabin">rabin</a> file chunking and <a href="https://github.com/mafintosh/hypercore">append only feeds of data verified by merkle trees</a>.</p>
 <pre><code>npm <span class="hljs-keyword">install</span> hyperdrive
 </code></pre><p><a href="http://travis-ci.org/mafintosh/hyperdrive"><img src="http://img.shields.io/travis/mafintosh/hyperdrive.svg?style=flat" alt="build status"></a></p>
-<p>If you are interested in learning how hyperdrive works on a technical level a specification is available in the <a href="https://github.com/datproject/docs/blob/master/hyperdrive.md">Dat docs repo</a></p>
+<p>If you are interested in learning how hyperdrive works on a technical level a specification is available in the <a href="https://github.com/datproject/docs/blob/master/docs/hyperdrive_spec.md">Dat docs repo</a></p>
 <h2 id="usage">Usage</h2>
 <p>First create a new feed and share it</p>
 <pre><code class="lang-js"><span class="hljs-keyword">var</span> hyperdrive = <span class="hljs-built_in">require</span>(<span class="hljs-string">'hyperdrive'</span>)
@@ -48,17 +48,15 @@ ws.write(<span class="hljs-string">'hello'</span>)
 ws.write(<span class="hljs-string">'world'</span>)
 ws.end()
 
-archive.finalize(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{ <span class="hljs-comment">// finalize the archive</span>
-  <span class="hljs-keyword">var</span> link = archive.key.toString(<span class="hljs-string">'hex'</span>)
-  <span class="hljs-built_in">console</span>.log(link, <span class="hljs-string">'&lt;-- this is your hyperdrive link'</span>)
+<span class="hljs-keyword">var</span> link = archive.key.toString(<span class="hljs-string">'hex'</span>)
+<span class="hljs-built_in">console</span>.log(link, <span class="hljs-string">'&lt;-- this is your hyperdrive link'</span>)
 
-  <span class="hljs-comment">// the archive is now ready for sharing.</span>
-  <span class="hljs-comment">// we can use swarm to replicate it to other peers</span>
-  swarm.listen()
-  swarm.join(<span class="hljs-keyword">new</span> Buffer(link, <span class="hljs-string">'hex'</span>))
-  swarm.on(<span class="hljs-string">'connection'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">connection</span>) </span>{
-    connection.pipe(archive.replicate()).pipe(connection)
-  })
+<span class="hljs-comment">// the archive is now ready for sharing.</span>
+<span class="hljs-comment">// we can use swarm to replicate it to other peers</span>
+swarm.listen()
+swarm.join(<span class="hljs-keyword">new</span> Buffer(link, <span class="hljs-string">'hex'</span>))
+swarm.on(<span class="hljs-string">'connection'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">connection</span>) </span>{
+  connection.pipe(archive.replicate()).pipe(connection)
 })
 </code></pre>
 <p>Then we can access the content from another process with the following code</p>
@@ -136,7 +134,7 @@ archive.append(<span class="hljs-string">'hello.txt'</span>, <span class="hljs-f
 })
 </code></pre>
 <h4 id="-archive-finalize-callback-"><code>archive.finalize([callback])</code></h4>
-<p>Finalize the archive. You need to do this before sharing it if the archive is not live.</p>
+<p>Finalize the archive. You need to do this before sharing it if the archive is not live (it is live per default).</p>
 <h4 id="-archive-get-index-callback-"><code>archive.get(index, callback)</code></h4>
 <p>Reads an entry from the archive.</p>
 <h4 id="-archive-download-index-callback-"><code>archive.download(index, callback)</code></h4>

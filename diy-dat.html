@@ -17,7 +17,7 @@
     <button class="minidocs-menu-toggle">Menu</button>
     <div class="minidocs-menu menu-closed menu-small">
       <div class="minidocs-menu-wrapper">
-        <div class="h1">Introduction</div><div><a href="/welcome" class="content-link ">Welcome to Dat</a></div><div><a href="/how-dat-works" class="content-link ">How Dat Works</a></div><div class="h1">Specification</div><div><a href="/hyperdrive_spec" class="content-link ">hyperdrive spec</a></div><div><a href="/sleep" class="content-link ">sleep</a></div><div class="h1">References</div><div><a href="/api" class="content-link ">API</a></div><div><a href="/diy-dat" class="content-link active">DIY Dat</a></div><div class="h1">Modules</div><div><a href="/ecosystem" class="content-link ">Overview</a></div><div class="h2">Interface</div><div><a href="/dat" class="content-link ">Dat Command Line</a></div><div><a href="/dat.land" class="content-link ">dat.land</a></div><div><a href="/dat-desktop" class="content-link ">Dat Desktop</a></div><div class="h2">Core</div><div><a href="/hyperdrive" class="content-link ">Hyperdrive</a></div><div><a href="/hypercore" class="content-link ">Hypercore</a></div>
+        <div class="h1">Dat</div><div><a href="/dat" class="content-link ">Introduction</a></div><div><a href="/how-dat-works" class="content-link ">How Dat Works</a></div><div><a href="/faq" class="content-link ">FAQ</a></div><div class="h1">Cookbook</div><div><a href="/browser" class="content-link ">Browser Dat</a></div><div><a href="/diy-dat" class="content-link active">DIY Dat</a></div><div class="h1">Ecosystem</div><div><a href="/ecosystem" class="content-link ">Overview</a></div><div><a href="/sleep" class="content-link ">SLEEP</a></div><div><a href="/hyperdrive" class="content-link ">Hyperdrive</a></div><div><a href="/hypercore" class="content-link ">Hypercore</a></div>
       </div>
     </div>
   </div>
@@ -27,41 +27,96 @@
         <div class="_d706bf45 minidocs-content">
     
     
-    <div><h1 id="diy-dat">DIY Dat</h1>
-<p>This document shows how to write your own compatible <code>dat</code> client using node modules.</p>
-<p>The three essential node modules are called <a href="https://npmjs.org/hyperdrive">hyperdrive</a>, <a href="https://npmjs.org/hyperdrive-archive-swarm">hyperdrive-archive-swarm</a> and <a href="https://npmjs.org/level">level</a>. Hyperdrive does file synchronization and versioning, hyperdrive-archive-swarm does peer discovery over local networks and the Internet, and level provides a local LevelDB for storing metadata. More details are available in <a href="how-dat-works.md">How Dat Works</a>. The <a href="https://npmjs.org/dat">dat</a> module itself is just some code that combines these modules and wraps them in a command-line API.</p>
-<p>Here&#39;s the minimal code needed to download data from a dat:</p>
-<pre><code class="lang-js"><span class="hljs-comment">// run this like: node thisfile.js 4c325f7874b4070blahblahetc</span>
-<span class="hljs-comment">// the dat link someone sent us, we want to download the data from it</span>
-<span class="hljs-keyword">var</span> link = <span class="hljs-keyword">new</span> Buffer(process.argv[<span class="hljs-number">2</span>], <span class="hljs-string">'hex'</span>)
-
+    <div><h1 id="build-with-dat">Build with Dat</h1>
+<p>In this guide, we will show how to develop applications with the Dat ecosystem. The Dat ecosystem is very modular making it easy to develop custom applications using Dat.</p>
+<p>For any Dat application, there are three essential modules you will start with: </p>
+<ol>
+<li><a href="https://npmjs.org/hyperdrive">hyperdrive</a> for file synchronization and versioning</li>
+<li><a href="https://npmjs.org/hyperdrive-archive-swarm">hyperdrive-archive-swarm</a> helps discover and connect to peers over local networks and the internet</li>
+<li>A <a href="https://npmjs.org/level">LevelDB</a> compatible database for storing metadata.</li>
+</ol>
+<p>The <a href="https://npmjs.org/dat">Dat CLI</a> module itself combines these modules and wraps them in a command-line API. These modules can be swapped out for a similarly compatible module, such as switching LevelDb for <a href="https://github.com/juliangruber/memdb">MemDB</a> (which we do in the first example). More details on how these module work together are available in <a href="how-dat-works.md">How Dat Works</a>.</p>
+<h2 id="getting-started">Getting Started</h2>
+<p>You will need node and npm installed to build with Dat. <a href="https://github.com/datproject/dat/blob/master/CONTRIBUTING.md#development-workflow">Read more</a> about our development work flow to learn how we manage our module dependencies during development.</p>
+<h2 id="module-1-download-a-file">Module #1: Download a File</h2>
+<p>Our first module will download files from a Dat link entered by the user. View the code for this module on <a href="https://github.com/joehand/diy-dat-examples/tree/master/module-1">Github</a>.</p>
+<pre><code class="lang-bash">mkdir module-1 &amp;&amp; <span class="hljs-built_in">cd</span> module-1
+npm init
+npm install --save hyperdrive memdb hyperdrive-archive-swarm
+touch index.js
+</code></pre>
+<p>For this example, we will use <a href="https://github.com/juliangruber/memdb">memdb</a> for our database (keeping the metadata in memory rather than on the file system). In your <code>index.js</code> file, require the main modules and set them up:</p>
+<pre><code class="lang-js"><span class="hljs-keyword">var</span> memdb = <span class="hljs-built_in">require</span>(<span class="hljs-string">'memdb'</span>)
 <span class="hljs-keyword">var</span> Hyperdrive = <span class="hljs-built_in">require</span>(<span class="hljs-string">'hyperdrive'</span>)
 <span class="hljs-keyword">var</span> Swarm = <span class="hljs-built_in">require</span>(<span class="hljs-string">'hyperdrive-archive-swarm'</span>)
-<span class="hljs-keyword">var</span> level = <span class="hljs-built_in">require</span>(<span class="hljs-string">'level'</span>)
-<span class="hljs-keyword">var</span> raf = <span class="hljs-built_in">require</span>(<span class="hljs-string">'random-access-file'</span>)
+
+<span class="hljs-keyword">var</span> link = process.argv[<span class="hljs-number">2</span>] <span class="hljs-comment">// user inputs the dat link</span>
+
+<span class="hljs-keyword">var</span> db = memdb()
+<span class="hljs-keyword">var</span> drive = Hyperdrive(db)
+<span class="hljs-keyword">var</span> archive = drive.createArchive(link)
+<span class="hljs-keyword">var</span> swarm = Swarm(archive)
+</code></pre>
+<p>Notice, the user will input the link for the second argument The easiest way to get a file from a hyperdrive archive is to make a read stream. <code>archive.createFileReadStream</code> accepts the index number of filename for the first argument. To display the file, we can create a file stream and pipe it to <code>process.stdout</code>.</p>
+<pre><code class="lang-js"><span class="hljs-keyword">var</span> stream = archive.createFileReadStream(<span class="hljs-number">0</span>) <span class="hljs-comment">// get the first file</span>
+stream.pipe(process.stdout)
+</code></pre>
+<p>Now, you can run the module! To download the first file from our docs Dat, run:</p>
+<pre><code><span class="hljs-keyword">node</span> <span class="hljs-title">index</span>.js <span class="hljs-number">395</span>e3467bb5b2fa083ee8a4a17a706c5574b740b5e1be6efd65754d4ab7328c2
+</code></pre><p>You should see the first file in our docs repo.</p>
+<h4 id="module-1-bonus-display-any-file-in-the-dat">Module #1 Bonus: Display any file in the Dat</h4>
+<p>With a few more lines of code, the user can enter a file to display from the Dat link.</p>
+<p>Challenge: create a module that will allow the user to input a Dat link and a filename: <code>node bonus.js &lt;dat-link&gt; &lt;filename&gt;</code>. The module will print out that file from the link, as we did above. To get a specific file you can change the file stream to use the filename instead of the index number:</p>
+<pre><code class="lang-js"><span class="hljs-keyword">var</span> stream = archive.createFileReadStream(fileName)
+</code></pre>
+<p>Once you are finished, see if you can view this file by running:</p>
+<pre><code class="lang-bash">node bonus.js 395e3467bb5b2fa083ee8a4a17a706c5574b740b5e1be6efd65754d4ab7328c2 cookbook/diy-dat.md
+</code></pre>
+<p><a href="https://github.com/joehand/diy-dat-examples/blob/master/module-1/bonus.js">See how we coded it</a>. </p>
+<h2 id="module-2-download-all-files-to-computer">Module #2: Download all files to computer</h2>
+<p>This module will build on the last module. Instead of displaying a single file, we will download all of the files from a Dat into a local directory. View the code for this module on <a href="https://github.com/joehand/diy-dat-examples/tree/master/module-2">Github</a>.</p>
+<p>To download the files to the file system, instead of to a database, we will use the <code>file</code> option in <code>hyperdrive</code> and the <a href="http://npmjs.org/random-access-file">random-access-file</a> module. We will also learn two new archive functions that make handling all the files a bit easier than the file stream in module #1. </p>
+<p>Setup will be the same as before (make sure you install random-access-file and stream-each this time): </p>
+<pre><code class="lang-bash">mkdir module-2 &amp;&amp; <span class="hljs-built_in">cd</span> module-2
+npm init
+npm install --save hyperdrive memdb hyperdrive-archive-swarm random-access-file stream-each
+touch index.js
+</code></pre>
+<p>The first part of the module will look the same. We will add random-access-file (and <a href="http://npmjs.org/stream-each">stream-each</a> to make things easier). The only difference is that we have to specify the <code>file</code> option when creating our archive:</p>
+<pre><code class="lang-js"><span class="hljs-keyword">var</span> memdb = <span class="hljs-built_in">require</span>(<span class="hljs-string">'memdb'</span>)
+<span class="hljs-keyword">var</span> Hyperdrive = <span class="hljs-built_in">require</span>(<span class="hljs-string">'hyperdrive'</span>)
+<span class="hljs-keyword">var</span> Swarm = <span class="hljs-built_in">require</span>(<span class="hljs-string">'hyperdrive-archive-swarm'</span>)
+<span class="hljs-keyword">var</span> raf = <span class="hljs-built_in">require</span>(<span class="hljs-string">'random-access-file'</span>) <span class="hljs-comment">// this is new!</span>
 <span class="hljs-keyword">var</span> each = <span class="hljs-built_in">require</span>(<span class="hljs-string">'stream-each'</span>)
 
-<span class="hljs-keyword">var</span> db = level(<span class="hljs-string">'./dat.db'</span>)
+<span class="hljs-keyword">var</span> link = process.argv[<span class="hljs-number">2</span>]
+
+<span class="hljs-keyword">var</span> db = memdb()
 <span class="hljs-keyword">var</span> drive = Hyperdrive(db)
 <span class="hljs-keyword">var</span> archive = drive.createArchive(link, {
   file: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">name</span>) </span>{
-    <span class="hljs-keyword">return</span> raf(path.join(self.dir, name))
+    <span class="hljs-keyword">return</span> raf(path.join(<span class="hljs-string">'download'</span>, name)) <span class="hljs-comment">// download into a "download" dir</span>
   }
 })
 <span class="hljs-keyword">var</span> swarm = Swarm(archive)
-
-archive.open(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err</span>) </span>{
-  <span class="hljs-keyword">if</span> (err) <span class="hljs-keyword">return</span> <span class="hljs-built_in">console</span>.error(err)
-  each(archive.list({live: archive.live}), <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">data, next</span>) </span>{
-    <span class="hljs-keyword">var</span> startBytes = self.stats.bytesDown
-    archive.download(data, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err</span>) </span>{
-      <span class="hljs-keyword">if</span> (err) <span class="hljs-keyword">return</span> <span class="hljs-built_in">console</span>.error(err)
-      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'file downloaded'</span>, data.relname)
-      next()
-    })
-  }, done)
+</code></pre>
+<p>Now that we are setup, we can work with the archive. The <code>archive.download</code> function downloads the file content (to wherever you specified in the file option). To download all the files, we will need a list of files and then we will call download on each of them. <code>archive.list</code> will give us the list of the files. We use the stream-each module to make it easy to iterate over each item in the archive, then exit when the stream is finished.</p>
+<pre><code class="lang-js"><span class="hljs-keyword">var</span> stream = archive.list({live: <span class="hljs-literal">false</span>}) <span class="hljs-comment">// Use {live: false} for now to make the stream easier to handle.</span>
+each(stream, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">entry, next</span>) </span>{
+  archive.download(entry, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err</span>) </span>{
+    <span class="hljs-keyword">if</span> (err) <span class="hljs-keyword">return</span> <span class="hljs-built_in">console</span>.error(err)
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'downloaded'</span>, entry.name)
+    next()
+  })
+}, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+  process.exit(<span class="hljs-number">0</span>)
 })
 </code></pre>
+<p>You should be able to run the module and see all our docs files in the <code>download</code> folder:</p>
+<pre><code class="lang-bash">node index.js 395e3467bb5b2fa083ee8a4a17a706c5574b740b5e1be6efd65754d4ab7328c2
+</code></pre>
+<h2 id="module-3-sharing-a-file">Module #3: Sharing a file</h2>
+<h2 id="module-4-sharing-a-directory-of-files">Module #4: Sharing a directory of files</h2>
 </div>
   </div>
       </div>

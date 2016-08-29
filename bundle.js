@@ -2,320 +2,11 @@
 
   var css = 0
   var minidocs = require('minidocs')
-  var app = minidocs({"title":"Dat Data","logo":"dat-data-logo.png","contents":[{"depth":1,"name":"Introduction"},{"depth":2,"name":"Welcome to Dat","key":"welcome","link":"/welcome"},{"depth":2,"name":"How Dat Works","key":"how-dat-works","link":"/how-dat-works"},{"depth":1,"name":"Specification"},{"depth":2,"name":"hyperdrive spec","key":"hyperdrive_spec","link":"/hyperdrive_spec"},{"depth":2,"name":"sleep","key":"sleep","link":"/sleep"},{"depth":1,"name":"References"},{"depth":2,"name":"API","key":"api","link":"/api"},{"depth":2,"name":"DIY Dat","key":"diy-dat","link":"/diy-dat"},{"depth":1,"name":"Modules"},{"depth":2,"name":"Overview","key":"ecosystem","link":"/ecosystem"},{"depth":2,"name":"Interface"},{"depth":3,"name":"Dat Command Line","key":"dat","link":"/dat"},{"depth":3,"name":"dat.land","key":"dat.land","link":"/dat.land"},{"depth":3,"name":"Dat Desktop","key":"dat-desktop","link":"/dat-desktop"},{"depth":2,"name":"Core"},{"depth":3,"name":"Hyperdrive","key":"hyperdrive","link":"/hyperdrive"},{"depth":3,"name":"Hypercore","key":"hypercore","link":"/hypercore"}],"markdown":"/Users/joe/node_modules/dat-docs/docs","initial":"welcome","basedir":"","dir":"/Users/joe/node_modules/dat-docs","routes":{"index":"/","welcome":"/welcome/","how-dat-works":"/how-dat-works/","hyperdrive_spec":"/hyperdrive_spec/","sleep":"/sleep/","api":"/api/","diy-dat":"/diy-dat/","ecosystem":"/ecosystem/","dat":"/dat/","dat.land":"/dat.land/","dat-desktop":"/dat-desktop/","hyperdrive":"/hyperdrive/","hypercore":"/hypercore/"},"html":{"welcome":"<h1 id=\"dat\">dat</h1>\n<p>Dat is a decentralized data tool for distributing data small and large.</p>\n<p><a href=\"http://webchat.freenode.net/?channels=dat\"><img src=\"https://img.shields.io/badge/irc%20channel-%23dat%20on%20freenode-blue.svg\" alt=\"#dat IRC channel on freenode\"></a>\n<a href=\"https://gitter.im/datproject/discussions?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge\"><img src=\"https://badges.gitter.im/Join%20Chat.svg\" alt=\"datproject/discussions\"></a>\n<a href=\"http://docs.dat-data.com\"><img src=\"https://img.shields.io/badge/Dat%20Project-Docs-green.svg\" alt=\"docs\"></a></p>\n<h2 id=\"about-dat\">About Dat</h2>\n<p>Documentation for the Dat project is available at <a href=\"http://docs.dat-data.com\">docs.dat-data.com</a>.</p>\n<h3 id=\"key-features-\">Key features:</h3>\n<ul>\n<li><strong>Live sync</strong> folders by sharing files as they are added to the folder.</li>\n<li><strong>Distribute large files</strong> without copying data to a central server by connecting directly to peers.</li>\n<li><strong>Intelligently sync</strong> by deduplicating data between versions.</li>\n<li><strong>Verify data integrity</strong> using strong cryptographic hashes.</li>\n<li><strong>Work everywhere</strong>, including in the <a href=\"https://github.com/datproject/dat.land\">browser</a> and on the <a href=\"https://github.com/juliangruber/dat-desktop\">desktop</a>.</li>\n</ul>\n<p>Dat embraces the Unix philosophy: a modular design with composable parts. All of the pieces can be replaced with alternative implementations as long as they implement the abstract API.</p>\n<h3 id=\"ways-to-use-dat\">Ways to Use Dat</h3>\n<ul>\n<li><a href=\"https://github.com/maxogden/dat\">Dat CLI</a>: command line tool</li>\n<li><a href=\"https://github.com/juliangruber/dat-desktop/\">Dat Desktop</a>: desktop application</li>\n<li><a href=\"https://github.com/datproject/dat.land\">dat.land</a>: website application</li>\n</ul>\n","how-dat-works":"<h1 id=\"how-dat-works\">How Dat Works</h1>\n<p>Note this is about Dat 1.0 and later. For historical info about earlier incarnations of Dat (Alpha, Beta) check out <a href=\"http://dat-data.com/blog/2016-01-19-brief-history-of-dat\">this post</a>.</p>\n<p>When someone starts downloading data with the <a href=\"https://github.com/maxogden/dat\">Dat command-line tool</a>, here&#39;s what happens:</p>\n<h2 id=\"phase-1-source-discovery\">Phase 1: Source discovery</h2>\n<p>Dat links look like this: <code>dat.land/c3fcbcdcf03360529b47df32ccfb9bc1d7f64aaaa41cca43ca9ac7f6778db8da</code>. The domain, dat.land, is there so if someone opens the link in a browser we can provide them with download instructions, and as an easy way for people to visually distinguish and remember Dat links. Dat itself doesn&#39;t actually use the dat.land part, it just needs the last part of the link which is a fingerprint of the data that is being shared. The first thing that happens when you go to download data using one of these links is you ask various discovery networks if they can tell you where to find sources that have a copy of the data you need.</p>\n<p>Source discovery means finding the IP and port of all the known data sources online that have a copy of that data you are looking for. You can then connect to them and begin exchanging data. By introducing this discovery phase we are able to create a network where data can be discovered even if the original data source disappears.</p>\n<p>The discovery protocols we use are <a href=\"https://en.wikipedia.org/wiki/Name_server\">DNS name servers</a>, <a href=\"https://en.wikipedia.org/wiki/Multicast_DNS\">Multicast DNS</a> and the <a href=\"https://en.wikipedia.org/wiki/Mainline_DHT\">Kademlia Mainline Distributed Hash Table</a> (DHT). Each one has pros and cons, so we combine all three to increase the speed and reliability of discovering data sources.</p>\n<p>We run a <a href=\"https://www.npmjs.com/package/dns-discovery\">custom DNS server</a> that Dat clients use (in addition to specifying their own if they need to), as well as a <a href=\"https://github.com/bittorrent/bootstrap-dht\">DHT bootstrap</a> server. These discovery servers are the only centralized infrastructure we need for Dat to work over the Internet, but they are redundant, interchangeable, never see the actual data being shared, and anyone can run their own and Dat will still work even if they all go down. If this happens discovery will just be manual (e.g. manually sharing IP/ports). Every data source that has a copy of the data also advertises themselves across these discovery networks.</p>\n<p>The discovery logic itself is handled by a module that we wrote called <a href=\"http://npmjs.org/discovery-channel\">discovery-channel</a>, which wraps other modules we wrote to implement DNS and DHT logic into a single interface. We can give the Dat link we want to download to discovery-channel and we will get back all the sources it finds across the various discovery networks.</p>\n<h2 id=\"phase-2-source-connections\">Phase 2: Source connections</h2>\n<p>Up until this point we have just done searches to find who has the data we need. Now that we know who should talk to, we have to connect to them. We use either <a href=\"https://en.wikipedia.org/wiki/Transmission_Control_Protocol\">TCP</a> or <a href=\"https://en.wikipedia.org/wiki/Micro_Transport_Protocol\">UTP</a> sockets for the actual peer to peer connections. UTP is nice because it is designed to <em>not</em> take up all available bandwidth on a network (e.g. so that other people sharing your wifi can still use the Internet). We then layer on our own file sharing protocol on top, called <a href=\"https://github.com/mafintosh/hypercore\">Hypercore</a>. We also are working on WebRTC support so we can incorporate Browser and Electron clients for some really open web use cases.</p>\n<p>When we get the IP and port for a potential source we try to connect using all available protocols (currently TCP and sometimes UTP) and hope one works. If one connects first, we abort the other ones. If none connect, we try again until we decide that source is offline or unavailable to use and we stop trying to connect to them. Sources we are able to connect to go into a list of known good sources, so that if our Internet connection goes down we can use that list to reconnect to our good sources again quickly.</p>\n<p>If we get a lot of potential sources we pick a handful at random to try and connect to and keep the rest around as additional sources to use later in case we decide we need more sources. A lot of these are parameters that we can tune for different scenarios later, but have started with some best guesses as defaults.</p>\n<p>The connection logic is implemented in a module called <a href=\"https://www.npmjs.com/package/discovery-swarm\">discovery-swarm</a>. This builds on discovery-channel and adds connection establishment, management and statistics. You can see stats like how many sources are currently connected, how many good and bad behaving sources you&#39;ve talked to, and it automatically handles connecting and reconnecting to sources for you. Our UTP support is implemented in the module <a href=\"https://www.npmjs.com/package/utp-native\">utp-native</a>.</p>\n<h2 id=\"phase-3-data-exchange\">Phase 3: Data exchange</h2>\n<p>So now we have found data sources, have connected to them, but we havent yet figured out if they <em>actually</em> have the data we need. This is where our file transfer protocol <a href=\"https://www.npmjs.com/package/hyperdrive\">Hyperdrive</a> comes in.</p>\n<p>The short version of how Hyperdrive works is: It breaks file contents up in to pieces, hashes each piece and then constructs a <a href=\"https://en.wikipedia.org/wiki/Merkle_tree\">Merkle tree</a> out of all of the pieces. This ultimately gives us the Dat link, which is the top level hash of the Merkle tree.</p>\n<p>Here&#39;s the long version:</p>\n<p>Hyperdrive shares and synchronizes a set of files, similar to rsync or Dropbox. For each file in the drive we use a technique called Rabin fingerprinting to break the file up into pieces. Rabin fingerprints are a specific strategy for what is called Content Defined Chunking. Here&#39;s an example:</p>\n<p><img src=\"https://raw.githubusercontent.com/datproject/docs/master/assets/cdc.png\" alt=\"cdc diagram\"></p>\n<p>We have configured our Rabin chunker to produce chunks that are around 16KB on average. So if you share a folder containing a single 1MB JPG you will get around 64 chunks.</p>\n<p>After feeding the file contents through the chunker, we take the chunks and calculate the SHA256 hash of each one. We then arrange these hashes into a special data structure we developed that we call the Flat In-Order Merkle Tree.</p>\n<h3 id=\"flat-in-order-merkle-tree\">Flat In-Order Merkle Tree</h3>\n<pre><code>      <span class=\"hljs-number\">3</span>\n  <span class=\"hljs-number\">1</span>       <span class=\"hljs-number\">5</span>\n<span class=\"hljs-number\">0</span>   <span class=\"hljs-number\">2</span>   <span class=\"hljs-number\">4</span>   <span class=\"hljs-number\">6</span>\n</code></pre><p>Want to go lower level? Check out <a href=\"hyperdrive.md#how-hypercore-works\">How Hypercore Works</a></p>\n<p>When two peers connect to each other and begin speaking the Hyperdrive protocol they can efficiently determine if they have chunks the other one wants, and begin exchanging those chunks directly. Hyperdrive gives us the flexibility to have random access to any portion of a file while still verifying the other side isnt sending us bad data. We can also download different sections of files in parallel across all of the sources simultaneously, which increases overall download speed dramatically.</p>\n<h2 id=\"phase-4-data-archiving\">Phase 4: Data archiving</h2>\n<p>So now that you&#39;ve discovered, connected, and downloaded a copy of some data you can stick around for a while and serve up copies of the data to others who come along and want to download it.</p>\n<p>The first phase, source discovery, is actually an ongoing process. When you first search for data sources you only get the sources available at the time you did your search, so we make sure to perform discovery searches as often is practically possible to make sure new sources can be found and connected to.</p>\n<p>Every user of Dat is a source as long as they have 1 or more chunks of data. Just like with other decentralized file sharing protocols you will notice Dat may start uploading data before it finishes downloading.</p>\n<p>If the original source who shared the data goes offline it&#39;s OK, as long as other sources are available. As part of the mission as a not-for-profit we will be working with various institutions to ensure there are always sources available to accept new copies of data and stay online to serve those copies for important datasets such as scientific research data, open government data etc.</p>\n<p>Because Dat is built on a foundation of strong cryptographic data integrity and content addressable storage it gives us the possibility of implementing some really interesting version control techniques in the future. In that scenario archival data sources could choose to offer more disk space and archive every version of a Dat repository, whereas normal Dat users might only download and share one version that they happen to be interested in.</p>\n<h2 id=\"implementations\">Implementations</h2>\n<p>This covered a lot of ground. If you want to go deeper and see the implementations we are using in the <a href=\"https://github.com/maxogden/dat\">Dat command-line tool</a>, go to the <a href=\"ecosystem\">Dependencies</a> page</p>\n","hyperdrive_spec":"<h1 id=\"hyperdrive-hypercore-specification\">Hyperdrive + Hypercore Specification</h1>\n<h2 id=\"draft-version-1\">DRAFT Version 1</h2>\n<p>Hyperdrive is the peer-to-peer data distribution protocol that powers Dat. It consists of two parts. First there is hypercore which is the core protocol and swarm that handles distributing append-only logs of any binary data. The second part is hyperdrive which adds a filesystem specific protocol on top of hypercore.</p>\n<h2 id=\"hypercore\">Hypercore</h2>\n<p>The goal of hypercore is to distribute append-only logs across a network of peers. Peers download parts of the logs from other peers and can choose to only download the parts of a log they care about. Logs can contain arbitrary binary data payloads.</p>\n<p>A core goal is to be as simple and pragmatic as possible. This allows for easier implementations of clients which is an often overlooked property when implementing distributed systems. First class browser support is also an important goal as p2p data sharing in browsers is becoming more viable every day as WebRTC matures.</p>\n<p>It also tries to be modular and export responsibilities to external modules whenever possible. Peer discovery is a good example of this as it handled by 3rd party modules that wasn&#39;t written with hyperdrive in mind. A benefit of this is a much smaller core implementation that can focus on smaller and simpler problems.</p>\n<p>Prioritized synchronization of parts of a feed is also at the heart of hyperdrive as this allows for fast streaming with low latency of data such as structured datasets (wikipedia, genomic datasets), linux containers, audio, videos, and much more. To allow for low latency streaming another goal is also to keep verifiable block sizes as small as possible - even with huge data feeds.</p>\n<p>The protocol itself draws heavy inspiration from existing file sharing systems such as BitTorrent and <a href=\"https://datatracker.ietf.org/doc/rfc7574/?include_text=1\">PPSP</a></p>\n<h2 id=\"how-hypercore-works\">How Hypercore works</h2>\n<h3 id=\"flat-in-order-trees\">Flat In-Order Trees</h3>\n<p>A Flat In-Order Tree is a simple way represent a binary tree as a list. It also allows you to identify every node of a binary tree with a numeric index. Both of these properties makes it useful in distributed applications to simplify wire protocols that uses tree structures.</p>\n<p>Flat trees are described in <a href=\"https://datatracker.ietf.org/doc/rfc7574/?include_text=1\">PPSP RFC 7574 as &quot;Bin numbers&quot;</a> and a node version is available through the <a href=\"https://github.com/mafintosh/flat-tree\">flat-tree</a> module.</p>\n<p>A sample flat tree spanning 4 blocks of data looks like this:</p>\n<pre><code><span class=\"hljs-number\">0</span>\n  <span class=\"hljs-number\">1</span>\n<span class=\"hljs-number\">2</span>\n    <span class=\"hljs-number\">3</span>\n<span class=\"hljs-number\">4</span>\n  <span class=\"hljs-number\">5</span>\n<span class=\"hljs-number\">6</span>\n</code></pre><p>The even numbered entries represent data blocks (leaf nodes) and odd numbered entries represent parent nodes that have two children.</p>\n<p>The depth of an tree node can be calculated by counting the number of trailing 1s a node has in binary notation.</p>\n<pre><code><span class=\"hljs-symbol\">5 </span>in binary = <span class=\"hljs-number\">101</span> (one trailing <span class=\"hljs-number\">1</span>)\n<span class=\"hljs-symbol\">3 </span>in binary = <span class=\"hljs-number\">011</span> (two trailing <span class=\"hljs-number\">1</span>s)\n<span class=\"hljs-symbol\">4 </span>in binary = <span class=\"hljs-number\">100</span> (zero trailing <span class=\"hljs-number\">1</span>s)\n</code></pre><p>1 is the parent of (0, 2), 5 is the parent of (4, 6), and 3 is the parent of (1, 5).</p>\n<p>If the number of leaf nodes is a power of 2 the flat tree will only have a single root.</p>\n<p>Otherwise it&#39;ll have more than one. As an example here is a tree with 6 leafs:</p>\n<pre><code><span class=\"hljs-number\">0</span>\n  <span class=\"hljs-number\">1</span>\n<span class=\"hljs-number\">2</span>\n    <span class=\"hljs-number\">3</span>\n<span class=\"hljs-number\">4</span>\n  <span class=\"hljs-number\">5</span>\n<span class=\"hljs-number\">6</span>\n\n<span class=\"hljs-number\">8</span>\n  <span class=\"hljs-number\">9</span>\n<span class=\"hljs-number\">10</span>\n</code></pre><p>The roots spanning all the above leafs are 3 an 9. Throughout this document we&#39;ll use following tree terminology:</p>\n<ul>\n<li><code>parent</code> - a node that has two children (odd numbered)</li>\n<li><code>leaf</code> - a node with no children (even numbered)</li>\n<li><code>sibling</code> - the other node with whom a node has a mutual parent</li>\n<li><code>uncle</code> - a parent&#39;s sibling</li>\n</ul>\n<h2 id=\"merkle-trees\">Merkle Trees</h2>\n<p>A merkle tree is a binary tree where every leaf is a hash of a data block and every parent is the hash of both of its children.</p>\n<p>Merkle trees are useful for ensuring the integrity of content.</p>\n<p>Let&#39;s look at an example. Assume we have 4 data blocks, <code>(a, b, c, d)</code> and let <code>h(x)</code> be a hash function (the hyperdrive stack uses sha256 per default).</p>\n<p>Using flat-tree notation the merkle tree spanning these data blocks looks like this:</p>\n<pre><code><span class=\"hljs-number\">0</span> = h(a)\n  <span class=\"hljs-number\">1</span> = h(<span class=\"hljs-number\">0</span> + <span class=\"hljs-number\">2</span>)\n<span class=\"hljs-number\">2</span> = h(b)\n    <span class=\"hljs-number\">3</span> = h(<span class=\"hljs-number\">1</span> + <span class=\"hljs-number\">5</span>)\n<span class=\"hljs-number\">4</span> = h(c)\n  <span class=\"hljs-number\">5</span> = h(<span class=\"hljs-number\">4</span> + <span class=\"hljs-number\">6</span>)\n<span class=\"hljs-number\">6</span> = h(d)\n</code></pre><p>An interesting property of merkle trees is that the node 3 hashes the entire data set. Therefore we only need to trust node 3 to verify all data. However as we learned above there will only be a single root if there is a power of two data blocks.</p>\n<p>Again lets expand our data set to contain 6 items <code>(a, b, c, d, e, f)</code>:</p>\n<pre><code><span class=\"hljs-number\">0</span> = h(a)\n  <span class=\"hljs-number\">1</span> = h(<span class=\"hljs-number\">0</span> + <span class=\"hljs-number\">2</span>)\n<span class=\"hljs-number\">2</span> = h(b)\n    <span class=\"hljs-number\">3</span> = h(<span class=\"hljs-number\">1</span> + <span class=\"hljs-number\">5</span>)\n<span class=\"hljs-number\">4</span> = h(c)\n  <span class=\"hljs-number\">5</span> = h(<span class=\"hljs-number\">4</span> + <span class=\"hljs-number\">6</span>)\n<span class=\"hljs-number\">6</span> = h(d)\n\n<span class=\"hljs-number\">8</span> = h(e)\n  <span class=\"hljs-number\">9</span> = h(<span class=\"hljs-number\">8</span> + <span class=\"hljs-number\">10</span>)\n<span class=\"hljs-number\">10</span> = h(f)\n</code></pre><p>To ensure always have only a single root we&#39;ll simply hash all the roots together again. At most there will be <code>log2(number of data blocks)</code>.</p>\n<p>In addition to hashing the roots we&#39;ll also include a bin endian uint64 binary representation of the corresponding node index.</p>\n<p>Using the two above examples the final hashes would be:</p>\n<pre><code>hash1 = h(<span class=\"hljs-name\">uint64be</span>(<span class=\"hljs-name\">#3</span>) + <span class=\"hljs-number\">3</span>)\nhash2 = h(<span class=\"hljs-name\">uint64be</span>(<span class=\"hljs-name\">#9</span>) + <span class=\"hljs-number\">9</span> + uint64be(<span class=\"hljs-name\">#3</span>) + <span class=\"hljs-number\">3</span>)\n</code></pre><p>Each of these hashes can be used to fully verify each of the trees. Let&#39;s look at another example. Assume we trust <code>hash1</code> and another person wants to send block <code>0</code> to us. To verify block <code>0</code> the other person would also have to send the sibling hash and uncles until it reaches a root and the other missing root hashes. For the first tree that would mean hashes <code>(2, 5)</code>.</p>\n<p>Using these hashes we can reproduce <code>hash1</code> in the following way:</p>\n<pre><code><span class=\"hljs-number\">0</span> = h(block received)\n  <span class=\"hljs-number\">1</span> = h(<span class=\"hljs-number\">0</span> + <span class=\"hljs-number\">2</span>)\n<span class=\"hljs-number\">2</span> = (hash received)\n    <span class=\"hljs-number\">3</span> = h(<span class=\"hljs-number\">1</span> + <span class=\"hljs-number\">5</span>)\n  <span class=\"hljs-number\">5</span> = (hash received)\n</code></pre><p>If <code>h(uint64be(#3) + 3) == hash1</code> then we know that data we received from the other person is correct. They sent us <code>a</code> and the corresponding hashes.</p>\n<p>Since we only need uncle hashes to verify the block the amount of hashes we need is at worst <code>log2(number-of-blocks)</code> and the roots of the merkle trees which has the same complexity.</p>\n<p>A merkle tree generator is available on npm through the <a href=\"https://github.com/mafintosh/merkle-tree-stream\">merkle-tree-stream</a> module.</p>\n<h2 id=\"merkle-tree-deduplication\">Merkle Tree Deduplication</h2>\n<p>Merkle trees have another great property. They make it easy to deduplicate content that is similar.</p>\n<p>Assume we have two similar datasets:</p>\n<pre><code>(<span class=\"hljs-selector-tag\">a</span>, <span class=\"hljs-selector-tag\">b</span>, c, d, e)\n(<span class=\"hljs-selector-tag\">a</span>, <span class=\"hljs-selector-tag\">b</span>, c, d, f)\n</code></pre><p>These two datasets are the same except their last element is different. When generating merkle trees for the two data sets you&#39;d get two different root hashes out.</p>\n<p>However if we look a the flat-tree notation for the two trees:</p>\n<pre><code><span class=\"hljs-number\">0</span>\n  <span class=\"hljs-number\">1</span>\n<span class=\"hljs-number\">2</span>\n    <span class=\"hljs-number\">3</span>\n<span class=\"hljs-number\">4</span>\n  <span class=\"hljs-number\">5</span>\n<span class=\"hljs-number\">6</span>\n\n<span class=\"hljs-number\">8</span>\n</code></pre><p>We&#39;ll notice that the hash stored at 3 will be the same for both trees since the first four blocks are the same. Since we also send uncle hashes when sending a block of data we&#39;ll receive the hash for 3 when we request any block. If we maintain a simple index that maps a hash into the range of data it covers we can detect that we already have the data spanning 3 and we won&#39;t need to re-download that from another person.</p>\n<pre><code><span class=\"hljs-symbol\">1 </span>-&gt; (a, b)\n<span class=\"hljs-symbol\">3 </span>-&gt; (a, b, c, d)\n<span class=\"hljs-symbol\">5 </span>-&gt; (c, d)\n</code></pre><p>This means that two datasets share a similar sequence of data the merkle tree helps you detect that.</p>\n<h2 id=\"signed-merkle-trees\">Signed Merkle Trees</h2>\n<p>As described above the top hash of a merkle tree is the hash of all its content. This has both advantages and disadvanteges.</p>\n<p>An advantage is that you can always reproduce a merkle tree simply by having the data contents of a merkle tree.</p>\n<p>A disadvantage is every time you add content to your data set your merkle tree hash changes and you&#39;ll need to re-distribute the new hash.</p>\n<p>Using a bit of cryptography however we can make our merkle tree appendable. First generate a cryptographic key pair that can be used to sign data using <a href=\"https://ed25519.cr.yp.to/\">ed25519</a> keys, as they are compact in size (32 byte public keys). A key pair (public key, secret key) can be used to sign data. Signing data means that if you trust a public key and you receive data and a signature for that data you can verify that a signature was generated with the corresponding secret key.</p>\n<p>How does this relate to merkle trees? Instead of distributing the hash of a merkle tree we can distribute our public key instead. We then use our secret key to continously sign the merkle trees of our data set every time we append to it.</p>\n<p>Assume we have a data set with only a single item in it <code>(a)</code> and a key pair <code>(secret, public)</code>:</p>\n<pre><code>(<span class=\"hljs-name\">a</span>)\n</code></pre><p>We generate a merkle tree for this data set which will have the roots <code>0</code> and sign the hash of these roots (see the merkle tree section) with our secret key.</p>\n<p>If we want to send <code>a</code> to another person and they trust our public key we simply send <code>a</code> and the uncles needed to generate the roots plus our signature.</p>\n<p>If we append a new item to our data set we simply do the same thing:</p>\n<pre><code>(<span class=\"hljs-name\">a</span>, b)\n</code></pre><p>Notice that all new signatures verify the entire dataset since they all sign a merkle tree that spans all data. This serves two purposes. First of all it makes sure that the dataset publisher cannot change old data. It also ensures that the publisher cannot share different versions of the same dataset to different persons without the other people noticing it (at some point they&#39;ll get a signature for the same node index that has different hashes if they talk to multiple people).</p>\n<p>This technique has the added benefit that you can always convert a signed merkle tree to a normal unsigned one if you wish (or turn an unsigned tree into a signed tree).</p>\n<p>In general you should send as wide as possible signed tree back when using signed merkle trees as that lowers the amount of signatures the other person needs to verify which has a positive performance impact for some platforms. It will also allow other users to more quickly detect if a tree has duplicated content.</p>\n<h2 id=\"block-tree-digest\">Block Tree Digest</h2>\n<p>When asking for a block of data we want to reduce the amount of duplicate hashes that are sent back.</p>\n<p>In the merkle tree example for from earlier we ended up sending two hashes <code>(2, 5)</code> to verify block <code>0</code>.</p>\n<pre><code><span class=\"hljs-comment\">// If we trust 3 then 2 and 5 are needed to verify 0</span>\n\n<span class=\"hljs-number\">0</span>\n  <span class=\"hljs-number\">1</span>\n<span class=\"hljs-number\">2</span>\n    <span class=\"hljs-number\">3</span>\n<span class=\"hljs-number\">4</span>\n  <span class=\"hljs-number\">5</span>\n<span class=\"hljs-number\">6</span>\n</code></pre><p>Now if we ask for block <code>1</code> afterwards (<code>2</code> in flat tree notation) the other person doesn&#39;t need to send us any new hashes since we already received the hash for <code>2</code> when fetching block <code>0</code>.</p>\n<p>If we only use non-signed merkle trees the other person can easily calculate which hashes we already have if we tell them which blocks we&#39;ve got.</p>\n<p>This however isn&#39;t always possible if we use a signed merkle tree since the roots are changing. In general it also useful to be able to communicate that you have some hashes already without disclosing all the blocks you have.</p>\n<p>To communicate which hashes we have just have to communicate two things: which uncles we have and whether or not we have any parent node that can verify the tree.</p>\n<p>Looking at the above tree that means if we want to fetch block <code>0</code> we need to communicate whether of not we already have the uncles <code>(2, 5)</code> and the parent <code>3</code>. This information can be compressed into very small bit vector using the following scheme.</p>\n<p>Let the trailing bit donate whether or not the leading bit is a parent and not a uncle. Let the previous trailing bits denote wheather or not we have the next uncle.</p>\n<p>For example for block <code>0</code> the following bit vector <code>1011</code> is decoded the following way</p>\n<pre><code>// <span class=\"hljs-keyword\">for</span> <span class=\"hljs-keyword\">block</span> <span class=\"hljs-number\">0</span>\n\n<span class=\"hljs-number\">101</span>(<span class=\"hljs-number\">1</span>) &lt;<span class=\"hljs-comment\">-- tell us that the last bit is a parent and not an uncle</span>\n<span class=\"hljs-number\">10</span>(<span class=\"hljs-number\">1</span>)<span class=\"hljs-number\">1</span> &lt;<span class=\"hljs-comment\">-- we already have the first uncle, 2 so don't send us that</span>\n<span class=\"hljs-number\">1</span>(<span class=\"hljs-number\">0</span>)<span class=\"hljs-number\">11</span> &lt;<span class=\"hljs-comment\">-- we don't have the next uncle, 5</span>\n(<span class=\"hljs-number\">1</span>)<span class=\"hljs-number\">000</span> &lt;<span class=\"hljs-comment\">-- the final bit so this is parent. we have the next parent, 3</span>\n</code></pre><p>So using this digest the person can easily figure out that they only need to send us one hash, <code>5</code>, for us to verify block <code>0</code>.</p>\n<p>The bit vector <code>1</code> (only contains a single one) means that we already have all the hashes we need so just send us the block.</p>\n<p>These digests are very compact in size, only <code>(log2(number-of-blocks) + 2) / 8</code> bytes needed in the worst case. For example if you are sharing one trillion blocks of data the digest would be <code>(log2(1000000000000) + 2) / 8 ~= 6</code> bytes long.</p>\n<h3 id=\"bitfield-run-length-encoding\">Bitfield Run length Encoding</h3>\n<p>(talk about rle)</p>\n<h3 id=\"basic-privacy\">Basic Privacy</h3>\n<p>(talk about the privacy features + discovery key here)</p>\n<h2 id=\"hypercore-feeds\">Hypercore Feeds</h2>\n<p>(talk about how we use the above concepts to create a feed of data)</p>\n<h2 id=\"hypercore-replication-protocol\">Hypercore Replication Protocol</h2>\n<p>Lets assume two peers have the identifier for a hypercore feed. This could either be the hash of the merkle tree roots described above or a public key if they want to share a signed merkle tree. The two peers wants to exchange the data verified by this tree. Lets assume the two peers have somehow connected to each other.</p>\n<p>Hypercore uses a message based protocol to exchange data. All messages sent are encoded to binary values using Protocol Buffers. Protocol Buffers are a widely supported schema based encoding support. A Protocol Buffers implementation is available on npm through the <a href=\"https://github.com/mafintosh/protocol-buffers\">protocol-buffers</a> module.</p>\n<p>These are the types of messages the peers send to each other</p>\n<h4 id=\"open\">Open</h4>\n<p>This should be the first message sent and is also the only message without a type. It looks like this</p>\n<pre><code class=\"lang-protobuf\"><span class=\"hljs-class\"><span class=\"hljs-keyword\">message</span> <span class=\"hljs-title\">Open</span> </span>{\n  <span class=\"hljs-keyword\">required</span> <span class=\"hljs-built_in\">bytes</span> feed = <span class=\"hljs-number\">1</span>;\n  <span class=\"hljs-keyword\">required</span> <span class=\"hljs-built_in\">bytes</span> nonce = <span class=\"hljs-number\">2</span>;\n}\n</code></pre>\n<p>The <code>feed</code> should be set to the discovery key of the Merkle Tree as specified above. The <code>nonce</code> should be set to 24 bytes of high entropy random data. When running in encrypted mode this is the only message sent unencrypted.</p>\n<p>When you are done using a channel send an empty message to indicate end-of-channel.</p>\n<h4 id=\"-0-handshake\"><code>0</code> Handshake</h4>\n<p>The message contains the protocol handshake. It has type <code>0</code>.</p>\n<pre><code class=\"lang-protobuf\"><span class=\"hljs-class\"><span class=\"hljs-keyword\">message</span> <span class=\"hljs-title\">Handshake</span> </span>{\n  <span class=\"hljs-keyword\">required</span> <span class=\"hljs-built_in\">bytes</span> id = <span class=\"hljs-number\">1</span>;\n  <span class=\"hljs-keyword\">repeated</span> <span class=\"hljs-built_in\">string</span> extensions = <span class=\"hljs-number\">2</span>;\n}\n</code></pre>\n<p>You should send this message after sending an open message. By sending it after an open message it will be encrypted and we wont expose our peer id to a third party. The current protocol version is 0.</p>\n<h4 id=\"-1-have\"><code>1</code> Have</h4>\n<p>You can send a have message to give the other peer information about which blocks of data you have. It has type <code>1</code>.</p>\n<pre><code class=\"lang-protobuf\"><span class=\"hljs-class\"><span class=\"hljs-keyword\">message</span> <span class=\"hljs-title\">Have</span> </span>{\n  <span class=\"hljs-keyword\">required</span> <span class=\"hljs-built_in\">uint64</span> start = <span class=\"hljs-number\">1</span>;\n  <span class=\"hljs-keyword\">optional</span> <span class=\"hljs-built_in\">uint64</span> end = <span class=\"hljs-number\">2</span>;\n  <span class=\"hljs-keyword\">optional</span> <span class=\"hljs-built_in\">bytes</span> bitfield = <span class=\"hljs-number\">3</span>;\n}\n</code></pre>\n<p>If using a bitfield it should be encoded using a run length encoding described above. It is a good idea to send a have message soon as possible if you have blocks to share to reduce latency.</p>\n<h4 id=\"-2-want\"><code>2</code> Want</h4>\n<p>You can send a have message to give the other peer information about which blocks of data you want to have. It has type <code>2</code>.</p>\n<pre><code class=\"lang-protobuf\"><span class=\"hljs-class\"><span class=\"hljs-keyword\">message</span> <span class=\"hljs-title\">Want</span> </span>{\n  <span class=\"hljs-keyword\">required</span> <span class=\"hljs-built_in\">uint64</span> start = <span class=\"hljs-number\">1</span>;\n  <span class=\"hljs-keyword\">optional</span> <span class=\"hljs-built_in\">uint64</span> end = <span class=\"hljs-number\">2</span>;\n}\n</code></pre>\n<p>You should only send the want message if you are interested in a section of the feed that the other peer has not told you about.</p>\n<h4 id=\"-3-request\"><code>3</code> Request</h4>\n<p>Send this message to request a block of data. You can request a block by block index or byte offset. If you are only interested\nin the hash of a block you can set the hash property to true. The nodes property can be set to a tree digest of the tree nodes you already\nhave for this block or byte range. A request message has type <code>3</code>.</p>\n<pre><code class=\"lang-protobuf\"><span class=\"hljs-class\"><span class=\"hljs-keyword\">message</span> <span class=\"hljs-title\">Request</span> </span>{\n  <span class=\"hljs-keyword\">optional</span> <span class=\"hljs-built_in\">uint64</span> block = <span class=\"hljs-number\">1</span>;\n  <span class=\"hljs-keyword\">optional</span> <span class=\"hljs-built_in\">uint64</span> <span class=\"hljs-built_in\">bytes</span> = <span class=\"hljs-number\">2</span>;\n  <span class=\"hljs-keyword\">optional</span> <span class=\"hljs-built_in\">bool</span> hash = <span class=\"hljs-number\">3</span>;\n  <span class=\"hljs-keyword\">optional</span> <span class=\"hljs-built_in\">uint64</span> nodes = <span class=\"hljs-number\">4</span>;\n}\n</code></pre>\n<h4 id=\"-4-data\"><code>4</code> Data</h4>\n<p>Send a block of data to the other peer. You can use this message to reply to a request or optimistically send other blocks of data to the other client. It has type <code>4</code>.</p>\n<pre><code class=\"lang-protobuf\"><span class=\"hljs-class\"><span class=\"hljs-keyword\">message</span> <span class=\"hljs-title\">Data</span> </span>{\n  <span class=\"hljs-class\"><span class=\"hljs-keyword\">message</span> <span class=\"hljs-title\">Node</span> </span>{\n    <span class=\"hljs-keyword\">required</span> <span class=\"hljs-built_in\">uint64</span> index = <span class=\"hljs-number\">1</span>;\n    <span class=\"hljs-keyword\">required</span> <span class=\"hljs-built_in\">uint64</span> size = <span class=\"hljs-number\">2</span>;\n    <span class=\"hljs-keyword\">required</span> <span class=\"hljs-built_in\">bytes</span> hash = <span class=\"hljs-number\">3</span>;\n  }\n\n  <span class=\"hljs-keyword\">required</span> <span class=\"hljs-built_in\">uint64</span> block = <span class=\"hljs-number\">1</span>;\n  <span class=\"hljs-keyword\">optional</span> <span class=\"hljs-built_in\">bytes</span> value = <span class=\"hljs-number\">2</span>;\n  <span class=\"hljs-keyword\">repeated</span> Node nodes = <span class=\"hljs-number\">3</span>;\n  <span class=\"hljs-keyword\">optional</span> <span class=\"hljs-built_in\">bytes</span> signature = <span class=\"hljs-number\">4</span>;\n}\n`\n</code></pre>\n<h4 id=\"-5-cancel\"><code>5</code> Cancel</h4>\n<p>Cancel a previous sent request. It has type <code>5</code>.</p>\n<pre><code class=\"lang-protobuf\"><span class=\"hljs-class\"><span class=\"hljs-keyword\">message</span> <span class=\"hljs-title\">Cancel</span> </span>{\n  <span class=\"hljs-keyword\">optional</span> <span class=\"hljs-built_in\">uint64</span> block = <span class=\"hljs-number\">1</span>;\n  <span class=\"hljs-keyword\">optional</span> <span class=\"hljs-built_in\">uint64</span> <span class=\"hljs-built_in\">bytes</span> = <span class=\"hljs-number\">2</span>;\n}\n</code></pre>\n<h4 id=\"-6-pause\"><code>6</code> Pause</h4>\n<p>An empty message that tells the other peer that they should stop requesting new blocks of data. It has type <code>6</code>.</p>\n<h4 id=\"-7-resume\"><code>7</code> Resume</h4>\n<p>An empty message that tells the other peer that they can continue requesting new blocks of data. It has type <code>7</code>.</p>\n","sleep":"<h1 id=\"sleep-data-format\">SLEEP Data Format</h1>\n<h3 id=\"syncable-lightweight-event-emitting-persistence\">Syncable Lightweight Event Emitting Persistence</h3>\n<h3 id=\"version-2-0\">Version 2.0</h3>\n<p>SLEEP is a metadata format that allows a set of files to be accessed randomly, cryptographically verified, and dynamically updated. A SLEEP file contains content addressed file metadata in a representation specifically designed to allow partial streaming access to individual chunks of data. SLEEP files can be shared as a single downloadable file for easy distribution and we also specify a way to expose SLEEP over REST.</p>\n<p>The SLEEP format can be used in a similar way to how MD5 checksums are used over HTTP today, to verify the integrity of data downloads. Whereas MD5 or SHA are usually checksums of the whole data set, meaning consumers have to download the entire all available data before they are able to verify the integrity of any of it, SLEEP allows a set of data to be split in to many small pieces, each one getting it&#39;s own cryptographically secure checksum. This allows consumers to download subsets metadata and data, in whatever order they prefer, but allowing them to verify the integrity of each piece of data as it is accessed. It also includes cryptographic signatures allowing users to verify that data they received was created using a holder of a specific private key.</p>\n<h2 id=\"registers\">Registers</h2>\n<p>SLEEP is designed around the concept of a register, an append only list that you can trust. The contents of a register are cryptographically fingerprinted and an aggregate checksum can be used to verify the contents of the register have not been tampered with. There are various ways to calculate these aggregate checksums but the data in a register is a binary append only feed, e.g. an list of buffers that can only be updated by placing new buffers at the end of the list.</p>\n<p>SLEEP also provides an index that allows each piece of data in a register to be accessed randomly. In order to look up a specific piece of data in the register, you only need a small subset of the metadata in order to find it, making SLEEP suitable for live streaming or sparse download use cases.</p>\n<p>The register index is a Merkle tree where the leaf nodes are the hashes of the buffers in the register, and the rest of the nodes in the tree are derived Merkle hashes. A Merkle tree is defined as a tree where leaf nodes are a hash of some piece of data, and the rest of the nodes are the result of a hash of the concatenation of that nodes children.</p>\n<p>So, given a register with four values:</p>\n<pre><code><span class=\"hljs-bullet\">1. </span>a\n<span class=\"hljs-bullet\">2. </span>b\n<span class=\"hljs-bullet\">3. </span>c\n<span class=\"hljs-bullet\">4. </span>d\n</code></pre><p>To construct the register itself you concatenate all buffers, in this case resulting in &#39;abcd&#39;.</p>\n<p>The register index is constructed by creating a Merkle tree where the leaf nodes are the hash of our four values, and the rest of the nodes are the hash of the nodes two children hashes concatenated together.</p>\n<pre><code>hash(<span class=\"hljs-name\">a</span>)\n      &gt; hash(<span class=\"hljs-name\">hash</span>(<span class=\"hljs-name\">a</span>) + hash(<span class=\"hljs-name\">b</span>))\nhash(<span class=\"hljs-name\">b</span>)\n              &gt; hash(<span class=\"hljs-name\">hash</span>(<span class=\"hljs-name\">hash</span>(<span class=\"hljs-name\">a</span>) + hash(<span class=\"hljs-name\">b</span>)) + hash(<span class=\"hljs-name\">hash</span>(<span class=\"hljs-name\">c</span>) + hash(<span class=\"hljs-name\">d</span>)))\nhash(<span class=\"hljs-name\">c</span>)\n      &gt; hash(<span class=\"hljs-name\">hash</span>(<span class=\"hljs-name\">c</span>) + hash(<span class=\"hljs-name\">d</span>))\nhash(<span class=\"hljs-name\">d</span>)\n</code></pre><p>To be able to refer to a specific node in the tree we use an in-order node traversal to assign integers to the nodes:</p>\n<pre><code><span class=\"hljs-number\">0</span>\n  <span class=\"hljs-number\">1</span>\n<span class=\"hljs-number\">2</span>\n    <span class=\"hljs-number\">3</span>\n<span class=\"hljs-number\">4</span>\n  <span class=\"hljs-number\">5</span>\n<span class=\"hljs-number\">6</span>\n</code></pre><p>In-order node numbering has the property with our trees that leaf nodes are always even and non-leaf nodes are always odd. This can be used as a quick way to identify whether a node is a leaf or not.</p>\n<p>Every serialized node in the tree is one of two fixed widths, leaf nodes are all the same size and non-leaf nodes are the same size. When serializing the tree you simply write the nodes in order and concatenate them. Then to access a node by its in-order position you simply multiply the node length by the position to get the byte offset.</p>\n<p>All leaf nodes contain these two pieces of information:</p>\n<ul>\n<li>The sha256 hash of the data described by this node</li>\n<li>The absolute byte offset to the end of the region of data described by the node</li>\n</ul>\n<p>All non-leaf nodes contain these three pieces of information:</p>\n<ul>\n<li>The sha256 hash of the concatenation of the two children hashes</li>\n<li>The cryptographic signature of the hash</li>\n<li>The span of bytes that the the nodes children cover</li>\n</ul>\n<p>When initializing a register an asymmetric Ed25519 keypair is derived. The private key is never shared. The public key is used as the URL for the register. When signing hashes in the tree the public key is used to generate an EdDSA signature. For the example register above, &#39;abcd&#39;, the register index (in JSON) would be:</p>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> keys = {\n  public: <span class=\"hljs-string\">'cc0cf6eeb82ca946ca60265ce0863fb2b3e3075ae25cba14d162ef20e3f9f223'</span>,\n  private: <span class=\"hljs-string\">'87399f90815db81e687efe4fd9fc60af336f4d9ae560fda106f94cb7a92a8804cc0cf6eeb82ca946ca60265ce0863fb2b3e3075ae25cba14d162ef20e3f9f223'</span>\n}\n\n<span class=\"hljs-keyword\">var</span> index = {\n  <span class=\"hljs-comment\">// sha256 of children[0].hash + children[1].hash</span>\n  hash: <span class=\"hljs-string\">'0440c655d63fec5c02cffd5d9b42d146aca03b255102b9b44b51c6a919b31351'</span>,\n  signature: <span class=\"hljs-string\">'1713dfbaf4a7f288003394b72ec486aa4fa1a837aa0b08662b3a14b63381b84c2e6965e2638fb5375ae2e92b47c2ab8718ec1914778518fcb3c0563eb2c09604'</span>,\n  span: <span class=\"hljs-number\">4</span>,\n  children: [\n    {\n      <span class=\"hljs-comment\">// echo -n \"$(echo -n \"a\" | shasum -a 256)$(echo -n \"b\" | shasum -a 256)\" | shasum -a 256</span>\n      hash: <span class=\"hljs-string\">'9ad4d5608a7a40db60c35f255fad821b762a82de168b4f4ed477d5d899b11796'</span>,\n      signature: <span class=\"hljs-string\">'2714b99e305ce46aa6d24eb2888cf0cbde33ad4a8bcd08705b59882837bf1e482f8dcab2ae94c2359914b1fe92831bfc73af99f1c6b1f5eba47efc4efa32de0d'</span>,\n      span: <span class=\"hljs-number\">2</span>,\n      children: [\n        {\n          <span class=\"hljs-comment\">// echo -n \"a\" | shasum -a 256</span>\n          hash: <span class=\"hljs-string\">'ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb'</span>,\n          endByte: <span class=\"hljs-number\">1</span>\n        },\n        {\n          <span class=\"hljs-comment\">// echo -n \"b\" | shasum -a 256</span>\n          hash: <span class=\"hljs-string\">'3e23e8160039594a33894f6564e1b1348bbd7a0088d42c4acb73eeaed59c009d'</span>,\n          endByte: <span class=\"hljs-number\">2</span>\n        }\n      ]\n    },\n    {\n      <span class=\"hljs-comment\">// echo -n \"$(echo -n \"c\" | shasum -a 256)$(echo -n \"d\" | shasum -a 256)\" | shasum -a 256</span>\n      hash: <span class=\"hljs-string\">'09114d1a8a78b5d091e492c524ad7f8e941f403db0a6d3d52d36f17b9a86ce1c'</span>,\n      signature: <span class=\"hljs-string\">'6ac5e25206f69f22612e9b58c14f9ae6738233a57ab7f6e10c1384c4e074f6c8c606edbd95a9c099a0120947866079e3d13ef66dd7d5ed1756a89a5e9032a20d'</span>,\n      span: <span class=\"hljs-number\">2</span>,\n      children: [\n        {\n          <span class=\"hljs-comment\">// echo -n \"c\" | shasum -a 256</span>\n          hash: <span class=\"hljs-string\">'2e7d2c03a9507ae265ecf5b5356885a53393a2029d241394997265a1a25aefc6'</span>,\n          endByte: <span class=\"hljs-number\">3</span>\n        },\n        {\n          <span class=\"hljs-comment\">// echo -n \"d\" | shasum -a 256</span>\n          hash: <span class=\"hljs-string\">'18ac3e7343f016890c510e93f935261169d9e3f565436429830faf0934f4f8e4'</span>,\n          endByte: <span class=\"hljs-number\">4</span>\n        }\n      ]\n    }\n  ]\n}\n</code></pre>\n<p>The above representation of the tree is in JSON. However due to the properties of the in-order node indexes we can represent the same data in a flat index while still allowing traversals.</p>\n<h1 id=\"file-format\">File format</h1>\n<p>SLEEP files should be named <code>sleep.dat</code> and have the following format:</p>\n<pre><code>&lt;<span class=\"hljs-keyword\">Header</span>&gt;&lt;Register Index<span class=\"hljs-attr\">...</span>&gt;&lt;Register <span class=\"hljs-built_in\">Data</span><span class=\"hljs-attr\">...</span>&gt;\n</code></pre><p>The format is a header followed by the register index. Order of the index is determined by an in-order node traversal. After the register index, the actual register entry data follows. The header length is variable width, prefixed with a varint. The Register Index is composed of fixed width metadata entries. The Register Data is composed of concatenated non-fixed width data pieces.</p>\n<h3 id=\"header-format\">Header format</h3>\n<pre><code><span class=\"hljs-section\">&lt;varint header-length&gt;</span><span class=\"hljs-section\">&lt;header protobuf&gt;</span>\n</code></pre><p>The header protobuf has this schema:</p>\n<pre><code class=\"lang-protobuf\"><span class=\"hljs-class\"><span class=\"hljs-keyword\">message</span> <span class=\"hljs-title\">Header</span> </span>{\n  <span class=\"hljs-keyword\">required</span> <span class=\"hljs-built_in\">bytes</span> datLink = <span class=\"hljs-number\">1</span>;\n  <span class=\"hljs-keyword\">required</span> <span class=\"hljs-built_in\">uint64</span> entryCount = <span class=\"hljs-number\">2</span>;\n  <span class=\"hljs-keyword\">optional</span> <span class=\"hljs-built_in\">bool</span> isSigned = <span class=\"hljs-number\">3</span>;\n  <span class=\"hljs-keyword\">optional</span> <span class=\"hljs-built_in\">string</span> hashType = <span class=\"hljs-number\">4</span> [default = <span class=\"hljs-string\">\"sha256\"</span>];\n  <span class=\"hljs-keyword\">optional</span> <span class=\"hljs-built_in\">uint32</span> hashLength = <span class=\"hljs-number\">5</span> [default = <span class=\"hljs-number\">32</span>];\n  <span class=\"hljs-keyword\">optional</span> <span class=\"hljs-built_in\">string</span> signatureType = <span class=\"hljs-number\">6</span> [default = <span class=\"hljs-string\">\"ed25519\"</span>];\n  <span class=\"hljs-keyword\">optional</span> <span class=\"hljs-built_in\">uint32</span> signatureLength = <span class=\"hljs-number\">7</span> [default = <span class=\"hljs-number\">64</span>];\n}\n</code></pre>\n<h3 id=\"register-index-format\">Register Index format</h3>\n<p>For non-signed even (leaf) nodes:</p>\n<pre><code><span class=\"hljs-section\">&lt;8-byte-span-length&gt;</span><span class=\"hljs-section\">&lt;data-hash&gt;</span>\n</code></pre><p>The 8-byte-span-length is an unsigned big endian 64 bit integer that should be number of cumulative bytes encompassed by all of the leaf nodes underneath the current node.</p>\n<p>For signed even (leaf) nodes:</p>\n<pre><code><span class=\"hljs-section\">&lt;8-byte-span-length&gt;</span><span class=\"hljs-section\">&lt;data-hash-signature&gt;</span><span class=\"hljs-section\">&lt;data-hash&gt;</span>\n</code></pre><p>For odd (non-leaf) nodes:</p>\n<pre><code>&lt;<span class=\"hljs-number\">8</span>-<span class=\"hljs-keyword\">byte</span>-<span class=\"hljs-keyword\">end</span>-<span class=\"hljs-built_in\">offset</span>&gt;&lt;data-hash&gt;\n</code></pre><p>The 8-byte-end-offset is an unsigned big endian 64 bit integer that should be the absolute position in the file for the <strong>end</strong> of the piece data described by this node.</p>\n<h3 id=\"register-data\">Register Data</h3>\n<p>The last section of the file is the actual data pieces, unmodified and concatenated together in sequential order.</p>\n<p>For the example tree above, the Register Data section would simply be <code>abcd</code>.</p>\n<h2 id=\"example\">Example</h2>\n<p>Given a tree like this you might want to look up in a <code>meta.dat</code> file the metadata for a specific node:</p>\n<pre><code><span class=\"hljs-number\">0</span>─┐  \n  <span class=\"hljs-number\">1</span>─┐\n<span class=\"hljs-number\">2</span>─┘ │\n    <span class=\"hljs-number\">3</span>\n<span class=\"hljs-number\">4</span>─┐ │\n  <span class=\"hljs-number\">5</span>─┘\n<span class=\"hljs-number\">6</span>─┘\n</code></pre><p>If you wanted to look up the metadata for 3, you could read the third (or any!) entry from sleep.dat:</p>\n<p>First you have to read the varint at the beginning of the file so you know how big the header is:</p>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> varint = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'varint'</span>) <span class=\"hljs-comment\">// https://github.com/chrisdickinson/varint</span>\n<span class=\"hljs-keyword\">var</span> headerLength = varint.decode(firstChunkOfFile)\n</code></pre>\n<p>Now you can read the header from the file</p>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> headerOffset = varint.encodingLength(headerLength)\n<span class=\"hljs-keyword\">var</span> headerEndOffset = headerOffset + headerLength\n<span class=\"hljs-keyword\">var</span> headerBytes = firstChunkOfFile.slice(headerOffset, headerEndOffset)\n</code></pre>\n<p>To decode the header use the protobuf schema. We can use the <a href=\"https://github.com/mafintosh/protocol-buffers\">protocol-buffers</a> module to do that.</p>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> messages = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'protocol-buffers'</span>)(fs.readFileSync(<span class=\"hljs-string\">'meta.dat.proto'</span>))\n<span class=\"hljs-keyword\">var</span> header = messages.Header.decode(headerBytes)\n</code></pre>\n<p>Now we have all the configuration required to calculate an entry offset.</p>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> entryNumber = <span class=\"hljs-number\">42</span>\n<span class=\"hljs-keyword\">var</span> entryOffset = headerEndOffset + entryNumber * (<span class=\"hljs-number\">8</span> + header.hashLength)\n</code></pre>\n<p>If you have a signed feed, you have to take into account the extra space required for the signatures in the even nodes.</p>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> entryOffset = headerLength + entryNumber * (<span class=\"hljs-number\">8</span> + header.hashLength)\n                  + <span class=\"hljs-built_in\">Math</span>.floor(entryNumber / <span class=\"hljs-number\">2</span>) * header.signatureLength\n</code></pre>\n","api":"<h2 id=\"1-0-architecture-design\">1.0 Architecture Design</h2>\n<ul>\n<li>dat: command-line api</li>\n<li>dat-desk: desktop application</li>\n<li>hyperdrive: storage layer</li>\n<li>discovery-swarm: dat network swarm discovery mechanism</li>\n</ul>\n<h2 id=\"dat\">dat</h2>\n<p>Command-line interface for dat</p>\n<h4 id=\"-dat-share-dir-\"><code>dat share DIR</code></h4>\n<p>Create a new dat link for the contents of the given directory. Prints a URL, which is a unique public key feed. This public key feed can be appended to. </p>\n<h6 id=\"options\">Options</h6>\n<ul>\n<li><code>--append=URL</code>: Adds the new URL to the public key feed.</li>\n<li><code>--static</code>: Ensures that the URL cannot be appended to.</li>\n</ul>\n<h4 id=\"-dat-url-dir-\"><code>dat URL DIR</code></h4>\n<p>Downloads the link to the given directory, and then exits. </p>\n<h6 id=\"options\">Options</h6>\n<ul>\n<li><code>--seed</code>: Downloads the link to the given directory and opens up a server that seeds it to the dat peer network.</li>\n<li><code>--list</code>: Fetches the metadata for the link and prints out the file list in the console.</li>\n</ul>\n","diy-dat":"<h1 id=\"diy-dat\">DIY Dat</h1>\n<p>This document shows how to write your own compatible <code>dat</code> client using node modules.</p>\n<p>The three essential node modules are called <a href=\"https://npmjs.org/hyperdrive\">hyperdrive</a>, <a href=\"https://npmjs.org/hyperdrive-archive-swarm\">hyperdrive-archive-swarm</a> and <a href=\"https://npmjs.org/level\">level</a>. Hyperdrive does file synchronization and versioning, hyperdrive-archive-swarm does peer discovery over local networks and the Internet, and level provides a local LevelDB for storing metadata. More details are available in <a href=\"how-dat-works.md\">How Dat Works</a>. The <a href=\"https://npmjs.org/dat\">dat</a> module itself is just some code that combines these modules and wraps them in a command-line API.</p>\n<p>Here&#39;s the minimal code needed to download data from a dat:</p>\n<pre><code class=\"lang-js\"><span class=\"hljs-comment\">// run this like: node thisfile.js 4c325f7874b4070blahblahetc</span>\n<span class=\"hljs-comment\">// the dat link someone sent us, we want to download the data from it</span>\n<span class=\"hljs-keyword\">var</span> link = <span class=\"hljs-keyword\">new</span> Buffer(process.argv[<span class=\"hljs-number\">2</span>], <span class=\"hljs-string\">'hex'</span>)\n\n<span class=\"hljs-keyword\">var</span> Hyperdrive = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'hyperdrive'</span>)\n<span class=\"hljs-keyword\">var</span> Swarm = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'hyperdrive-archive-swarm'</span>)\n<span class=\"hljs-keyword\">var</span> level = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'level'</span>)\n<span class=\"hljs-keyword\">var</span> raf = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'random-access-file'</span>)\n<span class=\"hljs-keyword\">var</span> each = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'stream-each'</span>)\n\n<span class=\"hljs-keyword\">var</span> db = level(<span class=\"hljs-string\">'./dat.db'</span>)\n<span class=\"hljs-keyword\">var</span> drive = Hyperdrive(db)\n<span class=\"hljs-keyword\">var</span> archive = drive.createArchive(link, {\n  file: <span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\">name</span>) </span>{\n    <span class=\"hljs-keyword\">return</span> raf(path.join(self.dir, name))\n  }\n})\n<span class=\"hljs-keyword\">var</span> swarm = Swarm(archive)\n\narchive.open(<span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\">err</span>) </span>{\n  <span class=\"hljs-keyword\">if</span> (err) <span class=\"hljs-keyword\">return</span> <span class=\"hljs-built_in\">console</span>.error(err)\n  each(archive.list({live: archive.live}), <span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\">data, next</span>) </span>{\n    <span class=\"hljs-keyword\">var</span> startBytes = self.stats.bytesDown\n    archive.download(data, <span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\">err</span>) </span>{\n      <span class=\"hljs-keyword\">if</span> (err) <span class=\"hljs-keyword\">return</span> <span class=\"hljs-built_in\">console</span>.error(err)\n      <span class=\"hljs-built_in\">console</span>.log(<span class=\"hljs-string\">'file downloaded'</span>, data.relname)\n      next()\n    })\n  }, done)\n})\n</code></pre>\n","ecosystem":"<p>If you want to go deeper and see the implementations we are using in the <a href=\"https://github.com/maxogden/dat\">Dat command-line tool</a>, here you go:</p>\n<ul>\n<li><a href=\"https://www.npmjs.com/package/dat\">dat</a> - the main command line tool that uses all of the below</li>\n<li><a href=\"https://www.npmjs.com/package/discovery-channel\">discovery-channel</a> - discover data sources</li>\n<li><a href=\"https://www.npmjs.com/package/discovery-swarm\">discovery-swarm</a> - discover and connect to sources</li>\n<li><a href=\"https://www.npmjs.com/package/hyperdrive\">hyperdrive</a> - The file sharing network dat uses to distribute files and data. A technical specification / discussion on how hyperdrive works is <a href=\"https://github.com/mafintosh/hyperdrive/blob/master/SPECIFICATION.md\">available here</a></li>\n<li><a href=\"https://www.npmjs.com/package/hypercore\">hypercore</a> - exchange low-level binary blocks with many sources</li>\n<li><a href=\"https://www.npmjs.com/package/bittorrent-dht\">bittorrent-dht</a> - use the Kademlia Mainline DHT to discover sources</li>\n<li><a href=\"https://www.npmjs.com/package/dns-discovery\">dns-discovery</a> - use DNS name servers and Multicast DNS to discover sources</li>\n<li><a href=\"https://www.npmjs.com/package/utp-native\">utp-native</a> - UTP protocol implementation</li>\n<li><a href=\"https://www.npmjs.com/package/rabin\">rabin</a> - Rabin fingerprinter stream</li>\n<li><a href=\"https://www.npmjs.com/package/merkle-tree-stream\">merkle-tree-stream</a> - Used to construct Merkle trees from chunks</li>\n</ul>\n","dat":"<h1 id=\"dat\">dat</h1>\n<p>Dat is a decentralized data tool for distributing data small and large.</p>\n<p><a href=\"http://webchat.freenode.net/?channels=dat\"><img src=\"https://img.shields.io/badge/irc%20channel-%23dat%20on%20freenode-blue.svg\" alt=\"#dat IRC channel on freenode\"></a>\n<a href=\"https://gitter.im/datproject/discussions?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge\"><img src=\"https://badges.gitter.im/Join%20Chat.svg\" alt=\"datproject/discussions\"></a>\n<a href=\"http://docs.dat-data.com\"><img src=\"https://readthedocs.org/projects/dat-cli/badge/?version=latest\" alt=\"docs\"></a></p>\n<table>\n<thead>\n<tr>\n<th>Windows</th>\n<th>Mac/Linux</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><a href=\"https://ci.appveyor.com/project/maxogden/dat\"><img src=\"https://ci.appveyor.com/api/projects/status/github/maxogden/dat?branch=master&amp;svg=true\" alt=\"Build status\"></a></td>\n<td><a href=\"https://travis-ci.org/maxogden/dat\"><img src=\"https://api.travis-ci.org/maxogden/dat.svg\" alt=\"Travis\"></a></td>\n</tr>\n</tbody>\n</table>\n<h2 id=\"about-dat\">About Dat</h2>\n<p>Documentation for the Dat project is available at <a href=\"http://docs.dat-data.com\">docs.dat-data.com</a>.</p>\n<h3 id=\"key-features-\">Key features:</h3>\n<ul>\n<li><strong>Live sync</strong> folders by sharing files as they are added to the folder.</li>\n<li><strong>Distribute large files</strong> without copying data to a central server by connecting directly to peers.</li>\n<li><strong>Intelligently sync</strong> by deduplicating data between versions.</li>\n<li><strong>Verify data integrity</strong> using strong cryptographic hashes.</li>\n<li><strong>Work everywhere</strong>, including in the <a href=\"https://github.com/datproject/dat.land\">browser</a> and on the <a href=\"https://github.com/juliangruber/dat-desktop\">desktop</a>.</li>\n</ul>\n<p>Dat embraces the Unix philosophy: a modular design with composable parts. All of the pieces can be replaced with alternative implementations as long as they implement the abstract API.</p>\n<h3 id=\"ways-to-use-dat\">Ways to Use Dat</h3>\n<ul>\n<li><a href=\"https://github.com/maxogden/dat\">Dat CLI</a>: command line tool</li>\n<li><a href=\"https://github.com/juliangruber/dat-desktop/\">Dat Desktop</a>: desktop application</li>\n<li><a href=\"https://github.com/datproject/dat.land\">dat.land</a>: website application</li>\n</ul>\n<h2 id=\"cli-development-status\">CLI Development Status</h2>\n<p>This is the Dat CLI 1.0 release candidate (RC2). We are actively seeking feedback &amp; developing this release candidate. Follow <a href=\"https://github.com/datproject/projects/issues/5\">this issue</a> for the Dat CLI road map discussion and see <a href=\"https://github.com/maxogden/dat/issues/486\">known RC2 issues</a>.</p>\n<p><strong>Please note</strong> that previous versions of Dat (alpha, beta) are incompatible with the 1.0 release candidate.</p>\n<h2 id=\"getting-started\">Getting started</h2>\n<h3 id=\"install\">Install</h3>\n<p>To install the 1.0 release candidate from npm:</p>\n<pre><code>npm <span class=\"hljs-keyword\">install</span> dat -g\n</code></pre><p>If you receive an <code>EACCES</code> error read <a href=\"https://docs.npmjs.com/getting-started/fixing-npm-permissions\">this guide</a>.</p>\n<h3 id=\"using-dat\">Using Dat</h3>\n<p>There are two main commands in dat:</p>\n<ol>\n<li>Share data: <code>dat &lt;directory&gt;</code></li>\n<li>Download data: <code>dat &lt;dat-link&gt; &lt;download-directory&gt;</code></li>\n</ol>\n<h3 id=\"sharing-files\">Sharing Files</h3>\n<p>Share a directory by typing <code>dat &lt;directory&gt;</code>:</p>\n<pre><code>$ dat my_data/\nInitializing Dat in my_data/\n[DONE] readme.txt (<span class=\"hljs-number\">0.30</span> kB)\n[DONE] data.csv (<span class=\"hljs-number\">1.14</span> kB)\nItem<span class=\"hljs-variable\">s:</span> <span class=\"hljs-number\">2</span>  Size: <span class=\"hljs-number\">1.44</span> kB\nShare Link <span class=\"hljs-number\">4</span>f36c088e9687ddf53d36f785ab84c65f4d24d8c4161950519b96a57d65ae08a\nThe Share Link <span class=\"hljs-keyword\">is</span> secret <span class=\"hljs-built_in\">and</span> <span class=\"hljs-keyword\">only</span> those you share it with will <span class=\"hljs-keyword\">be</span> able <span class=\"hljs-keyword\">to</span> <span class=\"hljs-built_in\">get</span> the <span class=\"hljs-keyword\">files</span>\nSharing /Users/joe, connected <span class=\"hljs-keyword\">to</span> <span class=\"hljs-number\">2</span>/<span class=\"hljs-number\">4</span> sources\nUploading <span class=\"hljs-number\">28.62</span> kB/s, <span class=\"hljs-number\">765.08</span> kB Total\n</code></pre><p>You are now publishing that data from your computer. It will be publicly accessible as long as your terminal is open. The hash is a <strong>secret hash</strong>, your data is visible to anyone you send the hash to. As you add more files to the folder, dat will update and share the new files.</p>\n<h3 id=\"downloading-files\">Downloading Files</h3>\n<p>Your colleague can get data like this:</p>\n<pre><code>$ dat <span class=\"hljs-number\">2</span>bede435504c9482910b5d4e324e995a9bc4d6f068b98ae03d97e8d3ac5f80ea download_dir\nInitializing Dat from <span class=\"hljs-number\">52</span>d08a6d1ddc9b1f61b9862d2ae0d991676d489274bff6c5ebebecbfa3239f51\n[DONE] readme.txt (<span class=\"hljs-number\">0.30</span> kB)\n[DONE] data.csv (<span class=\"hljs-number\">1.14</span> kB)\n[DONE] <span class=\"hljs-number\">2</span> <span class=\"hljs-built_in\">items</span> (<span class=\"hljs-number\">1.44</span> kB)\nShare Link <span class=\"hljs-number\">52</span>d08a6d1ddc9b1f61b9862d2ae0d991676d489274bff6c5ebebecbfa3239f51\nThe Share Link <span class=\"hljs-keyword\">is</span> secret <span class=\"hljs-built_in\">and</span> <span class=\"hljs-keyword\">only</span> those you share it with will <span class=\"hljs-keyword\">be</span> able <span class=\"hljs-keyword\">to</span> <span class=\"hljs-built_in\">get</span> the <span class=\"hljs-keyword\">files</span>\nSyncing live updates, connected <span class=\"hljs-keyword\">to</span> <span class=\"hljs-number\">1</span>/<span class=\"hljs-number\">2</span> sources\nDownload Finished, you may <span class=\"hljs-keyword\">exit</span> process\n</code></pre><p>It will start downloading the data into the <code>download_dir</code> folder. Anyone who gets access to the unique dat-link will be able to download and re-host a copy of the data. It&#39;s distributed mad science!</p>\n<p>For more information, see the <a href=\"http://dat-cli.readthedocs.org/\">Dat CLI documentation</a> or the <a href=\"http://docs.dat-data.com\">dat project documentation</a>.</p>\n<h2 id=\"development\">Development</h2>\n<p>Please see <a href=\"https://github.com/maxogden/dat/blob/master/CONTRIBUTING.md\">guidelines on contributing</a> before submitting an issue or PR.</p>\n<h3 id=\"installing-from-source\">Installing from source</h3>\n<p>Clone this repository and in a terminal inside of the folder you cloned run this command:</p>\n<pre><code><span class=\"hljs-built_in\">npm</span> link\n</code></pre><p>This should add a <code>dat</code> command line command to your PATH. Now you can run the <code>dat</code> command to try it out.</p>\n<p>The contribution guide also has more tips on our <a href=\"https://github.com/maxogden/dat/blob/master/CONTRIBUTING.md#development-workflow\">development workflow</a>.</p>\n","dat.land":"<h1 id=\"dat-land\">dat.land</h1>\n<p>An online place for dats.</p>\n<p><a href=\"https://travis-ci.org/datproject/dat.land\"><img src=\"https://travis-ci.org/datproject/dat.land.svg?branch=master\" alt=\"Build Status\"></a></p>\n<p><a href=\"http://dat.land\">Try dat.land now</a></p>\n<h2 id=\"news\">News</h2>\n<p>We were recently awarded a <a href=\"http://www.knightfoundation.org/grants/201551933/\">$420,000 grant by the Knight Foundation</a> to get started on this project. It will be undergiong heavy development for the next few months.</p>\n<h3 id=\"develop\">develop</h3>\n<pre><code>npm <span class=\"hljs-keyword\">install</span>\n</code></pre><p>Do all of the below (watch assets and start server) in one command:</p>\n<pre><code>npm <span class=\"hljs-built_in\">run</span> dev\n</code></pre><p>Start the server:</p>\n<pre><code><span class=\"hljs-built_in\">npm</span> start\n</code></pre><p>To watch and build scss and javascript changes as you go (in a separate terminal):</p>\n<pre><code>npm <span class=\"hljs-built_in\">run</span> watch-css\nnpm <span class=\"hljs-built_in\">run</span> watch-js\n</code></pre><h3 id=\"build-for-production\">build for production</h3>\n<pre><code>npm <span class=\"hljs-built_in\">run</span> build\nnpm <span class=\"hljs-built_in\">run</span> minify\nnpm <span class=\"hljs-built_in\">run</span> <span class=\"hljs-built_in\">version</span>\n</code></pre><h3 id=\"using-shipit-for-deployment-and-install\">using shipit for deployment and install</h3>\n<p><a href=\"https://github.com/shipitjs/shipit\">shipit</a> and <a href=\"https://github.com/shipitjs/shipit-deploy\">shipit-deploy</a> depends on rsync version 3+, git version 1.7.8+, and OpenSSH version 5+. To upgrade rsync on a macosx machine, <a href=\"https://static.afp548.com/mactips/rsync.html\">follow instructions here</a> (see &quot;compile rsync 3.0.7&quot; section).</p>\n<p>install shipit-cli locally, globally:</p>\n<pre><code>npm <span class=\"hljs-keyword\">install </span><span class=\"hljs-keyword\">shipit-cli </span>-g\n</code></pre><p>the config file is <code>shipitfile.js</code>. you&#39;ll need to set the environment var <code>DATLAND_USER</code> in your local shell for it to know which account to use to access the server.</p>\n<p>to test your access to machine via shipit from your local command line, call shipit, then the environment (in this case <code>uat</code>, which is tracking the master branch), then the actual command which corresponds to tasks defined in the shipitfile:</p>\n<pre><code>shipit uat <span class=\"hljs-built_in\">pwd</span>\n</code></pre><p>to deploy and install a build on remote machine (note that shipit pulls build source from github, not your local project dir):</p>\n<pre><code>npm <span class=\"hljs-built_in\">run</span> deploy\n</code></pre>","dat-desktop":"<h1 id=\"dat-desktop\">dat-desktop</h1>\n<p>WIP desktop app for <a href=\"https://github.com/maxogden/dat\">dat</a>.</p>\n<p><img src=\"screenshot.png\" alt=\"\"></p>\n<p><a href=\"https://travis-ci.org/juliangruber/dat-desktop\"><img src=\"https://travis-ci.org/juliangruber/dat-desktop.svg?branch=master\" alt=\"Build Status\"></a></p>\n<p><a href=\"https://github.com/Flet/semistandard\"><img src=\"https://cdn.rawgit.com/flet/semistandard/master/badge.svg\" alt=\"js-semistandard-style\"></a></p>\n<h2 id=\"running\">Running</h2>\n<pre><code class=\"lang-bash\">$ npm install\n$ npm run rebuild\n$ npm start\n</code></pre>\n<h2 id=\"watch-and-compile-scss\">Watch and compile SCSS</h2>\n<pre><code class=\"lang-bash\">$ npm run watch-css\n</code></pre>\n<p>Then drop files onto the app window and watch the console.</p>\n<h2 id=\"cli\">CLI</h2>\n<p>-- <code>--data=DIR</code> overwrite the data path</p>\n<h2 id=\"styles\">Styles</h2>\n<p>For now, check out</p>\n<ul>\n<li><code>lib/render.js</code> for html</li>\n<li><code>/scss/main.scss</code> for scss</li>\n</ul>\n<p>Styles are imported from <a href=\"https://github.com/datproject/design\">https://github.com/datproject/design</a>. All variables, mixins, and component styles are available in main.</p>\n<p>There&#39;s also the html being generated by <a href=\"https://github.com/karissa/hyperdrive-ui\">hyperdrive-ui</a>.</p>\n<h2 id=\"license\">License</h2>\n<p>  MIT</p>\n","hyperdrive":"<h1 id=\"hyperdrive\">hyperdrive</h1>\n<p>A file sharing network based on <a href=\"https://github.com/maxogden/rabin\">rabin</a> file chunking and <a href=\"https://github.com/mafintosh/hypercore\">append only feeds of data verified by merkle trees</a>.</p>\n<pre><code>npm <span class=\"hljs-keyword\">install</span> hyperdrive\n</code></pre><p><a href=\"http://travis-ci.org/mafintosh/hyperdrive\"><img src=\"http://img.shields.io/travis/mafintosh/hyperdrive.svg?style=flat\" alt=\"build status\"></a></p>\n<p>If you are interested in learning how hyperdrive works on a technical level a specification is available in the <a href=\"https://github.com/datproject/docs/blob/master/hyperdrive.md\">Dat docs repo</a></p>\n<h2 id=\"usage\">Usage</h2>\n<p>First create a new feed and share it</p>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> hyperdrive = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'hyperdrive'</span>)\n<span class=\"hljs-keyword\">var</span> level = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'level'</span>)\n<span class=\"hljs-keyword\">var</span> swarm = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'discovery-swarm'</span>)()\n\n<span class=\"hljs-keyword\">var</span> db = level(<span class=\"hljs-string\">'./hyperdrive.db'</span>)\n<span class=\"hljs-keyword\">var</span> drive = hyperdrive(db)\n\n<span class=\"hljs-keyword\">var</span> archive = drive.createArchive()\n<span class=\"hljs-keyword\">var</span> ws = archive.createFileWriteStream(<span class=\"hljs-string\">'hello.txt'</span>) <span class=\"hljs-comment\">// add hello.txt</span>\n\nws.write(<span class=\"hljs-string\">'hello'</span>)\nws.write(<span class=\"hljs-string\">'world'</span>)\nws.end()\n\narchive.finalize(<span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\"></span>) </span>{ <span class=\"hljs-comment\">// finalize the archive</span>\n  <span class=\"hljs-keyword\">var</span> link = archive.key.toString(<span class=\"hljs-string\">'hex'</span>)\n  <span class=\"hljs-built_in\">console</span>.log(link, <span class=\"hljs-string\">'&lt;-- this is your hyperdrive link'</span>)\n\n  <span class=\"hljs-comment\">// the archive is now ready for sharing.</span>\n  <span class=\"hljs-comment\">// we can use swarm to replicate it to other peers</span>\n  swarm.listen()\n  swarm.join(<span class=\"hljs-keyword\">new</span> Buffer(link, <span class=\"hljs-string\">'hex'</span>))\n  swarm.on(<span class=\"hljs-string\">'connection'</span>, <span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\">connection</span>) </span>{\n    connection.pipe(archive.replicate()).pipe(connection)\n  })\n})\n</code></pre>\n<p>Then we can access the content from another process with the following code</p>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> swarm = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'discovery-swarm'</span>)()\n<span class=\"hljs-keyword\">var</span> hyperdrive = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'hyperdrive'</span>)\n<span class=\"hljs-keyword\">var</span> level = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'level'</span>)\n\n<span class=\"hljs-keyword\">var</span> db = level(<span class=\"hljs-string\">'./another-hyperdrive.db'</span>)\n<span class=\"hljs-keyword\">var</span> drive = hyperdrive(db)\n\n<span class=\"hljs-keyword\">var</span> link = <span class=\"hljs-keyword\">new</span> Buffer(<span class=\"hljs-string\">'your-hyperdrive-link-from-the-above-example'</span>, <span class=\"hljs-string\">'hex'</span>)\n<span class=\"hljs-keyword\">var</span> archive = drive.createArchive(link)\n\nswarm.listen()\nswarm.join(link)\nswarm.on(<span class=\"hljs-string\">'connection'</span>, <span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\">connection</span>) </span>{\n  connection.pipe(archive.replicate()).pipe(connection)\n  archive.get(<span class=\"hljs-number\">0</span>, <span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\">err, entry</span>) </span>{ <span class=\"hljs-comment\">// get the first file entry</span>\n    <span class=\"hljs-built_in\">console</span>.log(entry) <span class=\"hljs-comment\">// prints {name: 'hello.txt', ...}</span>\n    <span class=\"hljs-keyword\">var</span> stream = archive.createFileReadStream(entry)\n    stream.on(<span class=\"hljs-string\">'data'</span>, <span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\">data</span>) </span>{\n      <span class=\"hljs-built_in\">console</span>.log(data) <span class=\"hljs-comment\">// &lt;-- file data</span>\n    })\n    stream.on(<span class=\"hljs-string\">'end'</span>, <span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\"></span>) </span>{\n      <span class=\"hljs-built_in\">console</span>.log(<span class=\"hljs-string\">'no more data'</span>)\n    })\n  })\n})\n</code></pre>\n<p>If you want to write/read files to the file system provide a storage driver as the file option</p>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> raf = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'random-access-file'</span>) <span class=\"hljs-comment\">// a storage driver that writes to the file system</span>\n<span class=\"hljs-keyword\">var</span> archive = drive.createArchive({\n  file: <span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\">name</span>) </span>{\n    <span class=\"hljs-keyword\">return</span> raf(<span class=\"hljs-string\">'my-download-folder/'</span> + name)\n  }\n})\n</code></pre>\n<h2 id=\"api\">API</h2>\n<h4 id=\"-var-drive-hyperdrive-db-\"><code>var drive = hyperdrive(db)</code></h4>\n<p>Create a new hyperdrive instance. db should be a <a href=\"https://github.com/level/levelup\">levelup</a> instance.</p>\n<h4 id=\"-var-archive-drive-createarchive-key-options-\"><code>var archive = drive.createArchive([key], [options])</code></h4>\n<p>Creates an archive instance. If you want to download/upload an existing archive provide the archive key\nas the first argument. Options include</p>\n<pre><code class=\"lang-js\">{\n  live: <span class=\"hljs-literal\">false</span>, <span class=\"hljs-comment\">// set this to share the archive without finalizing it</span>\n  sparse: <span class=\"hljs-literal\">false</span>, <span class=\"hljs-comment\">// set this to only download the pieces of the feed you are requesting / prioritizing</span>\n  file: <span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\">name</span>) </span>{\n    <span class=\"hljs-comment\">// set this to determine how file data is stored.</span>\n    <span class=\"hljs-comment\">// the storage instance should implement the hypercore storage api</span>\n    <span class=\"hljs-comment\">// https://github.com/mafintosh/hypercore#storage-api</span>\n    <span class=\"hljs-keyword\">return</span> someStorageInstance\n  }\n}\n</code></pre>\n<p>If you do not provide the file option all file data is stored in the leveldb.</p>\n<h4 id=\"-archive-key-\"><code>archive.key</code></h4>\n<p>A buffer that verifies the archive content. In live mode this is a 32 byte public key.\nOtherwise it is a 32 byte hash.</p>\n<h4 id=\"-archive-live-\"><code>archive.live</code></h4>\n<p>Boolean whether archive is live. <code>true</code> by default. Note that its only populated after archive.open(cb) has been fired.</p>\n<h4 id=\"-archive-append-entry-callback-\"><code>archive.append(entry, callback)</code></h4>\n<p>Append an entry to the archive. Only possible if this is an live archive you originally created\nor an unfinalized archive.</p>\n<p>If you set the file option in the archive constructor you can use this method to append an already\nexisting file to the archive.</p>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> archive = drive.createArchive({\n  file: <span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\">name</span>) </span>{\n    <span class=\"hljs-built_in\">console</span>.log(<span class=\"hljs-string\">'returning storage for'</span>, name)\n    <span class=\"hljs-keyword\">return</span> raf(name)\n  }\n})\n\narchive.append(<span class=\"hljs-string\">'hello.txt'</span>, <span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\"></span>) </span>{\n  <span class=\"hljs-built_in\">console</span>.log(<span class=\"hljs-string\">'hello.txt was read and appended'</span>)\n})\n</code></pre>\n<h4 id=\"-archive-finalize-callback-\"><code>archive.finalize([callback])</code></h4>\n<p>Finalize the archive. You need to do this before sharing it if the archive is not live.</p>\n<h4 id=\"-archive-get-index-callback-\"><code>archive.get(index, callback)</code></h4>\n<p>Reads an entry from the archive.</p>\n<h4 id=\"-archive-download-index-callback-\"><code>archive.download(index, callback)</code></h4>\n<p>Fully downloads a file / entry from the archive and calls the callback afterwards.</p>\n<h4 id=\"-archive-close-callback-\"><code>archive.close([callback])</code></h4>\n<p>Closes and releases all resources used by the archive. Call this when you are done using it.</p>\n<h4 id=\"-archive-on-download-data-\"><code>archive.on(&#39;download&#39;, data)</code></h4>\n<p>Emitted every time a piece of data is downloaded</p>\n<h4 id=\"-archive-on-upload-data-\"><code>archive.on(&#39;upload&#39;, data)</code></h4>\n<p>Emitted every time a piece of data is uploaded</p>\n<h4 id=\"-var-rs-archive-list-opts-cb-\"><code>var rs = archive.list(opts={}, cb)</code></h4>\n<p>Returns a readable stream of all entries in the archive.</p>\n<ul>\n<li><code>opts.offset</code> - start streaming from this offset (default: 0)</li>\n<li><code>opts.live</code> - keep the stream open as new updates arrive (default: false)</li>\n</ul>\n<p>You can collect the results of the stream with <code>cb(err, entries)</code>.</p>\n<h4 id=\"-var-rs-archive-createfilereadstream-entry-options-\"><code>var rs = archive.createFileReadStream(entry, [options])</code></h4>\n<p>Returns a readable stream of the file content of an file in the archive.</p>\n<p>Options include:</p>\n<pre><code class=\"lang-js\">{\n  start: startOffset, <span class=\"hljs-comment\">// defaults to 0</span>\n  end: endOffset <span class=\"hljs-comment\">// defaults to file.length</span>\n}\n</code></pre>\n<h4 id=\"-var-ws-archive-createfilewritestream-entry-\"><code>var ws = archive.createFileWriteStream(entry)</code></h4>\n<p>Returns a writable stream that writes a new file to the archive. Only possible if the archive is live and you own it\nor if the archive is not finalized.</p>\n<h4 id=\"-var-cursor-archive-createbytecursor-entry-options-\"><code>var cursor = archive.createByteCursor(entry, [options])</code></h4>\n<p>Creates a cursor that can seek and traverse parts of the file.</p>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> cursor = archive.createByteCursor(<span class=\"hljs-string\">'hello.txt'</span>)\n\n<span class=\"hljs-comment\">// seek to byte offset 10000 and read the rest.</span>\ncursor.seek(<span class=\"hljs-number\">10000</span>, <span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\">err</span>) </span>{\n  <span class=\"hljs-keyword\">if</span> (err) <span class=\"hljs-keyword\">throw</span> err\n  cursor.next(<span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> <span class=\"hljs-title\">loop</span> (<span class=\"hljs-params\">err, data</span>) </span>{\n    <span class=\"hljs-keyword\">if</span> (err) <span class=\"hljs-keyword\">throw</span> err\n    <span class=\"hljs-keyword\">if</span> (!data) <span class=\"hljs-keyword\">return</span> <span class=\"hljs-built_in\">console</span>.log(<span class=\"hljs-string\">'no more data'</span>)\n    <span class=\"hljs-built_in\">console</span>.log(<span class=\"hljs-string\">'cursor.position is '</span> + cursor.position)\n    <span class=\"hljs-built_in\">console</span>.log(<span class=\"hljs-string\">'read'</span>, data.length, <span class=\"hljs-string\">'bytes'</span>)\n    cursor.next(loop)\n  })\n})\n</code></pre>\n<p>Options include</p>\n<pre><code class=\"lang-js\">{\n  start: startOffset, <span class=\"hljs-comment\">// defaults to 0</span>\n  end: endOffset <span class=\"hljs-comment\">// defaults to file.length</span>\n}\n</code></pre>\n<h4 id=\"-var-stream-archive-replicate-\"><code>var stream = archive.replicate()</code></h4>\n<p>Pipe this stream together with another peer that is interested in the same archive to replicate the content.</p>\n<h2 id=\"license\">License</h2>\n<p>MIT</p>\n","hypercore":"<h1 id=\"hypercore\">hypercore</h1>\n<p>Hypercore is a protocol and p2p network for distributing and replicating feeds of binary data. It is the low level component that <a href=\"https://github.com/mafintosh/hyperdrive\">Hyperdrive</a> is built on top off.</p>\n<pre><code>npm <span class=\"hljs-keyword\">install</span> hypercore\n</code></pre><p><a href=\"http://travis-ci.org/mafintosh/hypercore\"><img src=\"http://img.shields.io/travis/mafintosh/hypercore.svg?style=flat\" alt=\"build status\"></a></p>\n<p>It runs both in the node and in the browser using <a href=\"https://github.com/substack/node-browserify\">browserify</a>.</p>\n<h2 id=\"usage\">Usage</h2>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> hypercore = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'hypercore'</span>)\n<span class=\"hljs-keyword\">var</span> net = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'net'</span>)\n\n<span class=\"hljs-keyword\">var</span> core = hypercore(db) <span class=\"hljs-comment\">// db is a leveldb instance</span>\n<span class=\"hljs-keyword\">var</span> feed = core.createFeed()\n\nfeed.append([<span class=\"hljs-string\">'hello'</span>, <span class=\"hljs-string\">'world'</span>], <span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\"></span>) </span>{\n  <span class=\"hljs-built_in\">console</span>.log(<span class=\"hljs-string\">'appended two blocks'</span>)\n  <span class=\"hljs-built_in\">console</span>.log(<span class=\"hljs-string\">'key is'</span>, feed.key.toString(<span class=\"hljs-string\">'hex'</span>))\n})\n\nfeed.on(<span class=\"hljs-string\">'upload'</span>, <span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\">block, data</span>) </span>{\n  <span class=\"hljs-built_in\">console</span>.log(<span class=\"hljs-string\">'uploaded block'</span>, block, data)\n})\n\n<span class=\"hljs-keyword\">var</span> server = net.createServer(<span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\">socket</span>) </span>{\n  socket.pipe(feed.replicate()).pipe(socket)\n})\n\nserver.listen(<span class=\"hljs-number\">10000</span>)\n</code></pre>\n<p>In another process</p>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> core = hypercore(anotherDb)\n<span class=\"hljs-keyword\">var</span> feed = core.createFeed(<span class=\"xml\"><span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">key-printed-out-above</span>&gt;</span>)\nvar socket = net.connect(10000)\n\nsocket.pipe(feed.replicate()).pipe(socket)\n\nfeed.on('download', function (block, data) {\n  console.log('downloaded block', block, data)\n})</span>\n</code></pre>\n<h2 id=\"api\">API</h2>\n<h4 id=\"-var-core-hypercore-db-\"><code>var core = hypercore(db)</code></h4>\n<p>Create a new hypercore instance. <code>db</code> should be a leveldb instance.</p>\n<h4 id=\"-var-feed-core-createfeed-key-options-\"><code>var feed = core.createFeed([key], [options])</code></h4>\n<p>Create a new feed. A feed stores a list of append-only data (buffers). A feed has a <code>.key</code> property that you can pass in to <code>createFeed</code> if you want to retrieve an old feed. Per default all feeds are appendable (live).</p>\n<p>Options include:</p>\n<pre><code class=\"lang-js\">{\n  live: <span class=\"hljs-literal\">true</span>,\n  storage: externalStorage,\n  sparse: <span class=\"hljs-literal\">false</span>\n}\n</code></pre>\n<p>Set <code>sparse</code> to <code>true</code> if you only want to download the pieces of the feed you are requesting / prioritizing. Otherwise the entire feed will be downloaded if nothing else is prioritized.</p>\n<p>If you want to create a static feed, one you cannot reappend data to, pass the <code>{live: false}</code> option.\nThe storage option allows you to store data outside of leveldb. This is very useful if you use hypercore to distribute files.</p>\n<p>See the <a href=\"#storage-api\">Storage API</a> section for more info</p>\n<h4 id=\"-var-stream-core-replicate-\"><code>var stream = core.replicate()</code></h4>\n<p>Create a generic replication stream. Use the <code>feed.replicate(stream)</code> API described below to replicate specific feeds of data.</p>\n<h4 id=\"-var-stream-core-list-options-callback-\"><code>var stream = core.list([options], [callback])</code></h4>\n<p>List all feed keys in the database. Optionally you can pass a callback to buffer them into an array. Options include:</p>\n<pre><code class=\"lang-js\">{\n  values: <span class=\"hljs-literal\">false</span> <span class=\"hljs-comment\">// set this to get feed attributes, not just feed keys</span>\n}\n</code></pre>\n<h2 id=\"-feed-api-\"><code>Feed API</code></h2>\n<p>As mentioned above a feed stores a list of data for you that you can replicate to other peers. It has the following API</p>\n<h4 id=\"-feed-key-\"><code>feed.key</code></h4>\n<p>The key of this feed. A 32 byte buffer. Other peers need this key to start replicating the feed.</p>\n<h4 id=\"-feed-discoverykey-\"><code>feed.discoveryKey</code></h4>\n<p>A 32 byte buffer containing a discovery key of the feed. The discovery key is sha-256 hmac of the string <code>hypercore</code> using the feed key as the password.\nYou can use the discovery key to find other peers sharing this feed without disclosing your feed key to a third party.</p>\n<h4 id=\"-feed-blocks-\"><code>feed.blocks</code></h4>\n<p>The total number of known data blocks in the feed.</p>\n<h4 id=\"-feed-bytes-\"><code>feed.bytes</code></h4>\n<p>The total byte size of known data blocks in the feed.</p>\n<h4 id=\"-feed-open-cb-\"><code>feed.open(cb)</code></h4>\n<p>Call this method to ensure that a feed is opened. You do not need to call this but the <code>.blocks</code> property will not be populated until the feed has been opened.</p>\n<h4 id=\"-feed-append-data-callback-\"><code>feed.append(data, callback)</code></h4>\n<p>Append a block of data to the feed. If you want to append more than one block you can pass in an array.</p>\n<h4 id=\"-feed-get-index-callback-\"><code>feed.get(index, callback)</code></h4>\n<p>Retrieve a block of data from the feed.</p>\n<h4 id=\"-feed-prioritize-range-callback-\"><code>feed.prioritize(range, [callback])</code></h4>\n<p>Prioritize a range of blocks to download. Will call the callback when done.\nRange should look like this</p>\n<pre><code class=\"lang-js\">{\n  start: startBlock,\n  end: optionalEndBlock,\n  priority: <span class=\"hljs-number\">2</span> <span class=\"hljs-comment\">// a priority level spanning [0-5]</span>\n  linear: <span class=\"hljs-literal\">false</span> <span class=\"hljs-comment\">// download the range linearly</span>\n}\n</code></pre>\n<h4 id=\"-feed-unprioritize-range-\"><code>feed.unprioritize(range)</code></h4>\n<p>Unprioritize a range.</p>\n<h4 id=\"-feed-seek-byteoffset-callback-\"><code>feed.seek(byteOffset, callback)</code></h4>\n<p>Find the block of data containing the byte offset. Calls the callback with <code>(err, index, offset)</code> where <code>index</code> is the block index and <code>offset</code> is the the relative byte offset in the block returned by <code>.get(index)</code>.</p>\n<h4 id=\"-feed-finalize-callback-\"><code>feed.finalize(callback)</code></h4>\n<p>If you are not using a live feed you need to call this method to finalize the feed once you are ready to share it.\nFinalizing will set the <code>.key</code> property and allow other peers to get your data.</p>\n<h4 id=\"-var-stream-feed-createwritestream-options-\"><code>var stream = feed.createWriteStream([options])</code></h4>\n<p>Create a writable stream that appends to the feed. If the feed is a static feed, it will be finalized when you end the stream.</p>\n<h4 id=\"-var-stream-feed-createreadstream-options-\"><code>var stream = feed.createReadStream([options])</code></h4>\n<p>Create a readable stream that reads from the feed. Options include:</p>\n<pre><code class=\"lang-js\">{\n  start: startIndex, <span class=\"hljs-comment\">// read from this index</span>\n  end: endIndex, <span class=\"hljs-comment\">// read until this index</span>\n  live: <span class=\"hljs-literal\">false</span> <span class=\"hljs-comment\">// set this to keep the read stream open</span>\n}\n</code></pre>\n<h4 id=\"-var-stream-feed-replicate-options-\"><code>var stream = feed.replicate([options])</code></h4>\n<p>Get a replication stream for this feed. Pipe this to another peer to start replicating this feed with another peer.\nIf you create multiple replication streams to multiple peers you&#39;ll upload/download data to all of them (meaning the load will spread out).</p>\n<p>Per default the replication stream encrypts all messages sent using the feed key and an incrementing nonce. This helps ensures that the remote peer also the feed key and makes it harder for a man-in-the-middle to sniff the data you are sending.</p>\n<p>Set <code>{private: false}</code> to disable this.</p>\n<p>Hypercore uses a simple multiplexed protocol that allows one replication stream to be used for multiple feeds at once.\nIf you want to join another replication stream simply pass it as the stream option</p>\n<pre><code class=\"lang-js\">feed.replicate({stream: anotherReplicationStream})\n</code></pre>\n<p>As a shorthand you can also do <code>feed.replicate(stream)</code>.</p>\n<h4 id=\"-stream-on-open-discoverykey-\"><code>stream.on(&#39;open&#39;, discoveryKey)</code></h4>\n<p>Emitted when a remote feed joins the replication stream and you haven&#39;t. You can use this as a signal to join the stream yourself if you want to.</p>\n<h4 id=\"-feed-on-download-block-data-\"><code>feed.on(&#39;download&#39;, block, data)</code></h4>\n<p>Emitted when a data block has been downloaded</p>\n<h4 id=\"-feed-on-download-finished-\"><code>feed.on(&#39;download-finished&#39;)</code></h4>\n<p>Emitted when all available data has been downloaded.\nWill re-fire when a live feed is updated and you download all the new blocks.</p>\n<h4 id=\"-feed-on-upload-block-data-\"><code>feed.on(&#39;upload&#39;, block, data)</code></h4>\n<p>Emitted when a data block has been uploaded</p>\n<h2 id=\"storage-api\">Storage API</h2>\n<p>If you want to use external storage to store the hypercore data (metadata will still be stored in the leveldb) you need to implement the following api and provide that as the <code>storage</code> option when creating a feed.</p>\n<p>Some node modules that implement this interface are</p>\n<ul>\n<li><a href=\"https://github.com/mafintosh/random-access-file\">random-access-file</a> Writes data to a file.</li>\n<li><a href=\"https://github.com/mafintosh/random-access-memory\">random-access-memory</a> Writes data to memory.</li>\n</ul>\n<h4 id=\"-storage-open-cb-\"><code>storage.open(cb)</code></h4>\n<p>This API is <em>optional</em>. If you provide this hypercore will call <code>.open</code> and wait for the callback to be called before calling any other methods.</p>\n<h4 id=\"-storage-read-offset-length-cb-\"><code>storage.read(offset, length, cb)</code></h4>\n<p>This API is <em>required</em>. Hypercore calls this when it wants to read data. You should return a buffer with length <code>length</code> that way read at the corresponding offset. If you cannot read this buffer call the callback with an error.</p>\n<h4 id=\"-storage-write-offset-buffer-cb-\"><code>storage.write(offset, buffer, cb)</code></h4>\n<p>This API is <em>required</em>. Hypercore calls this when it wants to write data. You should write the buffer at the corresponding offset and call the callback afterwards. If there was an error writing you should call the callback with that error.</p>\n<h4 id=\"-storage-close-cb-\"><code>storage.close(cb)</code></h4>\n<p>This API is <em>optional</em>. Hypercore will call this method when the feed is closing.</p>\n<h2 id=\"license\">License</h2>\n<p>MIT</p>\n"}})
+  var app = minidocs({"title":"Dat Data","logo":"dat-data-logo.png","contents":[{"depth":1,"name":"Dat"},{"depth":2,"name":"Introduction","key":"dat","link":"/dat"},{"depth":2,"name":"How Dat Works","key":"how-dat-works","link":"/how-dat-works"},{"depth":2,"name":"FAQ","key":"faq","link":"/faq"},{"depth":1,"name":"Cookbook"},{"depth":2,"name":"Browser Dat","key":"browser","link":"/browser"},{"depth":2,"name":"DIY Dat","key":"diy-dat","link":"/diy-dat"},{"depth":1,"name":"Ecosystem"},{"depth":2,"name":"Overview","key":"ecosystem","link":"/ecosystem"},{"depth":2,"name":"SLEEP","key":"sleep","link":"/sleep"},{"depth":2,"name":"Hyperdrive","key":"hyperdrive","link":"/hyperdrive"},{"depth":2,"name":"Hypercore","key":"hypercore","link":"/hypercore"}],"markdown":"/Users/joe/node_modules/dat-docs/docs","initial":"dat","basedir":"","dir":"/Users/joe/node_modules/dat-docs","routes":{"index":"/","dat":"/dat/","how-dat-works":"/how-dat-works/","faq":"/faq/","browser":"/browser/","diy-dat":"/diy-dat/","ecosystem":"/ecosystem/","sleep":"/sleep/","hyperdrive":"/hyperdrive/","hypercore":"/hypercore/"},"html":{"dat":"<h1 id=\"dat\">Dat</h1>\n<p>Dat is a decentralized data tool for distributing data small and large.</p>\n<p><a href=\"http://webchat.freenode.net/?channels=dat\"><img src=\"https://img.shields.io/badge/irc%20channel-%23dat%20on%20freenode-blue.svg\" alt=\"#dat IRC channel on freenode\"></a>\n<a href=\"https://gitter.im/datproject/discussions?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge\"><img src=\"https://badges.gitter.im/Join%20Chat.svg\" alt=\"datproject/discussions\"></a>\n<a href=\"http://docs.dat-data.com\"><img src=\"https://img.shields.io/badge/Dat%20Project-Docs-green.svg\" alt=\"docs\"></a></p>\n<h3 id=\"key-features-\">Key features:</h3>\n<ul>\n<li><strong>Live sync</strong> folders by sharing files as they are added or changed.</li>\n<li><strong>Distribute large files</strong> without copying data to a central server by connecting directly to peers.</li>\n<li><strong>Intelligently sync</strong> by deduplicating data between versions.</li>\n<li><strong>Verify data integrity</strong> using strong cryptographic hashes.</li>\n<li><strong>Work everywhere</strong>, including on the <a href=\"https://github.com/datproject/dat\">command line</a>, in the <a href=\"https://github.com/datproject/dat.land\">browser</a>, and on the <a href=\"https://github.com/juliangruber/dat-desktop\">desktop</a>.</li>\n</ul>\n<h3 id=\"-documentation-http-docs-dat-data-com-video-demo-https-www-youtube-com-watch-v-fxkjsycoqo4-ecosystem-https-github-com-clkao-awesome-dat-\"><a href=\"http://docs.dat-data.com\">Documentation</a> | <a href=\"https://www.youtube.com/watch?v=fxKjSyCoqO4\">Video Demo</a> | <a href=\"https://github.com/clkao/awesome-dat\">Ecosystem</a></h3>\n<hr>\n<h2 id=\"dat-command-line-tool\">Dat Command Line Tool</h2>\n<p>This guide will help you get started with the Dat command line tool. We are also developing <a href=\"https://github.com/datproject/dat.land\">web</a> and <a href=\"https://github.com/juliangruber/dat-desktop\">desktop</a> applications for Dat.</p>\n<h3 id=\"table-of-contents\">Table of Contents</h3>\n<li><a href=\"#getting-started\">Getting Started</a></li>\n<li><a href=\"#using-dat\">Using Dat</a></li>\n<li><a href=\"#troubleshooting\">Troubleshooting</a></li>\n<li><a href=\"#for-developers\">For Developers</a></li>\n\n<h2 id=\"getting-started\">Getting Started</h2>\n<p>The Dat command line tool can be used to share, download, and sync files across many computers via the command line.</p>\n<table>\n<thead>\n<tr>\n<th>Windows</th>\n<th>Mac/Linux</th>\n<th>Version</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><a href=\"https://ci.appveyor.com/project/datproject/dat\"><img src=\"https://ci.appveyor.com/api/projects/status/github/datproject/dat?branch=master&amp;svg=true\" alt=\"Build status\"></a></td>\n<td><a href=\"https://travis-ci.org/datproject/dat\"><img src=\"https://api.travis-ci.org/datproject/dat.svg\" alt=\"Travis\"></a></td>\n<td><a href=\"https://npmjs.org/package/dat\"><img src=\"https://img.shields.io/npm/v/dat.svg?style=flat-square\" alt=\"NPM version\"></a></td>\n</tr>\n</tbody>\n</table>\n<h3 id=\"installation\">Installation</h3>\n<pre><code>npm <span class=\"hljs-keyword\">install</span> -g dat\n</code></pre><p>You should be able to run the <code>dat</code> command now. If not, see the <a href=\"#troubleshooting\">installation troubleshooting</a> for tips.</p>\n<h3 id=\"demo\">Demo</h3>\n<p>We have Dat installed, now let&#39;s use it! In this quick demo we will download our documentation files using Dat.</p>\n<p>You tell Dat what files to download by giving it a Dat link. Dat links are 64 character strings, for example <code>395e3467bb5b2fa083ee8a4a17a706c5574b740b5e1be6efd65754d4ab7328c2</code>.</p>\n<p>Along with the link, you tell Dat where to download the files. All together, you can download files by typing <code>dat &lt;dat-link&gt; &lt;download-directory&gt;</code>.</p>\n<p>We have our Dat documentation folders being shared by Dat (at the key above). For this example, we can download those files to your computer. In your console, run:</p>\n<pre><code>dat <span class=\"hljs-number\">395e3467</span>bb5b2fa083ee8a4a17a706c5574b740b5e1be6efd65754d4ab7328c2 dat_docs\n</code></pre><p>You should see the output below. Once the download is finished, the files will be available on your computer in the <code>dat_docs</code> folder!</p>\n<p><img src=\"https://raw.githubusercontent.com/datproject/docs/master/assets/cli_download.gif\" alt=\"Download gif\"></p>\n<h3 id=\"cli-development-status\">CLI Development Status</h3>\n<p>This is the Dat CLI 1.0 release candidate (RC2). We are actively seeking feedback &amp; developing this release candidate. Follow <a href=\"https://github.com/datproject/projects/issues/5\">this issue</a> for the Dat CLI road map discussion and see <a href=\"https://github.com/datproject/dat/issues/486\">known RC2 issues</a>.</p>\n<p><strong>Please note</strong> that previous versions of Dat (alpha, beta) are incompatible with the 1.0 release candidate.</p>\n<h2 id=\"using-dat\">Using Dat</h2>\n<p>There are two commands in Dat:</p>\n<ol>\n<li>Share data: <code>dat &lt;directory&gt;</code> will share a directory on your computer.</li>\n<li>Download data: <code>dat &lt;dat-link&gt; &lt;download-directory&gt;</code> will download files from the Dat link to a directory on your computer. </li>\n</ol>\n<p>Running <code>dat</code> in the console, with no arguments, will show you the usage guide. You can always use this as a reference for all the commands:</p>\n<pre><code>dat &lt;directory&gt;\n\n  share directory and create a dat-link\n\n  --snapshot            create a snapshot of directory\n  --port, -p            set a specific inbound tcp port\n\ndat &lt;dat-link&gt; &lt;directory&gt;\n\n  download a dat-link into directory\n\n  --<span class=\"hljs-keyword\">exit</span>                <span class=\"hljs-keyword\">exit</span> process after download finishes\n  --port, -p            set a specific inbound tcp port\n\ngeneral options\n\n  --version, -v         get installed dat version\n  --doctor              run dat doctor\n  --quiet, -q           output only dat-link, no progress information\n  --debug               show debugging output\n</code></pre><h3 id=\"sharing-files\">Sharing Files</h3>\n<p>Share a directory by typing <code>dat &lt;directory&gt;</code>:</p>\n<pre><code>$ dat my_data/\nSharing /Users/joe/my_data/\n\nShare Link: d6e1875598fae25165eff440ffd01513197ad0db9dbb9898f2a141288b9322c6\nThe Share Link <span class=\"hljs-keyword\">is</span> secret <span class=\"hljs-built_in\">and</span> <span class=\"hljs-keyword\">only</span> those you share it with will <span class=\"hljs-keyword\">be</span> able <span class=\"hljs-keyword\">to</span> <span class=\"hljs-built_in\">get</span> the <span class=\"hljs-keyword\">files</span>\n\n[==============&gt;] Added <span class=\"hljs-number\">2</span> <span class=\"hljs-keyword\">files</span> (<span class=\"hljs-number\">1.44</span> kB/<span class=\"hljs-number\">1.44</span> kB)\n\nConnected <span class=\"hljs-keyword\">to</span> <span class=\"hljs-number\">1</span> peers. Uploading <span class=\"hljs-number\">288.2</span> B/s. Watching <span class=\"hljs-keyword\">for</span> updates...\n</code></pre><p>You are now publishing that data from your computer. It will be publicly accessible as long as your terminal is open and the process is still running. The hash is a <strong>secret hash</strong>, your data is visible to anyone you send the hash to.</p>\n<h4 id=\"updating-shared-files\">Updating Shared Files</h4>\n<p>Dat makes it easy to share a folder and send files as they are added to the folder. By default, when you share using <code>dat my_data/</code> you will be in live sync mode. Anyone connected to you will receive new files.</p>\n<h4 id=\"creating-a-snapshot\">Creating a snapshot</h4>\n<p>A snapshot reads the files and creates a unique link that will always be the same for that set of files (if they remain unchanged). To create a snapshot use the snapshot option: <code>dat my_data/ --snapshot</code>. Snapshots are automatically created for you in live mode as files update.</p>\n<h4 id=\"sharing-options\">Sharing Options</h4>\n<p><code>dat &lt;directory&gt; --snapshot</code></p>\n<p>Share a snapshot of the current files. </p>\n<p><code>dat &lt;directory&gt; --port=1234</code></p>\n<p>Set your inbound TCP port. This is useful for debugging or on restrictive networks. </p>\n<h3 id=\"downloading-files\">Downloading Files</h3>\n<p>Download files from a Dat link by typing: <code>dat &lt;dat-link&gt; &lt;download-directory&gt;</code>:</p>\n<pre><code>$ dat d6e1875598fae25165eff440ffd01513197ad0db9dbb9898f2a141288b9322c6 download_dir\nDownloading in /Users/joe/download_dir\n\nShare Link: d6e1875598fae25165eff440ffd01513197ad0db9dbb9898f2a141288b9322c6\nThe Share Link <span class=\"hljs-keyword\">is</span> secret <span class=\"hljs-built_in\">and</span> <span class=\"hljs-keyword\">only</span> those you share it with will <span class=\"hljs-keyword\">be</span> able <span class=\"hljs-keyword\">to</span> <span class=\"hljs-built_in\">get</span> the <span class=\"hljs-keyword\">files</span>\n\n[==============&gt;] Downloaded <span class=\"hljs-number\">3</span> <span class=\"hljs-keyword\">files</span> (<span class=\"hljs-number\">1.44</span> kB/<span class=\"hljs-number\">1.44</span> kB)\n\nConnected <span class=\"hljs-keyword\">to</span> <span class=\"hljs-number\">1</span> peers. Downloading <span class=\"hljs-number\">1.44</span> kB/s. Watching <span class=\"hljs-keyword\">for</span> updates...\n</code></pre><p>Dat will start downloading the data into the <code>download_dir</code> folder. Once the download is finished (a message will print and the bar will turn green), you can safely exit the process with <code>Ctrl-C</code> (<code>Cmd-C</code> on Mac). </p>\n<p>While downloading, you may be connected to more than 1 peer. Anyone who has the Dat link will be able to download and re-host a copy of the data. So you may be downloading from (and sharing to) other people that are also downloading that data! You only need one block of data to start helping as a host. It&#39;s distributed mad science!</p>\n<h4 id=\"updating-the-downloaded-files\">Updating the Downloaded Files</h4>\n<p>What happens if the files get updated? IfDat auto-syncs new files if it is still running. If you exited the process, you can run the same command you ran before (with the same link and directory) and the files will update!</p>\n<h4 id=\"download-options\">Download Options</h4>\n<p><code>dat &lt;dat-link&gt; &lt;directory&gt; --exit</code> </p>\n<p>After files are done downloading, exit the process. If you are connected to a live Dat you will not get new files unless you run the command again.</p>\n<p><code>dat &lt;dat-link&gt; &lt;directory&gt; --port=1234</code></p>\n<p>Set your inbound TCP port. This is useful for debugging or on restrictive networks. </p>\n<h3 id=\"live-sync-snapshots\">Live Sync &amp; Snapshots</h3>\n<p>Dat makes it easy to share a folder and send files as they are changed or added. By default, when you share using Dat you will be in <em>live sync</em> mode. Anyone connected to you will receive file changes as you make them.</p>\n<p>When downloading a Dat, you do not have to worry about live mode. It will automatically start in the right mode based on the link. </p>\n<p>To create a snapshot when sharing files use the snapshot option: <code>dat my_data/ --snapshot</code>. A snapshot reads the files and creates a specific link that will never change (as long as the files don&#39;t change).</p>\n<h3 id=\"dat-metadata-storage\">Dat Metadata Storage</h3>\n<p>When you run a command, Dat creates a hidden folder, <code>.dat</code>, in the directory specified. Similar to git, this folder stores information about your Dat. File metadata and the Dat link are stored to make it easy to continue sharing or downloading the same directory.</p>\n<h2 id=\"troubleshooting\">Troubleshooting</h2>\n<p>We&#39;ve provided some troubleshooting tips based on issues users have seen. Please <a href=\"https://github.com/datproject/dat/issues/new\">open an issue</a> or ask us in our <a href=\"https://gitter.im/datproject/discussions\">chat room</a> if you need help troubleshooting and it is not covered here.</p>\n<p>If you have trouble sharing/downloading in a directory with a <code>.dat</code> folder, try deleting it and running the command again.</p>\n<h4 id=\"check-your-dat-version\">Check Your Dat Version</h4>\n<p>Knowing the version is really helpful if you run into any bugs, and will help us troubleshoot your issue.</p>\n<p>Check your Dat version:</p>\n<pre><code><span class=\"hljs-attribute\">dat -v</span>\n</code></pre><p>You should see the Dat semantic version printed, e.g. 11.1.2.</p>\n<h3 id=\"installation-issues\">Installation Issues</h3>\n<h4 id=\"node-npm\">Node &amp; npm</h4>\n<p>To use the Dat command line tool you will need to have <a href=\"https://docs.npmjs.com/getting-started/installing-node\">node and npm installed</a>. Make sure those are installed correctly before installing Dat. You can check the version of each:</p>\n<pre><code><span class=\"hljs-keyword\">node</span> <span class=\"hljs-title\">-v</span>\nnpm -v\n</code></pre><h4 id=\"global-install\">Global Install</h4>\n<p>The <code>-g</code> option installs Dat globally allowing you to run it as a command. Make sure you installed with that option.</p>\n<ul>\n<li>If you receive an <code>EACCES</code> error, read <a href=\"https://docs.npmjs.com/getting-started/fixing-npm-permissions\">this guide</a> on fixing npm permissions.</li>\n<li>If you receive an <code>EACCES</code> error, you may also install dat with sudo: <code>sudo npm install -g dat</code>.</li>\n<li>Have other installation issues? Let us know, you can <a href=\"https://github.com/datproject/dat/issues/new\">open an issue</a> or ask us in our <a href=\"https://gitter.im/datproject/discussions\">chat room</a>.</li>\n</ul>\n<h3 id=\"networking-issues\">Networking Issues</h3>\n<p>Networking capabilities vary widely with each computer, network, and configuration. Whenever you run a Dat there are several steps to share or download files with peers:</p>\n<ol>\n<li>Discovering Peers</li>\n<li>Connecting to Peers</li>\n<li>Sending &amp; Receiving Data</li>\n</ol>\n<p>With successful use, Dat will show <code>Connected to 1 peer</code> after connection. If you never see a peer connected your network may be restricting discovery or connection. Please try using the <code>dat --doctor</code> command (see below) between the two computers not connecting. This will help troubleshoot the networks.</p>\n<ul>\n<li>Dat may <a href=\"https://github.com/datproject/dat/issues/503\">have issues</a> connecting if you are using iptables.</li>\n</ul>\n<h4 id=\"dat-doctor\">Dat Doctor</h4>\n<p>We&#39;ve included a tool to identify network issues with Dat, the Dat doctor. You will need to run the command on both the computers you are trying to share data between. On the first computer, run:</p>\n<pre><code>dat <span class=\"hljs-comment\">--doctor</span>\n</code></pre><p>The doctor will print out a command to run on the other computer, <code>dat --doctor=&lt;64-character-string&gt;</code>. The doctor will run through the key steps in the process of sharing data between computers to help identify the issue.</p>\n<hr>\n<h2 id=\"for-developers\">For Developers</h2>\n<p>Please see <a href=\"https://github.com/datproject/dat/blob/master/CONTRIBUTING.md\">guidelines on contributing</a> before submitting an issue or PR.</p>\n<h3 id=\"installing-from-source\">Installing from source</h3>\n<p>Clone this repository and in a terminal inside of the folder you cloned run this command:</p>\n<pre><code><span class=\"hljs-built_in\">npm</span> link\n</code></pre><p>This should add a <code>dat</code> command line command to your PATH. Now you can run the <code>dat</code> command to try it out.</p>\n<p>The contribution guide also has more tips on our <a href=\"https://github.com/datproject/dat/blob/master/CONTRIBUTING.md#development-workflow\">development workflow</a>.</p>\n<h3 id=\"internal-api\">Internal API</h3>\n<p><strong>Note: we are in the process of moving the js library to a separate module, <a href=\"https://github.com/joehand/dat-js\">joehand/dat-js</a>.</strong></p>\n<h4 id=\"dat-download-cb-\">dat.download(cb)</h4>\n<p>download <code>dat.key</code> to <code>dat.dir</code></p>\n<h4 id=\"dat-share-cb-\">dat.share(cb)</h4>\n<p>share directory specified in <code>opts.dir</code></p>\n<p>Swarm is automatically joined for key when it is available for share &amp; download (<code>dat.joinSwarm()</code>).</p>\n<h4 id=\"events\">Events</h4>\n<h5 id=\"initialization\">Initialization</h5>\n<ul>\n<li><code>dat.on(&#39;ready&#39;)</code>: db created/read &amp; hyperdrive archive created.</li>\n<li><code>dat.on(&#39;error&#39;)</code>: init/database error</li>\n</ul>\n<h5 id=\"swarm\">Swarm</h5>\n<p>Swarm events and stats are available from <code>dat.swarm</code>.</p>\n<ul>\n<li><code>dat.on(&#39;connecting&#39;)</code>: looking for peers</li>\n<li><code>dat.on(&#39;swarm-update&#39;)</code>: peer number changed</li>\n</ul>\n<h5 id=\"share\">Share</h5>\n<ul>\n<li><code>dat.on(&#39;key&#39;)</code>: key is available (this is at archive-finalized for snapshots)</li>\n<li><code>dat.on(&#39;append-ready&#39;)</code>: file count available (<code>dat.appendStats</code>), about to start appending to hyperdrive</li>\n<li><code>dat.on(&#39;file-added&#39;)</code>: file added to archive</li>\n<li><code>dat.on(&#39;upload&#39;, data)</code>: piece of data uploaded</li>\n<li><code>dat.on(&#39;archive-finalized&#39;)</code>: archive finalized, all files appended</li>\n<li><code>dat.on(&#39;archive-updated&#39;)</code>: live archive changed</li>\n</ul>\n<h5 id=\"download\">Download</h5>\n<ul>\n<li><code>dat.on(&#39;key&#39;)</code>: key is available</li>\n<li><code>dat.on(&#39;file-downloaded&#39;, file)</code>: file downloaded</li>\n<li><code>dat.on(&#39;download&#39;, data)</code>: piece of data downloaded</li>\n<li><code>dat.on(&#39;upload&#39;, data)</code>: piece of data uploaded</li>\n<li><code>dat.on(&#39;download-finished&#39;)</code>: archive download finished</li>\n</ul>\n<h4 id=\"other-api\">Other API</h4>\n<ul>\n<li><code>dat.key</code>: key</li>\n<li><code>dat.dir</code>: directory</li>\n<li><code>dat.datPath</code>: path to .dat folder</li>\n<li><code>dat.db</code>: database instance</li>\n<li><code>dat.swarm</code>: hyperdrive-archive-swarm instance</li>\n<li><code>dat.archive</code>: hyperdrive archive</li>\n<li><code>dat.snapshot</code> (boolean): sharing snapshot archive</li>\n</ul>\n<h4 id=\"internal-stats\">Internal Stats</h4>\n<pre><code class=\"lang-javascript\">\ndat.stats = {\n    filesTotal: <span class=\"hljs-number\">0</span>, <span class=\"hljs-comment\">// Latest archive size</span>\n    bytesTotal: <span class=\"hljs-number\">0</span>,\n    bytesUp: <span class=\"hljs-number\">0</span>,\n    bytesDown: <span class=\"hljs-number\">0</span>,\n    rateUp: speedometer(),\n    rateDown: speedometer()\n}\n\n<span class=\"hljs-comment\">// Calculated on share before append starts. Used for append progress.</span>\n<span class=\"hljs-comment\">// Not updated for live.</span>\ndat.appendStats = {\n    files: <span class=\"hljs-number\">0</span>,\n    bytes: <span class=\"hljs-number\">0</span>,\n    dirs: <span class=\"hljs-number\">0</span>\n}\n</code></pre>\n<h2 id=\"license\">License</h2>\n<p>BSD-3-Clause</p>\n","how-dat-works":"<h1 id=\"how-dat-works\">How Dat Works</h1>\n<p>Note this is about Dat 1.0 and later. For historical info about earlier incarnations of Dat (Alpha, Beta) check out <a href=\"http://dat-data.com/blog/2016-01-19-brief-history-of-dat\">this post</a>.</p>\n<p>When someone starts downloading data with the <a href=\"https://github.com/datproject/dat\">Dat command-line tool</a>, here&#39;s what happens:</p>\n<h2 id=\"phase-1-source-discovery\">Phase 1: Source discovery</h2>\n<p>Dat links look like this: <code>dat.land/c3fcbcdcf03360529b47df32ccfb9bc1d7f64aaaa41cca43ca9ac7f6778db8da</code>. The domain, dat.land, is there so if someone opens the link in a browser we can provide them with download instructions, and as an easy way for people to visually distinguish and remember Dat links. Dat itself doesn&#39;t actually use the dat.land part, it just needs the last part of the link which is a fingerprint of the data that is being shared. The first thing that happens when you go to download data using one of these links is you ask various discovery networks if they can tell you where to find sources that have a copy of the data you need.</p>\n<p>Source discovery means finding the IP and port of all the known data sources online that have a copy of that data you are looking for. You can then connect to them and begin exchanging data. By introducing this discovery phase we are able to create a network where data can be discovered even if the original data source disappears.</p>\n<p>The discovery protocols we use are <a href=\"https://en.wikipedia.org/wiki/Name_server\">DNS name servers</a>, <a href=\"https://en.wikipedia.org/wiki/Multicast_DNS\">Multicast DNS</a> and the <a href=\"https://en.wikipedia.org/wiki/Mainline_DHT\">Kademlia Mainline Distributed Hash Table</a> (DHT). Each one has pros and cons, so we combine all three to increase the speed and reliability of discovering data sources.</p>\n<p>We run a <a href=\"https://www.npmjs.com/package/dns-discovery\">custom DNS server</a> that Dat clients use (in addition to specifying their own if they need to), as well as a <a href=\"https://github.com/bittorrent/bootstrap-dht\">DHT bootstrap</a> server. These discovery servers are the only centralized infrastructure we need for Dat to work over the Internet, but they are redundant, interchangeable, never see the actual data being shared, and anyone can run their own and Dat will still work even if they all go down. If this happens discovery will just be manual (e.g. manually sharing IP/ports). Every data source that has a copy of the data also advertises themselves across these discovery networks.</p>\n<p>The discovery logic itself is handled by a module that we wrote called <a href=\"http://npmjs.org/discovery-channel\">discovery-channel</a>, which wraps other modules we wrote to implement DNS and DHT logic into a single interface. We can give the Dat link we want to download to discovery-channel and we will get back all the sources it finds across the various discovery networks.</p>\n<h2 id=\"phase-2-source-connections\">Phase 2: Source connections</h2>\n<p>Up until this point we have just done searches to find who has the data we need. Now that we know who should talk to, we have to connect to them. We use either <a href=\"https://en.wikipedia.org/wiki/Transmission_Control_Protocol\">TCP</a> or <a href=\"https://en.wikipedia.org/wiki/Micro_Transport_Protocol\">UTP</a> sockets for the actual peer to peer connections. UTP is nice because it is designed to <em>not</em> take up all available bandwidth on a network (e.g. so that other people sharing your wifi can still use the Internet). We then layer on our own file sharing protocol on top, called <a href=\"https://github.com/mafintosh/hypercore\">Hypercore</a>. We also are working on WebRTC support so we can incorporate Browser and Electron clients for some really open web use cases.</p>\n<p>When we get the IP and port for a potential source we try to connect using all available protocols (currently TCP and sometimes UTP) and hope one works. If one connects first, we abort the other ones. If none connect, we try again until we decide that source is offline or unavailable to use and we stop trying to connect to them. Sources we are able to connect to go into a list of known good sources, so that if our Internet connection goes down we can use that list to reconnect to our good sources again quickly.</p>\n<p>If we get a lot of potential sources we pick a handful at random to try and connect to and keep the rest around as additional sources to use later in case we decide we need more sources. A lot of these are parameters that we can tune for different scenarios later, but have started with some best guesses as defaults.</p>\n<p>The connection logic is implemented in a module called <a href=\"https://www.npmjs.com/package/discovery-swarm\">discovery-swarm</a>. This builds on discovery-channel and adds connection establishment, management and statistics. You can see stats like how many sources are currently connected, how many good and bad behaving sources you&#39;ve talked to, and it automatically handles connecting and reconnecting to sources for you. Our UTP support is implemented in the module <a href=\"https://www.npmjs.com/package/utp-native\">utp-native</a>.</p>\n<h2 id=\"phase-3-data-exchange\">Phase 3: Data exchange</h2>\n<p>So now we have found data sources, have connected to them, but we havent yet figured out if they <em>actually</em> have the data we need. This is where our file transfer protocol <a href=\"https://www.npmjs.com/package/hyperdrive\">Hyperdrive</a> comes in.</p>\n<p>The short version of how Hyperdrive works is: It breaks file contents up in to pieces, hashes each piece and then constructs a <a href=\"https://en.wikipedia.org/wiki/Merkle_tree\">Merkle tree</a> out of all of the pieces. This ultimately gives us the Dat link, which is the top level hash of the Merkle tree.</p>\n<p>Here&#39;s the long version:</p>\n<p>Hyperdrive shares and synchronizes a set of files, similar to rsync or Dropbox. For each file in the drive we use a technique called Rabin fingerprinting to break the file up into pieces. Rabin fingerprints are a specific strategy for what is called Content Defined Chunking. Here&#39;s an example:</p>\n<p><img src=\"https://raw.githubusercontent.com/datproject/docs/master/assets/cdc.png\" alt=\"cdc diagram\"></p>\n<p>We have configured our Rabin chunker to produce chunks that are around 16KB on average. So if you share a folder containing a single 1MB JPG you will get around 64 chunks.</p>\n<p>After feeding the file contents through the chunker, we take the chunks and calculate the SHA256 hash of each one. We then arrange these hashes into a special data structure we developed that we call the Flat In-Order Merkle Tree.</p>\n<h3 id=\"flat-in-order-merkle-tree\">Flat In-Order Merkle Tree</h3>\n<pre><code>      <span class=\"hljs-number\">3</span>\n  <span class=\"hljs-number\">1</span>       <span class=\"hljs-number\">5</span>\n<span class=\"hljs-number\">0</span>   <span class=\"hljs-number\">2</span>   <span class=\"hljs-number\">4</span>   <span class=\"hljs-number\">6</span>\n</code></pre><p>Want to go lower level? Check out <a href=\"https://github.com/datproject/docs/blob/master/docs/hyperdrive_spec.md#how-hypercore-works\">How Hypercore Works</a></p>\n<p>When two peers connect to each other and begin speaking the hyperdrive protocol they can efficiently determine if they have chunks the other one wants, and begin exchanging those chunks directly. Hyperdrive gives us the flexibility to have random access to any portion of a file while still verifying the other side isn&#39;t sending us bad data. We can also download different sections of files in parallel across all of the sources simultaneously, which increases overall download speed dramatically.</p>\n<h2 id=\"phase-4-data-archiving\">Phase 4: Data archiving</h2>\n<p>So now that you&#39;ve discovered, connected, and downloaded a copy of some data you can stick around for a while and serve up copies of the data to others who come along and want to download it.</p>\n<p>The first phase, source discovery, is actually an ongoing process. When you first search for data sources you only get the sources available at the time you did your search, so we make sure to perform discovery searches as often is practically possible to make sure new sources can be found and connected to.</p>\n<p>Every user of Dat is a source as long as they have 1 or more chunks of data. Just like with other decentralized file sharing protocols you will notice Dat may start uploading data before it finishes downloading.</p>\n<p>If the original source who shared the data goes offline it&#39;s OK, as long as other sources are available. As part of the mission as a not-for-profit we will be working with various institutions to ensure there are always sources available to accept new copies of data and stay online to serve those copies for important datasets such as scientific research data, open government data etc.</p>\n<p>Because Dat is built on a foundation of strong cryptographic data integrity and content addressable storage it gives us the possibility of implementing some really interesting version control techniques in the future. In that scenario archival data sources could choose to offer more disk space and archive every version of a Dat repository, whereas normal Dat users might only download and share one version that they happen to be interested in.</p>\n<h2 id=\"implementations\">Implementations</h2>\n<p>This covered a lot of ground. If you want to go deeper and see the implementations we are using in the <a href=\"https://github.com/datproject/dat\">Dat command-line tool</a>, go to the <a href=\"/ecosystem\">Dependencies</a> page</p>\n","faq":"<h1 id=\"faq\">FAQ</h1>\n<h2 id=\"is-dat-different-from-hyperdrive-\">Is Dat different from hyperdrive?</h2>\n<p><a href=\"http://github.com/mafintosh/hyperdrive\">Hyperdrive</a> is a file sharing network originally built for dat.</p>\n<p>Dat uses hyperdrive and a variety of other modules. Hyperdrive and Dat are compatible with each other but hyperdrive is able to make more lower-level decisions. Dat presents a user-friendly interface and ecosystem for scientists, researchers, and data analysts.</p>\n<h2 id=\"how-is-dat-different-than-ipfs-\">How is Dat different than IPFS?</h2>\n<h2 id=\"is-there-javascript-implementation-\">Is there JavaScript implementation?</h2>\n<p>Yes, find it on GitHub: <a href=\"http://github.com/joehand/dat-js\">dat-js</a>.</p>\n<h2 id=\"is-there-any-non-persistent-js-dat-implementation-\">Is there any non-persistent JS Dat implementation?</h2>\n<p>Not yet. Want to work on it? Start here to learn more: <a href=\"http://github.com/joehand/dat-js\">dat-js</a>.</p>\n<h2 id=\"is-there-an-online-dataset-registry-like-github-\">Is there an online dataset registry, like GitHub?</h2>\n<p>Yes, but currently under heavy construction. See <a href=\"http://github.com/datproject/dat.land\">dat.land</a></p>\n<h2 id=\"is-there-a-desktop-application-\">Is there a desktop application?</h2>\n<p>Yes, but currently under heavy construction. See <a href=\"http://github.com/juliangruber/dat-desktop\">dat-desktop</a></p>\n<h2 id=\"do-you-plan-to-have-python-or-r-or-other-third-party-language-integrations-\">Do you plan to have Python or R or other third-party language integrations?</h2>\n<p>Yes. We are currently developing the serialization format (like .zip archives) called <a href=\"/sleep\">SLEEP</a> so that third-party libraries can read data without reimplementing all of hyperdrive (which is node-only).</p>\n","browser":"<h1 id=\"browser-dat\">Browser Dat</h1>\n<p>Dat is written in JavaScript, so naturally, it can work entirely in the browser! The great part about this is that as more peers connect to each other in their client, the site assets will be shared between users rather hitting any sever.</p>\n<p>This approach is similar to that used in Feross&#39; <a href=\"http://webtorrent.io\">Web Torrent</a>. The difference is that Dat links can be rendered live and read dynamically, whereas BitTorrent links are static. In other words, the original owner can update a Dat and all peers will receive the updates automatically.</p>\n<p>OK, now for the goods:</p>\n<h2 id=\"hyperdrive\">Hyperdrive</h2>\n<p>For now, there isn&#39;t an easy dat implementation for the browser. We have a simpler interface for node at <a href=\"http://github.com/joehand/dat-js\">dat-js</a>.  </p>\n<p>If you want to get your hands dirty, here is the lower-level implementations to create a browser-based hyperdrive instance that will be compatible with dat.</p>\n<p>Hyperdrive will save the metadata (small) and the content (potentially large) separately. You can control where both of these are saved and how they are retrieved. These tweaks have huge impact on performance, stability, and user experience, so it&#39;s important to understand the tradeoffs.</p>\n<p>The first argument to <code>hyperdrive</code> will be the main database for all metadata and content. The <code>file</code> option can be supplied to specify how to read and write content data. If a <code>file</code> option is not supplied, the content will also be stored in the main database.</p>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> hyperdrive = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'hyperdrive'</span>)\n<span class=\"hljs-keyword\">var</span> drive = hyperdrive(&lt;YOUR DATABASE HERE&gt;, {file: &lt;CONTENT DATABASE HERE&gt;})\n</code></pre>\n<h3 id=\"the-most-basic-example\">The most basic example</h3>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> hyperdrive = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'hyperdrive'</span>)\n<span class=\"hljs-keyword\">var</span> memdb = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'memdb'</span>)\n<span class=\"hljs-keyword\">var</span> swarm = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'hyperdrive-archive-swarm'</span>)\n\n<span class=\"hljs-keyword\">var</span> drive = hyperdrive(memdb())\n<span class=\"hljs-keyword\">var</span> archive = drive.createArchive()\n\n<span class=\"hljs-comment\">// joins the webrtc swarm</span>\nswarm(archive)\n\n<span class=\"hljs-comment\">// this key can be used in another browser tab</span>\n<span class=\"hljs-built_in\">console</span>.log(archive.key)\n</code></pre>\n<p>That&#39;s it. Now you are serving a dat-compatible hyperdrive from the browser. In another browser tab, you can connect to the swarm and download the data by using the same code as above. Just make sure to reference the hyperdrive you created before by using <code>archive.key</code> as the first argument:</p>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> drive = hyperdrive(memdb())\n<span class=\"hljs-keyword\">var</span> archive = drive.createArchive(<span class=\"xml\"><span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">KEY</span> <span class=\"hljs-attr\">HERE</span>&gt;</span>)\n\n// joins the webrtc swarm\nswarm(archive)</span>\n</code></pre>\n<p>For the full hyperdrive API and more examples, see the full <a href=\"/hyperdrive\">hyperdrive documentation</a>.</p>\n<h2 id=\"patterns-for-browser-based-data-storage-and-transfer\">Patterns for browser-based data storage and transfer</h2>\n<p>There are a million different ways to store and retrieve data in the browser, and all have their pros and cons depending on the use case. We&#39;ve compiled a variety of examples here to try to make it as clear as possible.</p>\n<h3 id=\"in-memory-storage\">In-memory storage</h3>\n<p>When the user refreshes their browser, they will lose all previous keys and data. The user will no longer be able to write more data into the hyperdrive.</p>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> hyperdrive = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'hyperdrive'</span>)\n<span class=\"hljs-keyword\">var</span> memdb = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'memdb'</span>)\n\n<span class=\"hljs-keyword\">var</span> drive = hyperdrive(memdb())\n<span class=\"hljs-keyword\">var</span> archive = drive.createArchive()\n</code></pre>\n<h3 id=\"persistence-with-indexeddb\">Persistence with IndexedDB</h3>\n<p>When the user refreshes their browser, their keys will be stored and retrieved.</p>\n<p>The best module to use for this is <code>level-browserify</code>:</p>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> hyperdrive = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'hyperdrive'</span>)\n<span class=\"hljs-keyword\">var</span> level = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'level-browserify'</span>)\n\n<span class=\"hljs-keyword\">var</span> drive = hyperdrive(level(<span class=\"hljs-string\">'./mydb'</span>))\n<span class=\"hljs-keyword\">var</span> archive = drive.createArchive()\n</code></pre>\n<p>This will store all of the hyperdrive metadata <em>as well as content</em> in the client&#39;s IndexedDB. This is pretty inefficient. You&#39;ll notice that with this method that <em>IndexedDB will start to become full and the hyperdrive database will stop working as usual</em>.</p>\n<h3 id=\"persistent-metadata-in-indexeddb-with-in-memory-file-content\">Persistent metadata in IndexedDB with in-memory file content</h3>\n<p>If you use level-browserify to store file content, you will quickly notice performance issues with large files. Writes after about 3.4GB will become blocked by the browser. You can avoid this by using in-memory storage for the file content.</p>\n<p>To do this, use <a href=\"https://github.com/mafintosh/random-access-file-reader\">random-access-file-reader</a> as the file writer and reader for the hyperdrive.</p>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> hyperdrive = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'hyperdrive'</span>)\n<span class=\"hljs-keyword\">var</span> level = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'level-browserify'</span>)\n<span class=\"hljs-keyword\">var</span> ram = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'random-access-memory'</span>)\n\n<span class=\"hljs-keyword\">var</span> drive = hyperdrive(level(<span class=\"hljs-string\">'./mydb'</span>))\n<span class=\"hljs-keyword\">var</span> archive = drive.createArchive({\n  file: ram\n})\n</code></pre>\n<p>This works well for most cases until you want to write a file to hyperdrive that doesn&#39;t fit in memory.</p>\n<h3 id=\"writing-large-files-from-the-filesystem-to-the-browser\">Writing large files from the filesystem to the browser</h3>\n<p>File writes are limited to the available memory on the machine. Files are buffered (read: copied) <em>into memory</em> while being written to the hyperdrive instance. This isn&#39;t ideal, but works as long as file sizes stay below system RAM limits.</p>\n<p>To fix this problem, you can use <a href=\"https://github.com/mafintosh/random-access-file-reader\">random-access-file-reader</a> to read the files directly from the filesystem instead of buffering them into memory.</p>\n<p>Here we will create a simple program that creates a file &#39;drag and drop&#39; element on <code>document.body.</code> When the user drags files onto the element, pointers to them will be added to the <code>files</code> object.</p>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> drop = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'drag-drop'</span>)\n\n<span class=\"hljs-keyword\">var</span> files = {}\n\ndrop(<span class=\"hljs-built_in\">document</span>.body, <span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\">files</span>) </span>{\n  files[files[<span class=\"hljs-number\">0</span>].name] = files[<span class=\"hljs-number\">0</span>]\n})\n</code></pre>\n<p>Okay, that&#39;s pretty easy. Now let&#39;s add the hyperdrive. Hyperdrive needs to know what the pointers are, so when a peer asks for the file, it can read from the filesystem rather from memory. In other words, we are telling the hyperdrive which files it should index.</p>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> drop = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'drag-drop'</span>)\n<span class=\"hljs-keyword\">var</span> reader = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'random-access-file-reader'</span>)\n<span class=\"hljs-keyword\">var</span> hyperdrive = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'hyperdrive'</span>)\n<span class=\"hljs-keyword\">var</span> memdb = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'memdb'</span>)\n\n<span class=\"hljs-keyword\">var</span> files = {}\n\n<span class=\"hljs-keyword\">var</span> drive = hyperdrive(memdb())\n\n<span class=\"hljs-keyword\">var</span> archive = drive.createArchive({\n  file: <span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\">name</span>) </span>{\n    <span class=\"hljs-keyword\">return</span> reader(files[name])\n  }\n})\n\ndrop(<span class=\"hljs-built_in\">document</span>.body, <span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\">files</span>) </span>{\n  files[files[<span class=\"hljs-number\">0</span>].name] = files[<span class=\"hljs-number\">0</span>]\n  <span class=\"hljs-comment\">// will index the file using hyperdrive without reading the entire file into ram</span>\n  archive.append(files[<span class=\"hljs-number\">0</span>].name)\n})\n</code></pre>\n<h2 id=\"unsatisfied-\">Unsatisfied?</h2>\n<p>If you still aren&#39;t satisfied, come over to our community channels and ask a question. It&#39;s probably a good one and we should cover it in the documentation. Thanks for trying it out, and PRs always welcome!</p>\n<p><a href=\"http://webchat.freenode.net/?channels=dat\"><img src=\"https://img.shields.io/badge/irc%20channel-%23dat%20on%20freenode-blue.svg\" alt=\"#dat IRC channel on freenode\"></a>\n<a href=\"https://gitter.im/datproject/discussions?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge\"><img src=\"https://badges.gitter.im/Join%20Chat.svg\" alt=\"datproject/discussions\"></a></p>\n","diy-dat":"<h1 id=\"build-with-dat\">Build with Dat</h1>\n<p>In this guide, we will show how to develop applications with the Dat ecosystem. The Dat ecosystem is very modular making it easy to develop custom applications using Dat.</p>\n<p>For any Dat application, there are three essential modules you will start with: </p>\n<ol>\n<li><a href=\"https://npmjs.org/hyperdrive\">hyperdrive</a> for file synchronization and versioning</li>\n<li><a href=\"https://npmjs.org/hyperdrive-archive-swarm\">hyperdrive-archive-swarm</a> helps discover and connect to peers over local networks and the internet</li>\n<li>A <a href=\"https://npmjs.org/level\">LevelDB</a> compatible database for storing metadata.</li>\n</ol>\n<p>The <a href=\"https://npmjs.org/dat\">Dat CLI</a> module itself combines these modules and wraps them in a command-line API. These modules can be swapped out for a similarly compatible module, such as switching LevelDb for <a href=\"https://github.com/juliangruber/memdb\">MemDB</a> (which we do in the first example). More details on how these module work together are available in <a href=\"how-dat-works.md\">How Dat Works</a>.</p>\n<h2 id=\"getting-started\">Getting Started</h2>\n<p>You will need node and npm installed to build with Dat. <a href=\"https://github.com/datproject/dat/blob/master/CONTRIBUTING.md#development-workflow\">Read more</a> about our development work flow to learn how we manage our module dependencies during development.</p>\n<h2 id=\"module-1-download-a-file\">Module #1: Download a File</h2>\n<p>Our first module will download files from a Dat link entered by the user. View the code for this module on <a href=\"https://github.com/joehand/diy-dat-examples/tree/master/module-1\">Github</a>.</p>\n<pre><code class=\"lang-bash\">mkdir module-1 &amp;&amp; <span class=\"hljs-built_in\">cd</span> module-1\nnpm init\nnpm install --save hyperdrive memdb hyperdrive-archive-swarm\ntouch index.js\n</code></pre>\n<p>For this example, we will use <a href=\"https://github.com/juliangruber/memdb\">memdb</a> for our database (keeping the metadata in memory rather than on the file system). In your <code>index.js</code> file, require the main modules and set them up:</p>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> memdb = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'memdb'</span>)\n<span class=\"hljs-keyword\">var</span> Hyperdrive = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'hyperdrive'</span>)\n<span class=\"hljs-keyword\">var</span> Swarm = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'hyperdrive-archive-swarm'</span>)\n\n<span class=\"hljs-keyword\">var</span> link = process.argv[<span class=\"hljs-number\">2</span>] <span class=\"hljs-comment\">// user inputs the dat link</span>\n\n<span class=\"hljs-keyword\">var</span> db = memdb()\n<span class=\"hljs-keyword\">var</span> drive = Hyperdrive(db)\n<span class=\"hljs-keyword\">var</span> archive = drive.createArchive(link)\n<span class=\"hljs-keyword\">var</span> swarm = Swarm(archive)\n</code></pre>\n<p>Notice, the user will input the link for the second argument The easiest way to get a file from a hyperdrive archive is to make a read stream. <code>archive.createFileReadStream</code> accepts the index number of filename for the first argument. To display the file, we can create a file stream and pipe it to <code>process.stdout</code>.</p>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> stream = archive.createFileReadStream(<span class=\"hljs-number\">0</span>) <span class=\"hljs-comment\">// get the first file</span>\nstream.pipe(process.stdout)\n</code></pre>\n<p>Now, you can run the module! To download the first file from our docs Dat, run:</p>\n<pre><code><span class=\"hljs-keyword\">node</span> <span class=\"hljs-title\">index</span>.js <span class=\"hljs-number\">395</span>e3467bb5b2fa083ee8a4a17a706c5574b740b5e1be6efd65754d4ab7328c2\n</code></pre><p>You should see the first file in our docs repo.</p>\n<h4 id=\"module-1-bonus-display-any-file-in-the-dat\">Module #1 Bonus: Display any file in the Dat</h4>\n<p>With a few more lines of code, the user can enter a file to display from the Dat link.</p>\n<p>Challenge: create a module that will allow the user to input a Dat link and a filename: <code>node bonus.js &lt;dat-link&gt; &lt;filename&gt;</code>. The module will print out that file from the link, as we did above. To get a specific file you can change the file stream to use the filename instead of the index number:</p>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> stream = archive.createFileReadStream(fileName)\n</code></pre>\n<p>Once you are finished, see if you can view this file by running:</p>\n<pre><code class=\"lang-bash\">node bonus.js 395e3467bb5b2fa083ee8a4a17a706c5574b740b5e1be6efd65754d4ab7328c2 cookbook/diy-dat.md\n</code></pre>\n<p><a href=\"https://github.com/joehand/diy-dat-examples/blob/master/module-1/bonus.js\">See how we coded it</a>. </p>\n<h2 id=\"module-2-download-all-files-to-computer\">Module #2: Download all files to computer</h2>\n<p>This module will build on the last module. Instead of displaying a single file, we will download all of the files from a Dat into a local directory. View the code for this module on <a href=\"https://github.com/joehand/diy-dat-examples/tree/master/module-2\">Github</a>.</p>\n<p>To download the files to the file system, instead of to a database, we will use the <code>file</code> option in <code>hyperdrive</code> and the <a href=\"http://npmjs.org/random-access-file\">random-access-file</a> module. We will also learn two new archive functions that make handling all the files a bit easier than the file stream in module #1. </p>\n<p>Setup will be the same as before (make sure you install random-access-file and stream-each this time): </p>\n<pre><code class=\"lang-bash\">mkdir module-2 &amp;&amp; <span class=\"hljs-built_in\">cd</span> module-2\nnpm init\nnpm install --save hyperdrive memdb hyperdrive-archive-swarm random-access-file stream-each\ntouch index.js\n</code></pre>\n<p>The first part of the module will look the same. We will add random-access-file (and <a href=\"http://npmjs.org/stream-each\">stream-each</a> to make things easier). The only difference is that we have to specify the <code>file</code> option when creating our archive:</p>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> memdb = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'memdb'</span>)\n<span class=\"hljs-keyword\">var</span> Hyperdrive = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'hyperdrive'</span>)\n<span class=\"hljs-keyword\">var</span> Swarm = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'hyperdrive-archive-swarm'</span>)\n<span class=\"hljs-keyword\">var</span> raf = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'random-access-file'</span>) <span class=\"hljs-comment\">// this is new!</span>\n<span class=\"hljs-keyword\">var</span> each = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'stream-each'</span>)\n\n<span class=\"hljs-keyword\">var</span> link = process.argv[<span class=\"hljs-number\">2</span>]\n\n<span class=\"hljs-keyword\">var</span> db = memdb()\n<span class=\"hljs-keyword\">var</span> drive = Hyperdrive(db)\n<span class=\"hljs-keyword\">var</span> archive = drive.createArchive(link, {\n  file: <span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\">name</span>) </span>{\n    <span class=\"hljs-keyword\">return</span> raf(path.join(<span class=\"hljs-string\">'download'</span>, name)) <span class=\"hljs-comment\">// download into a \"download\" dir</span>\n  }\n})\n<span class=\"hljs-keyword\">var</span> swarm = Swarm(archive)\n</code></pre>\n<p>Now that we are setup, we can work with the archive. The <code>archive.download</code> function downloads the file content (to wherever you specified in the file option). To download all the files, we will need a list of files and then we will call download on each of them. <code>archive.list</code> will give us the list of the files. We use the stream-each module to make it easy to iterate over each item in the archive, then exit when the stream is finished.</p>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> stream = archive.list({live: <span class=\"hljs-literal\">false</span>}) <span class=\"hljs-comment\">// Use {live: false} for now to make the stream easier to handle.</span>\neach(stream, <span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\">entry, next</span>) </span>{\n  archive.download(entry, <span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\">err</span>) </span>{\n    <span class=\"hljs-keyword\">if</span> (err) <span class=\"hljs-keyword\">return</span> <span class=\"hljs-built_in\">console</span>.error(err)\n    <span class=\"hljs-built_in\">console</span>.log(<span class=\"hljs-string\">'downloaded'</span>, entry.name)\n    next()\n  })\n}, <span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\"></span>) </span>{\n  process.exit(<span class=\"hljs-number\">0</span>)\n})\n</code></pre>\n<p>You should be able to run the module and see all our docs files in the <code>download</code> folder:</p>\n<pre><code class=\"lang-bash\">node index.js 395e3467bb5b2fa083ee8a4a17a706c5574b740b5e1be6efd65754d4ab7328c2\n</code></pre>\n<h2 id=\"module-3-sharing-a-file\">Module #3: Sharing a file</h2>\n<h2 id=\"module-4-sharing-a-directory-of-files\">Module #4: Sharing a directory of files</h2>\n","ecosystem":"<h1 id=\"dat-module-ecosystem\">Dat Module Ecosystem</h1>\n<p>We have built and contributed to a variety of modules that support our work on Dat as well as the larger data and code ecosystem. Feel free to go deeper and see the implementations we are using in the <a href=\"https://github.com/datproject/dat\">Dat command-line tool</a> and the <a href=\"https://github.com/joehand/dat-js\">Dat-js</a>, the javascript Dat module.</p>\n<p>Dat embraces the Unix philosophy: a modular design with composable parts. All of the pieces can be replaced with alternative implementations as long as they implement the abstract API.</p>\n<h2 id=\"public-interface-modules-\">Public Interface Modules:</h2>\n<ul>\n<li><a href=\"dat\">dat</a> - the command line interface for sharing and downloading files</li>\n<li><a href=\"dat.land\">dat.land</a> - repository for the <a href=\"https://dat.land\">dat.land</a> website, a public data registry and sharing</li>\n<li><a href=\"dat-desktop\">dat desktop</a> - dat desktop application for sharing and downloading files</li>\n</ul>\n<h2 id=\"file-and-block-component-modules-\">File and Block Component Modules:</h2>\n<ul>\n<li><a href=\"hyperdrive\">hyperdrive</a> - The file sharing network dat uses to distribute files and data. Read the technical <a href=\"hyperdrive-specification\">hyperdrive-specification</a> about how hyperdrive works.</li>\n<li><a href=\"hypercore\">hypercore</a> - exchange low-level binary blocks with many sources</li>\n<li><a href=\"https://www.npmjs.com/package/rabin\">rabin</a> - Rabin fingerprinter stream</li>\n<li><a href=\"https://www.npmjs.com/package/merkle-tree-stream\">merkle-tree-stream</a> - Used to construct Merkle trees from chunks</li>\n</ul>\n<h2 id=\"networking-peer-discovery-modules-\">Networking &amp; Peer Discovery Modules:</h2>\n<ul>\n<li><a href=\"https://www.npmjs.com/package/discovery-channel\">discovery-channel</a> - discover data sources</li>\n<li><a href=\"https://www.npmjs.com/package/discovery-swarm\">discovery-swarm</a> - discover and connect to sources</li>\n<li><a href=\"https://www.npmjs.com/package/bittorrent-dht\">bittorrent-dht</a> - use the Kademlia Mainline DHT to discover sources</li>\n<li><a href=\"https://www.npmjs.com/package/dns-discovery\">dns-discovery</a> - use DNS name servers and Multicast DNS to discover sources</li>\n<li><a href=\"https://www.npmjs.com/package/utp-native\">utp-native</a> - UTP protocol implementation</li>\n</ul>\n","sleep":"<h1 id=\"sleep-data-format\">SLEEP Data Format</h1>\n<h3 id=\"syncable-lightweight-event-emitting-persistence\">Syncable Lightweight Event Emitting Persistence</h3>\n<h3 id=\"version-2-0\">Version 2.0</h3>\n<p>SLEEP is a metadata format that allows a set of files to be accessed randomly, cryptographically verified, and dynamically updated. A SLEEP file contains content addressed file metadata in a representation specifically designed to allow partial streaming access to individual chunks of data. SLEEP files can be shared as a single downloadable file for easy distribution and we also specify a way to expose SLEEP over REST.</p>\n<p>The SLEEP format can be used in a similar way to how MD5 checksums are used over HTTP today, to verify the integrity of data downloads. Whereas MD5 or SHA are usually checksums of the whole data set, meaning consumers have to download the entire all available data before they are able to verify the integrity of any of it, SLEEP allows a set of data to be split in to many small pieces, each one getting it&#39;s own cryptographically secure checksum. This allows consumers to download subsets metadata and data, in whatever order they prefer, but allowing them to verify the integrity of each piece of data as it is accessed. It also includes cryptographic signatures allowing users to verify that data they received was created using a holder of a specific private key.</p>\n<h2 id=\"registers\">Registers</h2>\n<p>SLEEP is designed around the concept of a register, an append only list that you can trust. The contents of a register are cryptographically fingerprinted and an aggregate checksum can be used to verify the contents of the register have not been tampered with. There are various ways to calculate these aggregate checksums but the data in a register is a binary append only feed, e.g. an list of buffers that can only be updated by placing new buffers at the end of the list.</p>\n<p>SLEEP also provides an index that allows each piece of data in a register to be accessed randomly. In order to look up a specific piece of data in the register, you only need a small subset of the metadata in order to find it, making SLEEP suitable for live streaming or sparse download use cases.</p>\n<p>The register index is a Merkle tree where the leaf nodes are the hashes of the buffers in the register, and the rest of the nodes in the tree are derived Merkle hashes. A Merkle tree is defined as a tree where leaf nodes are a hash of some piece of data, and the rest of the nodes are the result of a hash of the concatenation of that nodes children.</p>\n<p>So, given a register with four values:</p>\n<pre><code><span class=\"hljs-bullet\">1. </span>a\n<span class=\"hljs-bullet\">2. </span>b\n<span class=\"hljs-bullet\">3. </span>c\n<span class=\"hljs-bullet\">4. </span>d\n</code></pre><p>To construct the register itself you concatenate all buffers, in this case resulting in &#39;abcd&#39;.</p>\n<p>The register index is constructed by creating a Merkle tree where the leaf nodes are the hash of our four values, and the rest of the nodes are the hash of the nodes two children hashes concatenated together.</p>\n<pre><code>hash(<span class=\"hljs-name\">a</span>)\n      &gt; hash(<span class=\"hljs-name\">hash</span>(<span class=\"hljs-name\">a</span>) + hash(<span class=\"hljs-name\">b</span>))\nhash(<span class=\"hljs-name\">b</span>)\n              &gt; hash(<span class=\"hljs-name\">hash</span>(<span class=\"hljs-name\">hash</span>(<span class=\"hljs-name\">a</span>) + hash(<span class=\"hljs-name\">b</span>)) + hash(<span class=\"hljs-name\">hash</span>(<span class=\"hljs-name\">c</span>) + hash(<span class=\"hljs-name\">d</span>)))\nhash(<span class=\"hljs-name\">c</span>)\n      &gt; hash(<span class=\"hljs-name\">hash</span>(<span class=\"hljs-name\">c</span>) + hash(<span class=\"hljs-name\">d</span>))\nhash(<span class=\"hljs-name\">d</span>)\n</code></pre><p>To be able to refer to a specific node in the tree we use an in-order node traversal to assign integers to the nodes:</p>\n<pre><code><span class=\"hljs-number\">0</span>\n  <span class=\"hljs-number\">1</span>\n<span class=\"hljs-number\">2</span>\n    <span class=\"hljs-number\">3</span>\n<span class=\"hljs-number\">4</span>\n  <span class=\"hljs-number\">5</span>\n<span class=\"hljs-number\">6</span>\n</code></pre><p>In-order node numbering has the property with our trees that leaf nodes are always even and non-leaf nodes are always odd. This can be used as a quick way to identify whether a node is a leaf or not.</p>\n<p>Every serialized node in the tree is one of two fixed widths, leaf nodes are all the same size and non-leaf nodes are the same size. When serializing the tree you simply write the nodes in order and concatenate them. Then to access a node by its in-order position you simply multiply the node length by the position to get the byte offset.</p>\n<p>All leaf nodes contain these two pieces of information:</p>\n<ul>\n<li>The sha256 hash of the data described by this node</li>\n<li>The absolute byte offset to the end of the region of data described by the node</li>\n</ul>\n<p>All non-leaf nodes contain these three pieces of information:</p>\n<ul>\n<li>The sha256 hash of the concatenation of the two children hashes</li>\n<li>The cryptographic signature of the hash</li>\n<li>The span of bytes that the the nodes children cover</li>\n</ul>\n<p>When initializing a register an asymmetric Ed25519 keypair is derived. The private key is never shared. The public key is used as the URL for the register. When signing hashes in the tree the public key is used to generate an EdDSA signature. For the example register above, &#39;abcd&#39;, the register index (in JSON) would be:</p>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> keys = {\n  public: <span class=\"hljs-string\">'cc0cf6eeb82ca946ca60265ce0863fb2b3e3075ae25cba14d162ef20e3f9f223'</span>,\n  private: <span class=\"hljs-string\">'87399f90815db81e687efe4fd9fc60af336f4d9ae560fda106f94cb7a92a8804cc0cf6eeb82ca946ca60265ce0863fb2b3e3075ae25cba14d162ef20e3f9f223'</span>\n}\n\n<span class=\"hljs-keyword\">var</span> index = {\n  <span class=\"hljs-comment\">// sha256 of children[0].hash + children[1].hash</span>\n  hash: <span class=\"hljs-string\">'0440c655d63fec5c02cffd5d9b42d146aca03b255102b9b44b51c6a919b31351'</span>,\n  signature: <span class=\"hljs-string\">'1713dfbaf4a7f288003394b72ec486aa4fa1a837aa0b08662b3a14b63381b84c2e6965e2638fb5375ae2e92b47c2ab8718ec1914778518fcb3c0563eb2c09604'</span>,\n  span: <span class=\"hljs-number\">4</span>,\n  children: [\n    {\n      <span class=\"hljs-comment\">// echo -n \"$(echo -n \"a\" | shasum -a 256)$(echo -n \"b\" | shasum -a 256)\" | shasum -a 256</span>\n      hash: <span class=\"hljs-string\">'9ad4d5608a7a40db60c35f255fad821b762a82de168b4f4ed477d5d899b11796'</span>,\n      signature: <span class=\"hljs-string\">'2714b99e305ce46aa6d24eb2888cf0cbde33ad4a8bcd08705b59882837bf1e482f8dcab2ae94c2359914b1fe92831bfc73af99f1c6b1f5eba47efc4efa32de0d'</span>,\n      span: <span class=\"hljs-number\">2</span>,\n      children: [\n        {\n          <span class=\"hljs-comment\">// echo -n \"a\" | shasum -a 256</span>\n          hash: <span class=\"hljs-string\">'ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb'</span>,\n          endByte: <span class=\"hljs-number\">1</span>\n        },\n        {\n          <span class=\"hljs-comment\">// echo -n \"b\" | shasum -a 256</span>\n          hash: <span class=\"hljs-string\">'3e23e8160039594a33894f6564e1b1348bbd7a0088d42c4acb73eeaed59c009d'</span>,\n          endByte: <span class=\"hljs-number\">2</span>\n        }\n      ]\n    },\n    {\n      <span class=\"hljs-comment\">// echo -n \"$(echo -n \"c\" | shasum -a 256)$(echo -n \"d\" | shasum -a 256)\" | shasum -a 256</span>\n      hash: <span class=\"hljs-string\">'09114d1a8a78b5d091e492c524ad7f8e941f403db0a6d3d52d36f17b9a86ce1c'</span>,\n      signature: <span class=\"hljs-string\">'6ac5e25206f69f22612e9b58c14f9ae6738233a57ab7f6e10c1384c4e074f6c8c606edbd95a9c099a0120947866079e3d13ef66dd7d5ed1756a89a5e9032a20d'</span>,\n      span: <span class=\"hljs-number\">2</span>,\n      children: [\n        {\n          <span class=\"hljs-comment\">// echo -n \"c\" | shasum -a 256</span>\n          hash: <span class=\"hljs-string\">'2e7d2c03a9507ae265ecf5b5356885a53393a2029d241394997265a1a25aefc6'</span>,\n          endByte: <span class=\"hljs-number\">3</span>\n        },\n        {\n          <span class=\"hljs-comment\">// echo -n \"d\" | shasum -a 256</span>\n          hash: <span class=\"hljs-string\">'18ac3e7343f016890c510e93f935261169d9e3f565436429830faf0934f4f8e4'</span>,\n          endByte: <span class=\"hljs-number\">4</span>\n        }\n      ]\n    }\n  ]\n}\n</code></pre>\n<p>The above representation of the tree is in JSON. However due to the properties of the in-order node indexes we can represent the same data in a flat index while still allowing traversals.</p>\n<h1 id=\"file-format\">File format</h1>\n<p>SLEEP files should be named <code>sleep.dat</code> and have the following format:</p>\n<pre><code>&lt;<span class=\"hljs-keyword\">Header</span>&gt;&lt;Register Index<span class=\"hljs-params\">...</span>&gt;&lt;Register <span class=\"hljs-built_in\">Data</span><span class=\"hljs-params\">...</span>&gt;\n</code></pre><p>The format is a header followed by the register index. Order of the index is determined by an in-order node traversal. After the register index, the actual register entry data follows. The header length is variable width, prefixed with a varint. The Register Index is composed of fixed width metadata entries. The Register Data is composed of concatenated non-fixed width data pieces.</p>\n<h3 id=\"header-format\">Header format</h3>\n<pre><code><span class=\"hljs-section\">&lt;varint header-length&gt;</span><span class=\"hljs-section\">&lt;header protobuf&gt;</span>\n</code></pre><p>The header protobuf has this schema:</p>\n<pre><code class=\"lang-protobuf\"><span class=\"hljs-class\"><span class=\"hljs-keyword\">message</span> <span class=\"hljs-title\">Header</span> </span>{\n  <span class=\"hljs-keyword\">required</span> <span class=\"hljs-built_in\">bytes</span> datLink = <span class=\"hljs-number\">1</span>;\n  <span class=\"hljs-keyword\">required</span> <span class=\"hljs-built_in\">uint64</span> entryCount = <span class=\"hljs-number\">2</span>;\n  <span class=\"hljs-keyword\">optional</span> <span class=\"hljs-built_in\">bool</span> isSigned = <span class=\"hljs-number\">3</span>;\n  <span class=\"hljs-keyword\">optional</span> <span class=\"hljs-built_in\">string</span> hashType = <span class=\"hljs-number\">4</span> [default = <span class=\"hljs-string\">\"sha256\"</span>];\n  <span class=\"hljs-keyword\">optional</span> <span class=\"hljs-built_in\">uint32</span> hashLength = <span class=\"hljs-number\">5</span> [default = <span class=\"hljs-number\">32</span>];\n  <span class=\"hljs-keyword\">optional</span> <span class=\"hljs-built_in\">string</span> signatureType = <span class=\"hljs-number\">6</span> [default = <span class=\"hljs-string\">\"ed25519\"</span>];\n  <span class=\"hljs-keyword\">optional</span> <span class=\"hljs-built_in\">uint32</span> signatureLength = <span class=\"hljs-number\">7</span> [default = <span class=\"hljs-number\">64</span>];\n}\n</code></pre>\n<h3 id=\"register-index-format\">Register Index format</h3>\n<p>For non-signed even (leaf) nodes:</p>\n<pre><code><span class=\"hljs-section\">&lt;8-byte-span-length&gt;</span><span class=\"hljs-section\">&lt;data-hash&gt;</span>\n</code></pre><p>The 8-byte-span-length is an unsigned big endian 64 bit integer that should be number of cumulative bytes encompassed by all of the leaf nodes underneath the current node.</p>\n<p>For signed even (leaf) nodes:</p>\n<pre><code><span class=\"hljs-section\">&lt;8-byte-span-length&gt;</span><span class=\"hljs-section\">&lt;data-hash-signature&gt;</span><span class=\"hljs-section\">&lt;data-hash&gt;</span>\n</code></pre><p>For odd (non-leaf) nodes:</p>\n<pre><code>&lt;<span class=\"hljs-number\">8</span>-<span class=\"hljs-keyword\">byte</span>-<span class=\"hljs-keyword\">end</span>-<span class=\"hljs-built_in\">offset</span>&gt;&lt;data-hash&gt;\n</code></pre><p>The 8-byte-end-offset is an unsigned big endian 64 bit integer that should be the absolute position in the file for the <strong>end</strong> of the piece data described by this node.</p>\n<h3 id=\"register-data\">Register Data</h3>\n<p>The last section of the file is the actual data pieces, unmodified and concatenated together in sequential order.</p>\n<p>For the example tree above, the Register Data section would simply be <code>abcd</code>.</p>\n<h2 id=\"example\">Example</h2>\n<p>Given a tree like this you might want to look up in a <code>meta.dat</code> file the metadata for a specific node:</p>\n<pre><code><span class=\"hljs-number\">0</span>─┐  \n  <span class=\"hljs-number\">1</span>─┐\n<span class=\"hljs-number\">2</span>─┘ │\n    <span class=\"hljs-number\">3</span>\n<span class=\"hljs-number\">4</span>─┐ │\n  <span class=\"hljs-number\">5</span>─┘\n<span class=\"hljs-number\">6</span>─┘\n</code></pre><p>If you wanted to look up the metadata for 3, you could read the third (or any!) entry from sleep.dat:</p>\n<p>First you have to read the varint at the beginning of the file so you know how big the header is:</p>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> varint = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'varint'</span>) <span class=\"hljs-comment\">// https://github.com/chrisdickinson/varint</span>\n<span class=\"hljs-keyword\">var</span> headerLength = varint.decode(firstChunkOfFile)\n</code></pre>\n<p>Now you can read the header from the file</p>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> headerOffset = varint.encodingLength(headerLength)\n<span class=\"hljs-keyword\">var</span> headerEndOffset = headerOffset + headerLength\n<span class=\"hljs-keyword\">var</span> headerBytes = firstChunkOfFile.slice(headerOffset, headerEndOffset)\n</code></pre>\n<p>To decode the header use the protobuf schema. We can use the <a href=\"https://github.com/mafintosh/protocol-buffers\">protocol-buffers</a> module to do that.</p>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> messages = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'protocol-buffers'</span>)(fs.readFileSync(<span class=\"hljs-string\">'meta.dat.proto'</span>))\n<span class=\"hljs-keyword\">var</span> header = messages.Header.decode(headerBytes)\n</code></pre>\n<p>Now we have all the configuration required to calculate an entry offset.</p>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> entryNumber = <span class=\"hljs-number\">42</span>\n<span class=\"hljs-keyword\">var</span> entryOffset = headerEndOffset + entryNumber * (<span class=\"hljs-number\">8</span> + header.hashLength)\n</code></pre>\n<p>If you have a signed feed, you have to take into account the extra space required for the signatures in the even nodes.</p>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> entryOffset = headerLength + entryNumber * (<span class=\"hljs-number\">8</span> + header.hashLength)\n                  + <span class=\"hljs-built_in\">Math</span>.floor(entryNumber / <span class=\"hljs-number\">2</span>) * header.signatureLength\n</code></pre>\n","hyperdrive":"<h1 id=\"hyperdrive\">hyperdrive</h1>\n<p>A file sharing network based on <a href=\"https://github.com/maxogden/rabin\">rabin</a> file chunking and <a href=\"https://github.com/mafintosh/hypercore\">append only feeds of data verified by merkle trees</a>.</p>\n<pre><code>npm <span class=\"hljs-keyword\">install</span> hyperdrive\n</code></pre><p><a href=\"http://travis-ci.org/mafintosh/hyperdrive\"><img src=\"http://img.shields.io/travis/mafintosh/hyperdrive.svg?style=flat\" alt=\"build status\"></a></p>\n<p>If you are interested in learning how hyperdrive works on a technical level a specification is available in the <a href=\"https://github.com/datproject/docs/blob/master/docs/hyperdrive_spec.md\">Dat docs repo</a></p>\n<h2 id=\"usage\">Usage</h2>\n<p>First create a new feed and share it</p>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> hyperdrive = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'hyperdrive'</span>)\n<span class=\"hljs-keyword\">var</span> level = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'level'</span>)\n<span class=\"hljs-keyword\">var</span> swarm = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'discovery-swarm'</span>)()\n\n<span class=\"hljs-keyword\">var</span> db = level(<span class=\"hljs-string\">'./hyperdrive.db'</span>)\n<span class=\"hljs-keyword\">var</span> drive = hyperdrive(db)\n\n<span class=\"hljs-keyword\">var</span> archive = drive.createArchive()\n<span class=\"hljs-keyword\">var</span> ws = archive.createFileWriteStream(<span class=\"hljs-string\">'hello.txt'</span>) <span class=\"hljs-comment\">// add hello.txt</span>\n\nws.write(<span class=\"hljs-string\">'hello'</span>)\nws.write(<span class=\"hljs-string\">'world'</span>)\nws.end()\n\n<span class=\"hljs-keyword\">var</span> link = archive.key.toString(<span class=\"hljs-string\">'hex'</span>)\n<span class=\"hljs-built_in\">console</span>.log(link, <span class=\"hljs-string\">'&lt;-- this is your hyperdrive link'</span>)\n\n<span class=\"hljs-comment\">// the archive is now ready for sharing.</span>\n<span class=\"hljs-comment\">// we can use swarm to replicate it to other peers</span>\nswarm.listen()\nswarm.join(<span class=\"hljs-keyword\">new</span> Buffer(link, <span class=\"hljs-string\">'hex'</span>))\nswarm.on(<span class=\"hljs-string\">'connection'</span>, <span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\">connection</span>) </span>{\n  connection.pipe(archive.replicate()).pipe(connection)\n})\n</code></pre>\n<p>Then we can access the content from another process with the following code</p>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> swarm = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'discovery-swarm'</span>)()\n<span class=\"hljs-keyword\">var</span> hyperdrive = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'hyperdrive'</span>)\n<span class=\"hljs-keyword\">var</span> level = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'level'</span>)\n\n<span class=\"hljs-keyword\">var</span> db = level(<span class=\"hljs-string\">'./another-hyperdrive.db'</span>)\n<span class=\"hljs-keyword\">var</span> drive = hyperdrive(db)\n\n<span class=\"hljs-keyword\">var</span> link = <span class=\"hljs-keyword\">new</span> Buffer(<span class=\"hljs-string\">'your-hyperdrive-link-from-the-above-example'</span>, <span class=\"hljs-string\">'hex'</span>)\n<span class=\"hljs-keyword\">var</span> archive = drive.createArchive(link)\n\nswarm.listen()\nswarm.join(link)\nswarm.on(<span class=\"hljs-string\">'connection'</span>, <span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\">connection</span>) </span>{\n  connection.pipe(archive.replicate()).pipe(connection)\n  archive.get(<span class=\"hljs-number\">0</span>, <span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\">err, entry</span>) </span>{ <span class=\"hljs-comment\">// get the first file entry</span>\n    <span class=\"hljs-built_in\">console</span>.log(entry) <span class=\"hljs-comment\">// prints {name: 'hello.txt', ...}</span>\n    <span class=\"hljs-keyword\">var</span> stream = archive.createFileReadStream(entry)\n    stream.on(<span class=\"hljs-string\">'data'</span>, <span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\">data</span>) </span>{\n      <span class=\"hljs-built_in\">console</span>.log(data) <span class=\"hljs-comment\">// &lt;-- file data</span>\n    })\n    stream.on(<span class=\"hljs-string\">'end'</span>, <span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\"></span>) </span>{\n      <span class=\"hljs-built_in\">console</span>.log(<span class=\"hljs-string\">'no more data'</span>)\n    })\n  })\n})\n</code></pre>\n<p>If you want to write/read files to the file system provide a storage driver as the file option</p>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> raf = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'random-access-file'</span>) <span class=\"hljs-comment\">// a storage driver that writes to the file system</span>\n<span class=\"hljs-keyword\">var</span> archive = drive.createArchive({\n  file: <span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\">name</span>) </span>{\n    <span class=\"hljs-keyword\">return</span> raf(<span class=\"hljs-string\">'my-download-folder/'</span> + name)\n  }\n})\n</code></pre>\n<h2 id=\"api\">API</h2>\n<h4 id=\"-var-drive-hyperdrive-db-\"><code>var drive = hyperdrive(db)</code></h4>\n<p>Create a new hyperdrive instance. db should be a <a href=\"https://github.com/level/levelup\">levelup</a> instance.</p>\n<h4 id=\"-var-archive-drive-createarchive-key-options-\"><code>var archive = drive.createArchive([key], [options])</code></h4>\n<p>Creates an archive instance. If you want to download/upload an existing archive provide the archive key\nas the first argument. Options include</p>\n<pre><code class=\"lang-js\">{\n  live: <span class=\"hljs-literal\">false</span>, <span class=\"hljs-comment\">// set this to share the archive without finalizing it</span>\n  sparse: <span class=\"hljs-literal\">false</span>, <span class=\"hljs-comment\">// set this to only download the pieces of the feed you are requesting / prioritizing</span>\n  file: <span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\">name</span>) </span>{\n    <span class=\"hljs-comment\">// set this to determine how file data is stored.</span>\n    <span class=\"hljs-comment\">// the storage instance should implement the hypercore storage api</span>\n    <span class=\"hljs-comment\">// https://github.com/mafintosh/hypercore#storage-api</span>\n    <span class=\"hljs-keyword\">return</span> someStorageInstance\n  }\n}\n</code></pre>\n<p>If you do not provide the file option all file data is stored in the leveldb.</p>\n<h4 id=\"-archive-key-\"><code>archive.key</code></h4>\n<p>A buffer that verifies the archive content. In live mode this is a 32 byte public key.\nOtherwise it is a 32 byte hash.</p>\n<h4 id=\"-archive-live-\"><code>archive.live</code></h4>\n<p>Boolean whether archive is live. <code>true</code> by default. Note that its only populated after archive.open(cb) has been fired.</p>\n<h4 id=\"-archive-append-entry-callback-\"><code>archive.append(entry, callback)</code></h4>\n<p>Append an entry to the archive. Only possible if this is an live archive you originally created\nor an unfinalized archive.</p>\n<p>If you set the file option in the archive constructor you can use this method to append an already\nexisting file to the archive.</p>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> archive = drive.createArchive({\n  file: <span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\">name</span>) </span>{\n    <span class=\"hljs-built_in\">console</span>.log(<span class=\"hljs-string\">'returning storage for'</span>, name)\n    <span class=\"hljs-keyword\">return</span> raf(name)\n  }\n})\n\narchive.append(<span class=\"hljs-string\">'hello.txt'</span>, <span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\"></span>) </span>{\n  <span class=\"hljs-built_in\">console</span>.log(<span class=\"hljs-string\">'hello.txt was read and appended'</span>)\n})\n</code></pre>\n<h4 id=\"-archive-finalize-callback-\"><code>archive.finalize([callback])</code></h4>\n<p>Finalize the archive. You need to do this before sharing it if the archive is not live (it is live per default).</p>\n<h4 id=\"-archive-get-index-callback-\"><code>archive.get(index, callback)</code></h4>\n<p>Reads an entry from the archive.</p>\n<h4 id=\"-archive-download-index-callback-\"><code>archive.download(index, callback)</code></h4>\n<p>Fully downloads a file / entry from the archive and calls the callback afterwards.</p>\n<h4 id=\"-archive-close-callback-\"><code>archive.close([callback])</code></h4>\n<p>Closes and releases all resources used by the archive. Call this when you are done using it.</p>\n<h4 id=\"-archive-on-download-data-\"><code>archive.on(&#39;download&#39;, data)</code></h4>\n<p>Emitted every time a piece of data is downloaded</p>\n<h4 id=\"-archive-on-upload-data-\"><code>archive.on(&#39;upload&#39;, data)</code></h4>\n<p>Emitted every time a piece of data is uploaded</p>\n<h4 id=\"-var-rs-archive-list-opts-cb-\"><code>var rs = archive.list(opts={}, cb)</code></h4>\n<p>Returns a readable stream of all entries in the archive.</p>\n<ul>\n<li><code>opts.offset</code> - start streaming from this offset (default: 0)</li>\n<li><code>opts.live</code> - keep the stream open as new updates arrive (default: false)</li>\n</ul>\n<p>You can collect the results of the stream with <code>cb(err, entries)</code>.</p>\n<h4 id=\"-var-rs-archive-createfilereadstream-entry-options-\"><code>var rs = archive.createFileReadStream(entry, [options])</code></h4>\n<p>Returns a readable stream of the file content of an file in the archive.</p>\n<p>Options include:</p>\n<pre><code class=\"lang-js\">{\n  start: startOffset, <span class=\"hljs-comment\">// defaults to 0</span>\n  end: endOffset <span class=\"hljs-comment\">// defaults to file.length</span>\n}\n</code></pre>\n<h4 id=\"-var-ws-archive-createfilewritestream-entry-\"><code>var ws = archive.createFileWriteStream(entry)</code></h4>\n<p>Returns a writable stream that writes a new file to the archive. Only possible if the archive is live and you own it\nor if the archive is not finalized.</p>\n<h4 id=\"-var-cursor-archive-createbytecursor-entry-options-\"><code>var cursor = archive.createByteCursor(entry, [options])</code></h4>\n<p>Creates a cursor that can seek and traverse parts of the file.</p>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> cursor = archive.createByteCursor(<span class=\"hljs-string\">'hello.txt'</span>)\n\n<span class=\"hljs-comment\">// seek to byte offset 10000 and read the rest.</span>\ncursor.seek(<span class=\"hljs-number\">10000</span>, <span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\">err</span>) </span>{\n  <span class=\"hljs-keyword\">if</span> (err) <span class=\"hljs-keyword\">throw</span> err\n  cursor.next(<span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> <span class=\"hljs-title\">loop</span> (<span class=\"hljs-params\">err, data</span>) </span>{\n    <span class=\"hljs-keyword\">if</span> (err) <span class=\"hljs-keyword\">throw</span> err\n    <span class=\"hljs-keyword\">if</span> (!data) <span class=\"hljs-keyword\">return</span> <span class=\"hljs-built_in\">console</span>.log(<span class=\"hljs-string\">'no more data'</span>)\n    <span class=\"hljs-built_in\">console</span>.log(<span class=\"hljs-string\">'cursor.position is '</span> + cursor.position)\n    <span class=\"hljs-built_in\">console</span>.log(<span class=\"hljs-string\">'read'</span>, data.length, <span class=\"hljs-string\">'bytes'</span>)\n    cursor.next(loop)\n  })\n})\n</code></pre>\n<p>Options include</p>\n<pre><code class=\"lang-js\">{\n  start: startOffset, <span class=\"hljs-comment\">// defaults to 0</span>\n  end: endOffset <span class=\"hljs-comment\">// defaults to file.length</span>\n}\n</code></pre>\n<h4 id=\"-var-stream-archive-replicate-\"><code>var stream = archive.replicate()</code></h4>\n<p>Pipe this stream together with another peer that is interested in the same archive to replicate the content.</p>\n<h2 id=\"license\">License</h2>\n<p>MIT</p>\n","hypercore":"<h1 id=\"hypercore\">hypercore</h1>\n<p>Hypercore is a protocol and p2p network for distributing and replicating feeds of binary data. It is the low level component that <a href=\"https://github.com/mafintosh/hyperdrive\">Hyperdrive</a> is built on top of.</p>\n<pre><code>npm <span class=\"hljs-keyword\">install</span> hypercore\n</code></pre><p><a href=\"http://travis-ci.org/mafintosh/hypercore\"><img src=\"http://img.shields.io/travis/mafintosh/hypercore.svg?style=flat\" alt=\"build status\"></a></p>\n<p>It runs both in the node and in the browser using <a href=\"https://github.com/substack/node-browserify\">browserify</a>.</p>\n<h2 id=\"usage\">Usage</h2>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> hypercore = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'hypercore'</span>)\n<span class=\"hljs-keyword\">var</span> net = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">'net'</span>)\n\n<span class=\"hljs-keyword\">var</span> core = hypercore(db) <span class=\"hljs-comment\">// db is a leveldb instance</span>\n<span class=\"hljs-keyword\">var</span> feed = core.createFeed()\n\nfeed.append([<span class=\"hljs-string\">'hello'</span>, <span class=\"hljs-string\">'world'</span>], <span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\"></span>) </span>{\n  <span class=\"hljs-built_in\">console</span>.log(<span class=\"hljs-string\">'appended two blocks'</span>)\n  <span class=\"hljs-built_in\">console</span>.log(<span class=\"hljs-string\">'key is'</span>, feed.key.toString(<span class=\"hljs-string\">'hex'</span>))\n})\n\nfeed.on(<span class=\"hljs-string\">'upload'</span>, <span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\">block, data</span>) </span>{\n  <span class=\"hljs-built_in\">console</span>.log(<span class=\"hljs-string\">'uploaded block'</span>, block, data)\n})\n\n<span class=\"hljs-keyword\">var</span> server = net.createServer(<span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span> (<span class=\"hljs-params\">socket</span>) </span>{\n  socket.pipe(feed.replicate()).pipe(socket)\n})\n\nserver.listen(<span class=\"hljs-number\">10000</span>)\n</code></pre>\n<p>In another process</p>\n<pre><code class=\"lang-js\"><span class=\"hljs-keyword\">var</span> core = hypercore(anotherDb)\n<span class=\"hljs-keyword\">var</span> feed = core.createFeed(<span class=\"xml\"><span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">key-printed-out-above</span>&gt;</span>)\nvar socket = net.connect(10000)\n\nsocket.pipe(feed.replicate()).pipe(socket)\n\nfeed.on('download', function (block, data) {\n  console.log('downloaded block', block, data)\n})</span>\n</code></pre>\n<h2 id=\"api\">API</h2>\n<h4 id=\"-var-core-hypercore-db-\"><code>var core = hypercore(db)</code></h4>\n<p>Create a new hypercore instance. <code>db</code> should be a leveldb instance.</p>\n<h4 id=\"-var-feed-core-createfeed-key-options-\"><code>var feed = core.createFeed([key], [options])</code></h4>\n<p>Create a new feed. A feed stores a list of append-only data (buffers). A feed has a <code>.key</code> property that you can pass in to <code>createFeed</code> if you want to retrieve an old feed. Per default all feeds are appendable (live).</p>\n<p>Options include:</p>\n<pre><code class=\"lang-js\">{\n  live: <span class=\"hljs-literal\">true</span>,\n  storage: externalStorage,\n  sparse: <span class=\"hljs-literal\">false</span>\n}\n</code></pre>\n<p>Set <code>sparse</code> to <code>true</code> if you only want to download the pieces of the feed you are requesting / prioritizing. Otherwise the entire feed will be downloaded if nothing else is prioritized.</p>\n<p>If you want to create a static feed, one you cannot reappend data to, pass the <code>{live: false}</code> option.\nThe storage option allows you to store data outside of leveldb. This is very useful if you use hypercore to distribute files.</p>\n<p>See the <a href=\"#storage-api\">Storage API</a> section for more info</p>\n<h4 id=\"-var-stream-core-replicate-\"><code>var stream = core.replicate()</code></h4>\n<p>Create a generic replication stream. Use the <code>feed.replicate(stream)</code> API described below to replicate specific feeds of data.</p>\n<h4 id=\"-var-stream-core-list-options-callback-\"><code>var stream = core.list([options], [callback])</code></h4>\n<p>List all feed keys in the database. Optionally you can pass a callback to buffer them into an array. Options include:</p>\n<pre><code class=\"lang-js\">{\n  values: <span class=\"hljs-literal\">false</span> <span class=\"hljs-comment\">// set this to get feed attributes, not just feed keys</span>\n}\n</code></pre>\n<h2 id=\"-feed-api-\"><code>Feed API</code></h2>\n<p>As mentioned above a feed stores a list of data for you that you can replicate to other peers. It has the following API</p>\n<h4 id=\"-feed-key-\"><code>feed.key</code></h4>\n<p>The key of this feed. A 32 byte buffer. Other peers need this key to start replicating the feed.</p>\n<h4 id=\"-feed-discoverykey-\"><code>feed.discoveryKey</code></h4>\n<p>A 32 byte buffer containing a discovery key of the feed. The discovery key is sha-256 hmac of the string <code>hypercore</code> using the feed key as the password.\nYou can use the discovery key to find other peers sharing this feed without disclosing your feed key to a third party.</p>\n<h4 id=\"-feed-blocks-\"><code>feed.blocks</code></h4>\n<p>The total number of known data blocks in the feed.</p>\n<h4 id=\"-feed-bytes-\"><code>feed.bytes</code></h4>\n<p>The total byte size of known data blocks in the feed.</p>\n<h4 id=\"-feed-open-cb-\"><code>feed.open(cb)</code></h4>\n<p>Call this method to ensure that a feed is opened. You do not need to call this but the <code>.blocks</code> property will not be populated until the feed has been opened.</p>\n<h4 id=\"-feed-append-data-callback-\"><code>feed.append(data, callback)</code></h4>\n<p>Append a block of data to the feed. If you want to append more than one block you can pass in an array.</p>\n<h4 id=\"-feed-get-index-callback-\"><code>feed.get(index, callback)</code></h4>\n<p>Retrieve a block of data from the feed.</p>\n<h4 id=\"-feed-prioritize-range-callback-\"><code>feed.prioritize(range, [callback])</code></h4>\n<p>Prioritize a range of blocks to download. Will call the callback when done.\nRange should look like this</p>\n<pre><code class=\"lang-js\">{\n  start: startBlock,\n  end: optionalEndBlock,\n  priority: <span class=\"hljs-number\">2</span> <span class=\"hljs-comment\">// a priority level spanning [0-5]</span>\n  linear: <span class=\"hljs-literal\">false</span> <span class=\"hljs-comment\">// download the range linearly</span>\n}\n</code></pre>\n<h4 id=\"-feed-unprioritize-range-\"><code>feed.unprioritize(range)</code></h4>\n<p>Unprioritize a range.</p>\n<h4 id=\"-feed-seek-byteoffset-callback-\"><code>feed.seek(byteOffset, callback)</code></h4>\n<p>Find the block of data containing the byte offset. Calls the callback with <code>(err, index, offset)</code> where <code>index</code> is the block index and <code>offset</code> is the the relative byte offset in the block returned by <code>.get(index)</code>.</p>\n<h4 id=\"-feed-finalize-callback-\"><code>feed.finalize(callback)</code></h4>\n<p>If you are not using a live feed you need to call this method to finalize the feed once you are ready to share it.\nFinalizing will set the <code>.key</code> property and allow other peers to get your data.</p>\n<h4 id=\"-var-stream-feed-createwritestream-options-\"><code>var stream = feed.createWriteStream([options])</code></h4>\n<p>Create a writable stream that appends to the feed. If the feed is a static feed, it will be finalized when you end the stream.</p>\n<h4 id=\"-var-stream-feed-createreadstream-options-\"><code>var stream = feed.createReadStream([options])</code></h4>\n<p>Create a readable stream that reads from the feed. Options include:</p>\n<pre><code class=\"lang-js\">{\n  start: startIndex, <span class=\"hljs-comment\">// read from this index</span>\n  end: endIndex, <span class=\"hljs-comment\">// read until this index</span>\n  live: <span class=\"hljs-literal\">false</span> <span class=\"hljs-comment\">// set this to keep the read stream open</span>\n}\n</code></pre>\n<h4 id=\"-var-stream-feed-replicate-options-\"><code>var stream = feed.replicate([options])</code></h4>\n<p>Get a replication stream for this feed. Pipe this to another peer to start replicating this feed with another peer.\nIf you create multiple replication streams to multiple peers you&#39;ll upload/download data to all of them (meaning the load will spread out).</p>\n<p>Per default the replication stream encrypts all messages sent using the feed key and an incrementing nonce. This helps ensures that the remote peer also the feed key and makes it harder for a man-in-the-middle to sniff the data you are sending.</p>\n<p>Set <code>{private: false}</code> to disable this.</p>\n<p>Hypercore uses a simple multiplexed protocol that allows one replication stream to be used for multiple feeds at once.\nIf you want to join another replication stream simply pass it as the stream option</p>\n<pre><code class=\"lang-js\">feed.replicate({stream: anotherReplicationStream})\n</code></pre>\n<p>As a shorthand you can also do <code>feed.replicate(stream)</code>.</p>\n<h4 id=\"-stream-on-open-discoverykey-\"><code>stream.on(&#39;open&#39;, discoveryKey)</code></h4>\n<p>Emitted when a remote feed joins the replication stream and you haven&#39;t. You can use this as a signal to join the stream yourself if you want to.</p>\n<h4 id=\"-feed-on-download-block-data-\"><code>feed.on(&#39;download&#39;, block, data)</code></h4>\n<p>Emitted when a data block has been downloaded</p>\n<h4 id=\"-feed-on-download-finished-\"><code>feed.on(&#39;download-finished&#39;)</code></h4>\n<p>Emitted when all available data has been downloaded.\nWill re-fire when a live feed is updated and you download all the new blocks.</p>\n<h4 id=\"-feed-on-upload-block-data-\"><code>feed.on(&#39;upload&#39;, block, data)</code></h4>\n<p>Emitted when a data block has been uploaded</p>\n<h2 id=\"storage-api\">Storage API</h2>\n<p>If you want to use external storage to store the hypercore data (metadata will still be stored in the leveldb) you need to implement the following api and provide that as the <code>storage</code> option when creating a feed.</p>\n<p>Some node modules that implement this interface are</p>\n<ul>\n<li><a href=\"https://github.com/mafintosh/random-access-file\">random-access-file</a> Writes data to a file.</li>\n<li><a href=\"https://github.com/mafintosh/random-access-memory\">random-access-memory</a> Writes data to memory.</li>\n</ul>\n<h4 id=\"-storage-open-cb-\"><code>storage.open(cb)</code></h4>\n<p>This API is <em>optional</em>. If you provide this hypercore will call <code>.open</code> and wait for the callback to be called before calling any other methods.</p>\n<h4 id=\"-storage-read-offset-length-cb-\"><code>storage.read(offset, length, cb)</code></h4>\n<p>This API is <em>required</em>. Hypercore calls this when it wants to read data. You should return a buffer with length <code>length</code> that way read at the corresponding offset. If you cannot read this buffer call the callback with an error.</p>\n<h4 id=\"-storage-write-offset-buffer-cb-\"><code>storage.write(offset, buffer, cb)</code></h4>\n<p>This API is <em>required</em>. Hypercore calls this when it wants to write data. You should write the buffer at the corresponding offset and call the callback afterwards. If there was an error writing you should call the callback with that error.</p>\n<h4 id=\"-storage-close-cb-\"><code>storage.close(cb)</code></h4>\n<p>This API is <em>optional</em>. Hypercore will call this method when the feed is closing.</p>\n<h2 id=\"license\">License</h2>\n<p>MIT</p>\n"}})
   ;((null || true) && "_c9c7191f")
   app.start('#choo-root')
   
-},{"insert-css":2,"minidocs":8}],2:[function(require,module,exports){
-var inserted = {};
-
-module.exports = function (css, options) {
-    if (inserted[css]) return;
-    inserted[css] = true;
-    
-    var elem = document.createElement('style');
-    elem.setAttribute('type', 'text/css');
-
-    if ('textContent' in elem) {
-      elem.textContent = css;
-    } else {
-      elem.styleSheet.cssText = css;
-    }
-    
-    var head = document.getElementsByTagName('head')[0];
-    if (options && options.prepend) {
-        head.insertBefore(elem, head.childNodes[0]);
-    } else {
-        head.appendChild(elem);
-    }
-};
-
-},{}],3:[function(require,module,exports){
-var choo = require('choo')
-
-var main = require('./components/main')
-
-module.exports = function (opts) {
-  opts.basedir = (opts.basedir || '').replace(/\/$/, '')
-  var app = choo()
-
-  app.model({
-    state: {
-      title: opts.title,
-      logo: opts.logo,
-      contents: opts.contents,
-      html: opts.html,
-      routes: opts.routes,
-      current: opts.initial,
-      basedir: opts.basedir
-    },
-    reducers: {},
-    subscriptions: [
-      function catchLinks (send, done) {
-        window.onclick = function (e) {
-          var node = (function traverse (node) {
-            if (!node) return
-            if (node.localName !== 'a') return traverse(node.parentNode)
-            if (node.href === undefined) return traverse(node.parentNode)
-            if (window.location.host !== node.host) return traverse(node.parentNode)
-            return node
-          })(e.target)
-
-          if (!node) return
-          e.preventDefault()
-          var href = node.href
-
-          if (location.pathname !== node.pathname) {
-            send('location:setLocation', { location: href }, done)
-            window.history.pushState(null, null, href)
-            document.body.scrollTop = 0
-          } else {
-            window.location.hash = node.hash
-            var el = document.querySelector(node.hash)
-            window.scrollTo(0, el.offsetTop)
-          }
-        }
-      }
-    ]
-  })
-
-  app.model({
-    namespace: 'menu',
-    state: {
-      open: false,
-      size: 'small'
-    },
-    reducers: {
-      set: function (data, state) {
-        return data
-      },
-      size: function (data, state) {
-        return data
-      }
-    },
-    subscriptions: [
-      checkSize,
-      function (send, done) {
-        window.onresize = function () {
-          checkSize(send, done)
-        }
-      }
-    ]
-  })
-
-  function checkSize (send, done) {
-    var size = window.innerWidth > 600 ? 'large' : 'small'
-    send('menu:size', { size: size }, done)
-  }
-
-  app.router(function (route) {
-    var routes = [
-      route('/', main),
-      route('/:page', main)
-    ]
-
-    if (opts.basedir) {
-      return route(opts.basedir, routes)
-    }
-
-    return routes
-  })
-
-  return app
-}
-
-},{"./components/main":5,"choo":23}],4:[function(require,module,exports){
-var html = require('choo/html')
-var css = 0
-var avatar = require('github-avatar-url')
-
-module.exports = function (state, prev, send) {
-  var currentPage = state.params.page || state.current
-  var page = state.html[currentPage]
-  var pageData = state.contents.filter(function (item) {
-    return item.key === currentPage
-  })[0]
-
-  var prefix = ((null || true) && "_d706bf45")
-
-  var contentWrapper = html`<div></div>`
-  contentWrapper.innerHTML = page
-
-  var link = pageData.source ? html`<a class="markdown-link" href="${pageData.source}">source</a>` : ''
-
-  function contributors (items) {
-    return items.map(function (item) {
-      if (!item) return
-      var user = item.replace('@', '')
-      var img = html`<img class="${prefix} contributor"></img>`
-      img.style.opacity = 0
-      avatar(user, function (err, url) {
-        if (err) {
-          // TODO: handle requests in effects, send error messages to state
-          console.log(err)
-        }
-        img.src = url
-        img.onload = function () {
-          img.style.opacity = 1
-        }
-      })
-      return html`<div class="${prefix} contributor-wrapper">
-        <a href='https://github.com/${user}'>
-          ${img}
-        </a>
-      </div>`
-    })
-  }
-
-  if (pageData.contributors) {
-    var contributorWrapper = html`<div class="${prefix} contributor-container">
-      ${contributors(pageData.contributors)}
-    </div>`
-  }
-
-  return html`<div class="${prefix} minidocs-content">
-    ${link}
-    ${contributorWrapper}
-    ${contentWrapper}
-  </div>`
-}
-
-},{"choo/html":22,"github-avatar-url":34,"insert-css":53}],5:[function(require,module,exports){
-var html = require('choo/html')
-var css = 0
-var sidebar = require('./sidebar')
-var content = require('./content')
-
-module.exports = function (state, prev, send) {
-  var prefix = ((null || true) && "_6781b8a1")
-
-  return html`<div id="choo-root" class="minidocs"}>
-    ${sidebar(state, prev, send)}
-    <div class="${prefix} minidocs-main">
-      <div class="markdown-body">
-        ${content(state, prev, send)}
-      </div>
-    </div>
-  </div>`
-}
-
-},{"./content":4,"./sidebar":7,"choo/html":22,"insert-css":53}],6:[function(require,module,exports){
-var url = require('url')
-var css = 0
-var html = require('choo/html')
-
-module.exports = function (state, prev, send) {
-  var contents = state.contents
-
-  var prefix = ((null || true) && "_df8df972")
-
-  function createMenu (contents) {
-    return contents.map(function (item) {
-      // TODO: figure out a better way to get current page in state based on link click
-      var current
-      var location
-
-      if (state.location && state.location.pathname) {
-        location = url.parse(state.location.pathname)
-        var sliceBy = state.basedir.length + 1
-        current = location.pathname.slice(sliceBy)
-      }
-
-      if (!current || current.length <= 1) {
-        current = state.current
-      }
-
-      function onclick (e) {
-        send('menu:set', { open: false })
-      }
-
-      if (item.link) {
-        return html`<div><a href="${item.link}" class="content-link ${isActive(current, item.key)}" onclick=${onclick}>${item.name}</a></div>`
-      }
-
-      return html`<div class="h${item.depth}">${item.name}</div>`
-    })
-  }
-
-  function isActive (current, item) {
-    return current === item ? 'active' : ''
-  }
-
-  function isOpen () {
-    if (typeof window !== 'undefined' && window.innerWidth > 600) return 'menu-open'
-    return state.menu.open ? 'menu-open' : 'menu-closed'
-  }
-
-  function onclick (e) {
-    send('menu:set', { open: !state.menu.open })
-  }
-
-  return html`<div class="${prefix} minidocs-contents">
-    <button class="minidocs-menu-toggle" onclick=${onclick}>Menu</button>
-    <div class="minidocs-menu ${isOpen()} menu-${state.menu.size}">
-      <div class="minidocs-menu-wrapper">
-        ${createMenu(contents)}
-      </div>
-    </div>
-  </div>`
-}
-
-},{"choo/html":22,"insert-css":53,"url":114}],7:[function(require,module,exports){
-var url = require('url')
-var css = 0
-var html = require('choo/html')
-
-var menu = require('./menu')
-
-module.exports = function (state, prev, send) {
-  var contents = state.contents
-
-  var prefix = ((null || true) && "_68ad6959")
-
-  function createHeader () {
-    if (state.logo) {
-      return html`
-        <img class="minidocs-logo" src="${state.basedir + '/' + state.logo}" alt="${state.title}">
-      `
-    }
-    return state.title
-  }
-
-  return html`<div class="${prefix} minidocs-sidebar">
-    <div class="minidocs-header">
-      <h1><a href="${state.basedir}/">${createHeader()}</a></h1>
-    </div>
-    ${menu(state, prev, send)}
-  </div>`
-}
-
-},{"./menu":6,"choo/html":22,"insert-css":53,"url":114}],8:[function(require,module,exports){
-var css = 0
-var minidocs = require('./app')
-
-module.exports = function (opts) {
-  var app = minidocs(opts)
-
-  ;((null || true) && "_08b1ba12")
-  ;((null || true) && "_b8e1f1b6")
-  ;((null || true) && "_3b66eb47")
-  ;((null || true) && "_4337a147")
-
-  return {
-    app: app,
-    start: function (id, opts) {
-      if (typeof id === 'object') {
-        opts = id
-        id = null
-      }
-      if (!opts) opts = {}
-      opts.href = opts.href || false
-      return app.start(id, opts)
-    }
-  }
-}
-
-},{"./app":3,"insert-css":53}],9:[function(require,module,exports){
+},{"insert-css":46,"minidocs":60}],2:[function(require,module,exports){
 // http://wiki.commonjs.org/wiki/Unit_Testing/1.0
 //
 // THIS IS NOT TESTED NOR LIKELY TO WORK OUTSIDE V8!
@@ -676,7 +367,7 @@ var objectKeys = Object.keys || function (obj) {
   return keys;
 };
 
-},{"util/":118}],10:[function(require,module,exports){
+},{"util/":118}],3:[function(require,module,exports){
 module.exports = applyHook
 
 // apply arguments onto an array of functions, useful for hooks
@@ -687,7 +378,7 @@ function applyHook (arr, arg1, arg2, arg3, arg4, arg5) {
   })
 }
 
-},{}],11:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 const mutate = require('xtend/mutable')
 const assert = require('assert')
 const xtend = require('xtend')
@@ -927,7 +618,7 @@ function wrapOnError (onError) {
   }
 }
 
-},{"./apply-hook":10,"assert":9,"xtend":122,"xtend/mutable":123}],12:[function(require,module,exports){
+},{"./apply-hook":3,"assert":2,"xtend":122,"xtend/mutable":123}],5:[function(require,module,exports){
 'use strict'
 
 exports.toByteArray = toByteArray
@@ -1038,7 +729,7 @@ function fromByteArray (uint8) {
   return parts.join('')
 }
 
-},{}],13:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 var document = require('global/document')
 var hyperx = require('hyperx')
 var onload = require('on-load')
@@ -1180,9 +871,9 @@ function belCreateElement (tag, props, children) {
 module.exports = hyperx(belCreateElement)
 module.exports.createElement = belCreateElement
 
-},{"global/document":40,"hyperx":47,"on-load":67}],14:[function(require,module,exports){
+},{"global/document":33,"hyperx":40,"on-load":66}],7:[function(require,module,exports){
 
-},{}],15:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 (function (process,Buffer){
 var msg = require('pako/lib/zlib/messages');
 var zstream = require('pako/lib/zlib/zstream');
@@ -1422,7 +1113,7 @@ Zlib.prototype._error = function(status) {
 exports.Zlib = Zlib;
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"_process":88,"buffer":19,"pako/lib/zlib/constants":71,"pako/lib/zlib/deflate.js":73,"pako/lib/zlib/inflate.js":75,"pako/lib/zlib/messages":77,"pako/lib/zlib/zstream":79}],16:[function(require,module,exports){
+},{"_process":87,"buffer":12,"pako/lib/zlib/constants":70,"pako/lib/zlib/deflate.js":72,"pako/lib/zlib/inflate.js":74,"pako/lib/zlib/messages":76,"pako/lib/zlib/zstream":78}],9:[function(require,module,exports){
 (function (process,Buffer){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -2036,9 +1727,9 @@ util.inherits(InflateRaw, Zlib);
 util.inherits(Unzip, Zlib);
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./binding":15,"_process":88,"_stream_transform":100,"assert":9,"buffer":19,"util":118}],17:[function(require,module,exports){
-arguments[4][14][0].apply(exports,arguments)
-},{"dup":14}],18:[function(require,module,exports){
+},{"./binding":8,"_process":87,"_stream_transform":100,"assert":2,"buffer":12,"util":118}],10:[function(require,module,exports){
+arguments[4][7][0].apply(exports,arguments)
+},{"dup":7}],11:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -2150,7 +1841,7 @@ exports.allocUnsafeSlow = function allocUnsafeSlow(size) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"buffer":19}],19:[function(require,module,exports){
+},{"buffer":12}],12:[function(require,module,exports){
 (function (global){
 /*!
  * The buffer module from node.js, for the browser.
@@ -2319,6 +2010,8 @@ if (Buffer.TYPED_ARRAY_SUPPORT) {
 function assertSize (size) {
   if (typeof size !== 'number') {
     throw new TypeError('"size" argument must be a number')
+  } else if (size < 0) {
+    throw new RangeError('"size" argument must not be negative')
   }
 }
 
@@ -2382,12 +2075,20 @@ function fromString (that, string, encoding) {
   var length = byteLength(string, encoding) | 0
   that = createBuffer(that, length)
 
-  that.write(string, encoding)
+  var actual = that.write(string, encoding)
+
+  if (actual !== length) {
+    // Writing a hex string, for example, that contains invalid characters will
+    // cause everything after the first invalid character to be ignored. (e.g.
+    // 'abxxcd' will be treated as 'ab')
+    that = that.slice(0, actual)
+  }
+
   return that
 }
 
 function fromArrayLike (that, array) {
-  var length = checked(array.length) | 0
+  var length = array.length < 0 ? 0 : checked(array.length) | 0
   that = createBuffer(that, length)
   for (var i = 0; i < length; i += 1) {
     that[i] = array[i] & 255
@@ -2456,7 +2157,7 @@ function fromObject (that, obj) {
 }
 
 function checked (length) {
-  // Note: cannot use `length < kMaxLength` here because that fails when
+  // Note: cannot use `length < kMaxLength()` here because that fails when
   // length is NaN (which is otherwise coerced to zero.)
   if (length >= kMaxLength()) {
     throw new RangeError('Attempt to allocate Buffer larger than maximum ' +
@@ -2505,9 +2206,9 @@ Buffer.isEncoding = function isEncoding (encoding) {
     case 'utf8':
     case 'utf-8':
     case 'ascii':
+    case 'latin1':
     case 'binary':
     case 'base64':
-    case 'raw':
     case 'ucs2':
     case 'ucs-2':
     case 'utf16le':
@@ -2568,9 +2269,8 @@ function byteLength (string, encoding) {
   for (;;) {
     switch (encoding) {
       case 'ascii':
+      case 'latin1':
       case 'binary':
-      case 'raw':
-      case 'raws':
         return len
       case 'utf8':
       case 'utf-8':
@@ -2643,8 +2343,9 @@ function slowToString (encoding, start, end) {
       case 'ascii':
         return asciiSlice(this, start, end)
 
+      case 'latin1':
       case 'binary':
-        return binarySlice(this, start, end)
+        return latin1Slice(this, start, end)
 
       case 'base64':
         return base64Slice(this, start, end)
@@ -2692,6 +2393,20 @@ Buffer.prototype.swap32 = function swap32 () {
   for (var i = 0; i < len; i += 4) {
     swap(this, i, i + 3)
     swap(this, i + 1, i + 2)
+  }
+  return this
+}
+
+Buffer.prototype.swap64 = function swap64 () {
+  var len = this.length
+  if (len % 8 !== 0) {
+    throw new RangeError('Buffer size must be a multiple of 64-bits')
+  }
+  for (var i = 0; i < len; i += 8) {
+    swap(this, i, i + 7)
+    swap(this, i + 1, i + 6)
+    swap(this, i + 2, i + 5)
+    swap(this, i + 3, i + 4)
   }
   return this
 }
@@ -2778,7 +2493,73 @@ Buffer.prototype.compare = function compare (target, start, end, thisStart, this
   return 0
 }
 
-function arrayIndexOf (arr, val, byteOffset, encoding) {
+// Finds either the first index of `val` in `buffer` at offset >= `byteOffset`,
+// OR the last index of `val` in `buffer` at offset <= `byteOffset`.
+//
+// Arguments:
+// - buffer - a Buffer to search
+// - val - a string, Buffer, or number
+// - byteOffset - an index into `buffer`; will be clamped to an int32
+// - encoding - an optional encoding, relevant is val is a string
+// - dir - true for indexOf, false for lastIndexOf
+function bidirectionalIndexOf (buffer, val, byteOffset, encoding, dir) {
+  // Empty buffer means no match
+  if (buffer.length === 0) return -1
+
+  // Normalize byteOffset
+  if (typeof byteOffset === 'string') {
+    encoding = byteOffset
+    byteOffset = 0
+  } else if (byteOffset > 0x7fffffff) {
+    byteOffset = 0x7fffffff
+  } else if (byteOffset < -0x80000000) {
+    byteOffset = -0x80000000
+  }
+  byteOffset = +byteOffset  // Coerce to Number.
+  if (isNaN(byteOffset)) {
+    // byteOffset: it it's undefined, null, NaN, "foo", etc, search whole buffer
+    byteOffset = dir ? 0 : (buffer.length - 1)
+  }
+
+  // Normalize byteOffset: negative offsets start from the end of the buffer
+  if (byteOffset < 0) byteOffset = buffer.length + byteOffset
+  if (byteOffset >= buffer.length) {
+    if (dir) return -1
+    else byteOffset = buffer.length - 1
+  } else if (byteOffset < 0) {
+    if (dir) byteOffset = 0
+    else return -1
+  }
+
+  // Normalize val
+  if (typeof val === 'string') {
+    val = Buffer.from(val, encoding)
+  }
+
+  // Finally, search either indexOf (if dir is true) or lastIndexOf
+  if (Buffer.isBuffer(val)) {
+    // Special case: looking for empty string/buffer always fails
+    if (val.length === 0) {
+      return -1
+    }
+    return arrayIndexOf(buffer, val, byteOffset, encoding, dir)
+  } else if (typeof val === 'number') {
+    val = val & 0xFF // Search for a byte value [0-255]
+    if (Buffer.TYPED_ARRAY_SUPPORT &&
+        typeof Uint8Array.prototype.indexOf === 'function') {
+      if (dir) {
+        return Uint8Array.prototype.indexOf.call(buffer, val, byteOffset)
+      } else {
+        return Uint8Array.prototype.lastIndexOf.call(buffer, val, byteOffset)
+      }
+    }
+    return arrayIndexOf(buffer, [ val ], byteOffset, encoding, dir)
+  }
+
+  throw new TypeError('val must be string, number or Buffer')
+}
+
+function arrayIndexOf (arr, val, byteOffset, encoding, dir) {
   var indexSize = 1
   var arrLength = arr.length
   var valLength = val.length
@@ -2805,60 +2586,45 @@ function arrayIndexOf (arr, val, byteOffset, encoding) {
     }
   }
 
-  var foundIndex = -1
-  for (var i = byteOffset; i < arrLength; ++i) {
-    if (read(arr, i) === read(val, foundIndex === -1 ? 0 : i - foundIndex)) {
-      if (foundIndex === -1) foundIndex = i
-      if (i - foundIndex + 1 === valLength) return foundIndex * indexSize
-    } else {
-      if (foundIndex !== -1) i -= i - foundIndex
-      foundIndex = -1
+  var i
+  if (dir) {
+    var foundIndex = -1
+    for (i = byteOffset; i < arrLength; i++) {
+      if (read(arr, i) === read(val, foundIndex === -1 ? 0 : i - foundIndex)) {
+        if (foundIndex === -1) foundIndex = i
+        if (i - foundIndex + 1 === valLength) return foundIndex * indexSize
+      } else {
+        if (foundIndex !== -1) i -= i - foundIndex
+        foundIndex = -1
+      }
+    }
+  } else {
+    if (byteOffset + valLength > arrLength) byteOffset = arrLength - valLength
+    for (i = byteOffset; i >= 0; i--) {
+      var found = true
+      for (var j = 0; j < valLength; j++) {
+        if (read(arr, i + j) !== read(val, j)) {
+          found = false
+          break
+        }
+      }
+      if (found) return i
     }
   }
 
   return -1
 }
 
-Buffer.prototype.indexOf = function indexOf (val, byteOffset, encoding) {
-  if (typeof byteOffset === 'string') {
-    encoding = byteOffset
-    byteOffset = 0
-  } else if (byteOffset > 0x7fffffff) {
-    byteOffset = 0x7fffffff
-  } else if (byteOffset < -0x80000000) {
-    byteOffset = -0x80000000
-  }
-  byteOffset >>= 0
-
-  if (this.length === 0) return -1
-  if (byteOffset >= this.length) return -1
-
-  // Negative offsets start from the end of the buffer
-  if (byteOffset < 0) byteOffset = Math.max(this.length + byteOffset, 0)
-
-  if (typeof val === 'string') {
-    val = Buffer.from(val, encoding)
-  }
-
-  if (Buffer.isBuffer(val)) {
-    // special case: looking for empty string/buffer always fails
-    if (val.length === 0) {
-      return -1
-    }
-    return arrayIndexOf(this, val, byteOffset, encoding)
-  }
-  if (typeof val === 'number') {
-    if (Buffer.TYPED_ARRAY_SUPPORT && Uint8Array.prototype.indexOf === 'function') {
-      return Uint8Array.prototype.indexOf.call(this, val, byteOffset)
-    }
-    return arrayIndexOf(this, [ val ], byteOffset, encoding)
-  }
-
-  throw new TypeError('val must be string, number or Buffer')
-}
-
 Buffer.prototype.includes = function includes (val, byteOffset, encoding) {
   return this.indexOf(val, byteOffset, encoding) !== -1
+}
+
+Buffer.prototype.indexOf = function indexOf (val, byteOffset, encoding) {
+  return bidirectionalIndexOf(this, val, byteOffset, encoding, true)
+}
+
+Buffer.prototype.lastIndexOf = function lastIndexOf (val, byteOffset, encoding) {
+  return bidirectionalIndexOf(this, val, byteOffset, encoding, false)
 }
 
 function hexWrite (buf, string, offset, length) {
@@ -2875,7 +2641,7 @@ function hexWrite (buf, string, offset, length) {
 
   // must be an even number of digits
   var strLen = string.length
-  if (strLen % 2 !== 0) throw new Error('Invalid hex string')
+  if (strLen % 2 !== 0) throw new TypeError('Invalid hex string')
 
   if (length > strLen / 2) {
     length = strLen / 2
@@ -2896,7 +2662,7 @@ function asciiWrite (buf, string, offset, length) {
   return blitBuffer(asciiToBytes(string), buf, offset, length)
 }
 
-function binaryWrite (buf, string, offset, length) {
+function latin1Write (buf, string, offset, length) {
   return asciiWrite(buf, string, offset, length)
 }
 
@@ -2958,8 +2724,9 @@ Buffer.prototype.write = function write (string, offset, length, encoding) {
       case 'ascii':
         return asciiWrite(this, string, offset, length)
 
+      case 'latin1':
       case 'binary':
-        return binaryWrite(this, string, offset, length)
+        return latin1Write(this, string, offset, length)
 
       case 'base64':
         // Warning: maxLength not taken into account in base64Write
@@ -3100,7 +2867,7 @@ function asciiSlice (buf, start, end) {
   return ret
 }
 
-function binarySlice (buf, start, end) {
+function latin1Slice (buf, start, end) {
   var ret = ''
   end = Math.min(buf.length, end)
 
@@ -3867,7 +3634,7 @@ function isnan (val) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"base64-js":12,"ieee754":48,"isarray":60}],20:[function(require,module,exports){
+},{"base64-js":5,"ieee754":41,"isarray":53}],13:[function(require,module,exports){
 module.exports = {
   "100": "Continue",
   "101": "Switching Protocols",
@@ -3932,7 +3699,7 @@ module.exports = {
   "511": "Network Authentication Required"
 }
 
-},{}],21:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 'use strict';
 
 module.exports = Error.captureStackTrace || function (error) {
@@ -3952,10 +3719,10 @@ module.exports = Error.captureStackTrace || function (error) {
 	});
 };
 
-},{}],22:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 module.exports = require('yo-yo')
 
-},{"yo-yo":124}],23:[function(require,module,exports){
+},{"yo-yo":124}],16:[function(require,module,exports){
 const history = require('sheet-router/history')
 const sheetRouter = require('sheet-router')
 const document = require('global/document')
@@ -4143,7 +3910,7 @@ function appInit (opts) {
   }
 }
 
-},{"assert":9,"barracks":11,"document-ready":26,"global/document":40,"hash-match":44,"nanoraf":63,"sheet-router":104,"sheet-router/hash":101,"sheet-router/history":102,"sheet-router/href":103,"xtend":122,"yo-yo":124}],24:[function(require,module,exports){
+},{"assert":2,"barracks":4,"document-ready":19,"global/document":33,"hash-match":37,"nanoraf":62,"sheet-router":104,"sheet-router/hash":101,"sheet-router/history":102,"sheet-router/href":103,"xtend":122,"yo-yo":124}],17:[function(require,module,exports){
 (function (Buffer){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -4254,7 +4021,7 @@ function objectToString(o) {
 }
 
 }).call(this,{"isBuffer":require("../../is-buffer/index.js")})
-},{"../../is-buffer/index.js":55}],25:[function(require,module,exports){
+},{"../../is-buffer/index.js":48}],18:[function(require,module,exports){
 'use strict';
 var captureStackTrace = require('capture-stack-trace');
 
@@ -4300,7 +4067,7 @@ module.exports = function createErrorClass(className, setup) {
 	return ErrorClass;
 };
 
-},{"capture-stack-trace":21}],26:[function(require,module,exports){
+},{"capture-stack-trace":14}],19:[function(require,module,exports){
 'use strict'
 
 var document = require('global/document')
@@ -4319,7 +4086,7 @@ function ready (callback) {
 
 function noop () {}
 
-},{"global/document":40}],27:[function(require,module,exports){
+},{"global/document":33}],20:[function(require,module,exports){
 "use strict";
 
 var stream = require("readable-stream");
@@ -4397,7 +4164,7 @@ module.exports = function duplex2(options, writable, readable) {
 
 module.exports.DuplexWrapper = DuplexWrapper;
 
-},{"readable-stream":99}],28:[function(require,module,exports){
+},{"readable-stream":99}],21:[function(require,module,exports){
 (function (process,Buffer){
 var stream = require('readable-stream')
 var eos = require('end-of-stream')
@@ -4628,7 +4395,7 @@ Duplexify.prototype.end = function(data, enc, cb) {
 module.exports = Duplexify
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"_process":88,"buffer":19,"end-of-stream":30,"inherits":52,"readable-stream":99,"stream-shift":109}],29:[function(require,module,exports){
+},{"_process":87,"buffer":12,"end-of-stream":23,"inherits":45,"readable-stream":99,"stream-shift":109}],22:[function(require,module,exports){
 'use strict';
 module.exports = function (opts) {
 	opts = opts || {};
@@ -4636,7 +4403,7 @@ module.exports = function (opts) {
 	return opts.exact ? new RegExp('^' + re + '$') : new RegExp(re, 'g');
 };
 
-},{}],30:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 var once = require('once');
 
 var noop = function() {};
@@ -4709,7 +4476,7 @@ var eos = function(stream, opts, callback) {
 };
 
 module.exports = eos;
-},{"once":68}],31:[function(require,module,exports){
+},{"once":67}],24:[function(require,module,exports){
 'use strict';
 
 var util = require('util');
@@ -4826,7 +4593,7 @@ errorEx.line = function (str, def) {
 
 module.exports = errorEx;
 
-},{"is-arrayish":54,"util":118}],32:[function(require,module,exports){
+},{"is-arrayish":47,"util":118}],25:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -5130,7 +4897,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],33:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 (function (process){
 'use strict';
 var got = require('got');
@@ -5187,7 +4954,35 @@ function ghGot(path, opts, cb) {
 module.exports = ghGot;
 
 }).call(this,require('_process'))
-},{"_process":88,"got":42,"object-assign":66}],34:[function(require,module,exports){
+},{"_process":87,"got":35,"object-assign":27}],27:[function(require,module,exports){
+'use strict';
+
+function ToObject(val) {
+	if (val == null) {
+		throw new TypeError('Object.assign cannot be called with null or undefined');
+	}
+
+	return Object(val);
+}
+
+module.exports = Object.assign || function (target, source) {
+	var from;
+	var keys;
+	var to = ToObject(target);
+
+	for (var s = 1; s < arguments.length; s++) {
+		from = arguments[s];
+		keys = Object.keys(Object(from));
+
+		for (var i = 0; i < keys.length; i++) {
+			to[keys[i]] = from[keys[i]];
+		}
+	}
+
+	return to;
+};
+
+},{}],28:[function(require,module,exports){
 'use strict';
 var emailRegex = require('email-regex');
 var githubUsername= require('github-username');
@@ -5216,7 +5011,7 @@ module.exports = function (str, token, cb) {
 	
 };
 
-},{"email-regex":29,"gh-got":33,"github-username":35}],35:[function(require,module,exports){
+},{"email-regex":22,"gh-got":26,"github-username":29}],29:[function(require,module,exports){
 'use strict';
 var ghGot = require('gh-got');
 
@@ -5250,7 +5045,7 @@ module.exports = function (email, token, cb) {
 	}).catch(cb);
 };
 
-},{"gh-got":36}],36:[function(require,module,exports){
+},{"gh-got":30}],30:[function(require,module,exports){
 (function (process){
 'use strict';
 var got = require('got');
@@ -5319,7 +5114,7 @@ helpers.forEach(function (el) {
 module.exports = ghGot;
 
 }).call(this,require('_process'))
-},{"_process":88,"got":37,"object-assign":39,"pinkie-promise":84}],37:[function(require,module,exports){
+},{"_process":87,"got":31,"object-assign":65,"pinkie-promise":83}],31:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -5715,7 +5510,7 @@ got.MaxRedirectsError = createErrorClass('MaxRedirectsError', function (statusCo
 module.exports = got;
 
 }).call(this,require("buffer").Buffer)
-},{"./package.json":38,"buffer":19,"create-error-class":25,"duplexer2":27,"events":32,"http":105,"https":45,"is-plain-obj":56,"is-redirect":57,"is-retry-allowed":58,"is-stream":59,"lowercase-keys":61,"node-status-codes":65,"object-assign":39,"parse-json":80,"pinkie-promise":84,"querystring":92,"read-all-stream":93,"readable-stream":99,"timed-out":111,"unzip-response":14,"url":114,"url-parse-lax":113}],38:[function(require,module,exports){
+},{"./package.json":32,"buffer":12,"create-error-class":18,"duplexer2":20,"events":25,"http":105,"https":38,"is-plain-obj":49,"is-redirect":50,"is-retry-allowed":51,"is-stream":52,"lowercase-keys":54,"node-status-codes":64,"object-assign":65,"parse-json":79,"pinkie-promise":83,"querystring":91,"read-all-stream":92,"readable-stream":99,"timed-out":111,"unzip-response":7,"url":114,"url-parse-lax":113}],32:[function(require,module,exports){
 module.exports={
   "_args": [
     [
@@ -5727,7 +5522,7 @@ module.exports={
         "spec": ">=5.2.0 <6.0.0",
         "type": "range"
       },
-      "/Users/joe/node_modules/minidocs/node_modules/github-username/node_modules/gh-got"
+      "/Users/joe/node_modules/dat-docs/node_modules/github-username/node_modules/gh-got"
     ]
   ],
   "_from": "got@>=5.2.0 <6.0.0",
@@ -5761,7 +5556,7 @@ module.exports={
   "_shasum": "bb1d7ee163b78082bbc8eb836f3f395004ea6fbf",
   "_shrinkwrap": null,
   "_spec": "got@^5.2.0",
-  "_where": "/Users/joe/node_modules/minidocs/node_modules/github-username/node_modules/gh-got",
+  "_where": "/Users/joe/node_modules/dat-docs/node_modules/github-username/node_modules/gh-got",
   "browser": {
     "unzip-response": false
   },
@@ -5860,92 +5655,7 @@ module.exports={
   }
 }
 
-},{}],39:[function(require,module,exports){
-'use strict';
-/* eslint-disable no-unused-vars */
-var hasOwnProperty = Object.prototype.hasOwnProperty;
-var propIsEnumerable = Object.prototype.propertyIsEnumerable;
-
-function toObject(val) {
-	if (val === null || val === undefined) {
-		throw new TypeError('Object.assign cannot be called with null or undefined');
-	}
-
-	return Object(val);
-}
-
-function shouldUseNative() {
-	try {
-		if (!Object.assign) {
-			return false;
-		}
-
-		// Detect buggy property enumeration order in older V8 versions.
-
-		// https://bugs.chromium.org/p/v8/issues/detail?id=4118
-		var test1 = new String('abc');  // eslint-disable-line
-		test1[5] = 'de';
-		if (Object.getOwnPropertyNames(test1)[0] === '5') {
-			return false;
-		}
-
-		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
-		var test2 = {};
-		for (var i = 0; i < 10; i++) {
-			test2['_' + String.fromCharCode(i)] = i;
-		}
-		var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
-			return test2[n];
-		});
-		if (order2.join('') !== '0123456789') {
-			return false;
-		}
-
-		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
-		var test3 = {};
-		'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
-			test3[letter] = letter;
-		});
-		if (Object.keys(Object.assign({}, test3)).join('') !==
-				'abcdefghijklmnopqrst') {
-			return false;
-		}
-
-		return true;
-	} catch (e) {
-		// We don't expect any of the above to throw, but better to be safe.
-		return false;
-	}
-}
-
-module.exports = shouldUseNative() ? Object.assign : function (target, source) {
-	var from;
-	var to = toObject(target);
-	var symbols;
-
-	for (var s = 1; s < arguments.length; s++) {
-		from = Object(arguments[s]);
-
-		for (var key in from) {
-			if (hasOwnProperty.call(from, key)) {
-				to[key] = from[key];
-			}
-		}
-
-		if (Object.getOwnPropertySymbols) {
-			symbols = Object.getOwnPropertySymbols(from);
-			for (var i = 0; i < symbols.length; i++) {
-				if (propIsEnumerable.call(from, symbols[i])) {
-					to[symbols[i]] = from[symbols[i]];
-				}
-			}
-		}
-	}
-
-	return to;
-};
-
-},{}],40:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 (function (global){
 var topLevel = typeof global !== 'undefined' ? global :
     typeof window !== 'undefined' ? window : {}
@@ -5964,7 +5674,7 @@ if (typeof document !== 'undefined') {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"min-document":14}],41:[function(require,module,exports){
+},{"min-document":7}],34:[function(require,module,exports){
 (function (global){
 if (typeof window !== "undefined") {
     module.exports = window;
@@ -5977,7 +5687,7 @@ if (typeof window !== "undefined") {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],42:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 (function (process,Buffer){
 'use strict';
 var http = require('http');
@@ -6257,7 +5967,7 @@ function got(url, opts, cb) {
 module.exports = got;
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"_process":88,"buffer":19,"duplexify":28,"http":105,"https":45,"infinity-agent":51,"is-redirect":57,"is-stream":59,"lowercase-keys":61,"nested-error-stacks":64,"object-assign":43,"prepend-http":86,"querystring":92,"read-all-stream":93,"timed-out":111,"url":114,"util":118,"zlib":16}],43:[function(require,module,exports){
+},{"_process":87,"buffer":12,"duplexify":21,"http":105,"https":38,"infinity-agent":44,"is-redirect":50,"is-stream":52,"lowercase-keys":54,"nested-error-stacks":63,"object-assign":36,"prepend-http":85,"querystring":91,"read-all-stream":92,"timed-out":111,"url":114,"util":118,"zlib":9}],36:[function(require,module,exports){
 'use strict';
 var propIsEnumerable = Object.prototype.propertyIsEnumerable;
 
@@ -6298,7 +6008,7 @@ module.exports = Object.assign || function (target, source) {
 	return to;
 };
 
-},{}],44:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 module.exports = function hashMatch (hash, prefix) {
   var pre = prefix || '/';
   if (hash.length === 0) return pre;
@@ -6309,7 +6019,7 @@ module.exports = function hashMatch (hash, prefix) {
   else return hash.replace(pre, '');
 }
 
-},{}],45:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 var http = require('http');
 
 var https = module.exports;
@@ -6325,7 +6035,7 @@ https.request = function (params, cb) {
     return http.request.call(this, params, cb);
 }
 
-},{"http":105}],46:[function(require,module,exports){
+},{"http":105}],39:[function(require,module,exports){
 module.exports = attributeToProperty
 
 var transform = {
@@ -6346,7 +6056,7 @@ function attributeToProperty (h) {
   }
 }
 
-},{}],47:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 var attrToProp = require('hyperscript-attribute-to-property')
 
 var VAR = 0, TEXT = 1, OPEN = 2, CLOSE = 3, ATTR = 4
@@ -6611,7 +6321,7 @@ var closeRE = RegExp('^(' + [
 ].join('|') + ')(?:[\.#][a-zA-Z0-9\u007F-\uFFFF_:-]+)*$')
 function selfClosing (tag) { return closeRE.test(tag) }
 
-},{"hyperscript-attribute-to-property":46}],48:[function(require,module,exports){
+},{"hyperscript-attribute-to-property":39}],41:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = nBytes * 8 - mLen - 1
@@ -6697,7 +6407,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],49:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -6976,7 +6686,7 @@ Agent.prototype.destroy = function() {
 exports.globalAgent = new Agent();
 
 }).call(this,require('_process'))
-},{"_process":88,"events":32,"net":17,"util":118}],50:[function(require,module,exports){
+},{"_process":87,"events":25,"net":10,"util":118}],43:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -7062,13 +6772,13 @@ exports.globalAgent = globalAgent;
 exports.Agent = Agent;
 
 }).call(this,require('_process'))
-},{"./http.js":49,"_process":88,"tls":17,"util":118}],51:[function(require,module,exports){
+},{"./http.js":42,"_process":87,"tls":10,"util":118}],44:[function(require,module,exports){
 'use strict';
 
 exports.http = require('./http.js');
 exports.https = require('./https.js');
 
-},{"./http.js":49,"./https.js":50}],52:[function(require,module,exports){
+},{"./http.js":42,"./https.js":43}],45:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -7093,9 +6803,31 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],53:[function(require,module,exports){
-arguments[4][2][0].apply(exports,arguments)
-},{"dup":2}],54:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
+var inserted = {};
+
+module.exports = function (css, options) {
+    if (inserted[css]) return;
+    inserted[css] = true;
+    
+    var elem = document.createElement('style');
+    elem.setAttribute('type', 'text/css');
+
+    if ('textContent' in elem) {
+      elem.textContent = css;
+    } else {
+      elem.styleSheet.cssText = css;
+    }
+    
+    var head = document.getElementsByTagName('head')[0];
+    if (options && options.prepend) {
+        head.insertBefore(elem, head.childNodes[0]);
+    } else {
+        head.appendChild(elem);
+    }
+};
+
+},{}],47:[function(require,module,exports){
 'use strict';
 
 module.exports = function isArrayish(obj) {
@@ -7107,7 +6839,7 @@ module.exports = function isArrayish(obj) {
 		(obj.length >= 0 && obj.splice instanceof Function);
 };
 
-},{}],55:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 /*!
  * Determine if an object is a Buffer
  *
@@ -7130,7 +6862,7 @@ function isSlowBuffer (obj) {
   return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
 }
 
-},{}],56:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 'use strict';
 var toString = Object.prototype.toString;
 
@@ -7139,7 +6871,7 @@ module.exports = function (x) {
 	return toString.call(x) === '[object Object]' && (prototype = Object.getPrototypeOf(x), prototype === null || prototype === Object.getPrototypeOf({}));
 };
 
-},{}],57:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 'use strict';
 module.exports = function (x) {
 	if (typeof x !== 'number') {
@@ -7155,7 +6887,7 @@ module.exports = function (x) {
 		x === 308;
 };
 
-},{}],58:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 'use strict';
 
 var WHITELIST = [
@@ -7217,7 +6949,7 @@ module.exports = function (err) {
 	return true;
 };
 
-},{}],59:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 'use strict';
 
 var isStream = module.exports = function (stream) {
@@ -7240,14 +6972,14 @@ isStream.transform = function (stream) {
 	return isStream.duplex(stream) && typeof stream._transform === 'function' && typeof stream._transformState === 'object';
 };
 
-},{}],60:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
   return toString.call(arr) == '[object Array]';
 };
 
-},{}],61:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 'use strict';
 module.exports = function (obj) {
 	var ret = {};
@@ -7260,7 +6992,292 @@ module.exports = function (obj) {
 	return ret;
 };
 
-},{}],62:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
+var choo = require('choo')
+
+var main = require('./components/main')
+
+module.exports = function (opts) {
+  opts.basedir = (opts.basedir || '').replace(/\/$/, '')
+  var app = choo()
+
+  app.model({
+    state: {
+      title: opts.title,
+      logo: opts.logo,
+      contents: opts.contents,
+      html: opts.html,
+      routes: opts.routes,
+      current: opts.initial,
+      basedir: opts.basedir
+    },
+    reducers: {},
+    subscriptions: [
+      function catchLinks (send, done) {
+        window.onclick = function (e) {
+          var node = (function traverse (node) {
+            if (!node) return
+            if (node.localName !== 'a') return traverse(node.parentNode)
+            if (node.href === undefined) return traverse(node.parentNode)
+            if (window.location.host !== node.host) return traverse(node.parentNode)
+            return node
+          })(e.target)
+
+          if (!node) return
+          e.preventDefault()
+          var href = node.href
+
+          if (location.pathname !== node.pathname) {
+            send('location:setLocation', { location: href }, done)
+            window.history.pushState(null, null, href)
+            document.body.scrollTop = 0
+          } else {
+            window.location.hash = node.hash
+            var el = document.querySelector(node.hash)
+            window.scrollTo(0, el.offsetTop)
+          }
+        }
+      }
+    ]
+  })
+
+  app.model({
+    namespace: 'menu',
+    state: {
+      open: false,
+      size: 'small'
+    },
+    reducers: {
+      set: function (data, state) {
+        return data
+      },
+      size: function (data, state) {
+        return data
+      }
+    },
+    subscriptions: [
+      checkSize,
+      function (send, done) {
+        window.onresize = function () {
+          checkSize(send, done)
+        }
+      }
+    ]
+  })
+
+  function checkSize (send, done) {
+    var size = window.innerWidth > 600 ? 'large' : 'small'
+    send('menu:size', { size: size }, done)
+  }
+
+  app.router(function (route) {
+    var routes = [
+      route('/', main),
+      route('/:page', main)
+    ]
+
+    if (opts.basedir) {
+      return route(opts.basedir, routes)
+    }
+
+    return routes
+  })
+
+  return app
+}
+
+},{"./components/main":57,"choo":16}],56:[function(require,module,exports){
+var html = require('choo/html')
+var css = 0
+var avatar = require('github-avatar-url')
+
+module.exports = function (state, prev, send) {
+  var currentPage = state.params.page || state.current
+  var page = state.html[currentPage]
+  var pageData = state.contents.filter(function (item) {
+    return item.key === currentPage
+  })[0]
+
+  var prefix = ((null || true) && "_d706bf45")
+
+  var contentWrapper = html`<div></div>`
+  contentWrapper.innerHTML = page
+
+  var link = pageData.source ? html`<a class="markdown-link" href="${pageData.source}">source</a>` : ''
+
+  function contributors (items) {
+    return items.map(function (item) {
+      if (!item) return
+      var user = item.replace('@', '')
+      var img = html`<img class="${prefix} contributor"></img>`
+      img.style.opacity = 0
+      avatar(user, function (err, url) {
+        if (err) {
+          // TODO: handle requests in effects, send error messages to state
+          console.log(err)
+        }
+        img.src = url
+        img.onload = function () {
+          img.style.opacity = 1
+        }
+      })
+      return html`<div class="${prefix} contributor-wrapper">
+        <a href='https://github.com/${user}'>
+          ${img}
+        </a>
+      </div>`
+    })
+  }
+
+  if (pageData.contributors) {
+    var contributorWrapper = html`<div class="${prefix} contributor-container">
+      ${contributors(pageData.contributors)}
+    </div>`
+  }
+
+  return html`<div class="${prefix} minidocs-content">
+    ${link}
+    ${contributorWrapper}
+    ${contentWrapper}
+  </div>`
+}
+
+},{"choo/html":15,"github-avatar-url":28,"insert-css":46}],57:[function(require,module,exports){
+var html = require('choo/html')
+var css = 0
+var sidebar = require('./sidebar')
+var content = require('./content')
+
+module.exports = function (state, prev, send) {
+  var prefix = ((null || true) && "_6781b8a1")
+
+  return html`<div id="choo-root" class="minidocs"}>
+    ${sidebar(state, prev, send)}
+    <div class="${prefix} minidocs-main">
+      <div class="markdown-body">
+        ${content(state, prev, send)}
+      </div>
+    </div>
+  </div>`
+}
+
+},{"./content":56,"./sidebar":59,"choo/html":15,"insert-css":46}],58:[function(require,module,exports){
+var url = require('url')
+var css = 0
+var html = require('choo/html')
+
+module.exports = function (state, prev, send) {
+  var contents = state.contents
+
+  var prefix = ((null || true) && "_df8df972")
+
+  function createMenu (contents) {
+    return contents.map(function (item) {
+      // TODO: figure out a better way to get current page in state based on link click
+      var current
+      var location
+
+      if (state.location && state.location.pathname) {
+        location = url.parse(state.location.pathname)
+        var sliceBy = state.basedir.length + 1
+        current = location.pathname.slice(sliceBy)
+      }
+
+      if (!current || current.length <= 1) {
+        current = state.current
+      }
+
+      function onclick (e) {
+        send('menu:set', { open: false })
+      }
+
+      if (item.link) {
+        return html`<div><a href="${item.link}" class="content-link ${isActive(current, item.key)}" onclick=${onclick}>${item.name}</a></div>`
+      }
+
+      return html`<div class="h${item.depth}">${item.name}</div>`
+    })
+  }
+
+  function isActive (current, item) {
+    return current === item ? 'active' : ''
+  }
+
+  function isOpen () {
+    if (typeof window !== 'undefined' && window.innerWidth > 600) return 'menu-open'
+    return state.menu.open ? 'menu-open' : 'menu-closed'
+  }
+
+  function onclick (e) {
+    send('menu:set', { open: !state.menu.open })
+  }
+
+  return html`<div class="${prefix} minidocs-contents">
+    <button class="minidocs-menu-toggle" onclick=${onclick}>Menu</button>
+    <div class="minidocs-menu ${isOpen()} menu-${state.menu.size}">
+      <div class="minidocs-menu-wrapper">
+        ${createMenu(contents)}
+      </div>
+    </div>
+  </div>`
+}
+
+},{"choo/html":15,"insert-css":46,"url":114}],59:[function(require,module,exports){
+var url = require('url')
+var css = 0
+var html = require('choo/html')
+
+var menu = require('./menu')
+
+module.exports = function (state, prev, send) {
+  var contents = state.contents
+
+  var prefix = ((null || true) && "_68ad6959")
+
+  function createHeader () {
+    if (state.logo) {
+      return html`
+        <img class="minidocs-logo" src="${state.basedir + '/' + state.logo}" alt="${state.title}">
+      `
+    }
+    return state.title
+  }
+
+  return html`<div class="${prefix} minidocs-sidebar">
+    <div class="minidocs-header">
+      <h1><a href="${state.basedir}/">${createHeader()}</a></h1>
+    </div>
+    ${menu(state, prev, send)}
+  </div>`
+}
+
+},{"./menu":58,"choo/html":15,"insert-css":46,"url":114}],60:[function(require,module,exports){
+var css = 0
+var minidocs = require('./app')
+
+module.exports = function (opts) {
+  var app = minidocs(opts)
+
+  ;((null || true) && "_08b1ba12")
+  ;((null || true) && "_b8e1f1b6")
+  ;((null || true) && "_3b66eb47")
+  ;((null || true) && "_4337a147")
+
+  return {
+    app: app,
+    start: function (id, opts) {
+      if (typeof id === 'object') {
+        opts = id
+        id = null
+      }
+      if (!opts) opts = {}
+      opts.href = opts.href || false
+      return app.start(id, opts)
+    }
+  }
+}
+
+},{"./app":55,"insert-css":46}],61:[function(require,module,exports){
 // Create a range object for efficently rendering strings to elements.
 var range;
 
@@ -7843,7 +7860,7 @@ function morphdom(fromNode, toNode, options) {
 
 module.exports = morphdom;
 
-},{}],63:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 const window = require('global/window')
 const assert = require('assert')
 
@@ -7889,7 +7906,7 @@ function nanoraf (render, raf) {
   }
 }
 
-},{"assert":9,"global/window":41}],64:[function(require,module,exports){
+},{"assert":2,"global/window":34}],63:[function(require,module,exports){
 var inherits = require('inherits');
 
 var NestedError = function (message, nested) {
@@ -7928,7 +7945,7 @@ NestedError.prototype.name = 'NestedError';
 
 module.exports = NestedError;
 
-},{"inherits":52}],65:[function(require,module,exports){
+},{"inherits":45}],64:[function(require,module,exports){
 'use strict';
 
 // https://github.com/nodejs/io.js/commit/8be6060020
@@ -7992,35 +8009,92 @@ module.exports = {
 	511: 'Network Authentication Required'
 };
 
-},{}],66:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 'use strict';
+/* eslint-disable no-unused-vars */
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+var propIsEnumerable = Object.prototype.propertyIsEnumerable;
 
-function ToObject(val) {
-	if (val == null) {
+function toObject(val) {
+	if (val === null || val === undefined) {
 		throw new TypeError('Object.assign cannot be called with null or undefined');
 	}
 
 	return Object(val);
 }
 
-module.exports = Object.assign || function (target, source) {
+function shouldUseNative() {
+	try {
+		if (!Object.assign) {
+			return false;
+		}
+
+		// Detect buggy property enumeration order in older V8 versions.
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=4118
+		var test1 = new String('abc');  // eslint-disable-line
+		test1[5] = 'de';
+		if (Object.getOwnPropertyNames(test1)[0] === '5') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test2 = {};
+		for (var i = 0; i < 10; i++) {
+			test2['_' + String.fromCharCode(i)] = i;
+		}
+		var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
+			return test2[n];
+		});
+		if (order2.join('') !== '0123456789') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test3 = {};
+		'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
+			test3[letter] = letter;
+		});
+		if (Object.keys(Object.assign({}, test3)).join('') !==
+				'abcdefghijklmnopqrst') {
+			return false;
+		}
+
+		return true;
+	} catch (e) {
+		// We don't expect any of the above to throw, but better to be safe.
+		return false;
+	}
+}
+
+module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 	var from;
-	var keys;
-	var to = ToObject(target);
+	var to = toObject(target);
+	var symbols;
 
 	for (var s = 1; s < arguments.length; s++) {
-		from = arguments[s];
-		keys = Object.keys(Object(from));
+		from = Object(arguments[s]);
 
-		for (var i = 0; i < keys.length; i++) {
-			to[keys[i]] = from[keys[i]];
+		for (var key in from) {
+			if (hasOwnProperty.call(from, key)) {
+				to[key] = from[key];
+			}
+		}
+
+		if (Object.getOwnPropertySymbols) {
+			symbols = Object.getOwnPropertySymbols(from);
+			for (var i = 0; i < symbols.length; i++) {
+				if (propIsEnumerable.call(from, symbols[i])) {
+					to[symbols[i]] = from[symbols[i]];
+				}
+			}
 		}
 	}
 
 	return to;
 };
 
-},{}],67:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 /* global MutationObserver */
 var document = require('global/document')
 var window = require('global/window')
@@ -8109,7 +8183,7 @@ function eachMutation (nodes, fn) {
   }
 }
 
-},{"global/document":40,"global/window":41}],68:[function(require,module,exports){
+},{"global/document":33,"global/window":34}],67:[function(require,module,exports){
 var wrappy = require('wrappy')
 module.exports = wrappy(once)
 
@@ -8132,7 +8206,7 @@ function once (fn) {
   return f
 }
 
-},{"wrappy":121}],69:[function(require,module,exports){
+},{"wrappy":121}],68:[function(require,module,exports){
 'use strict';
 
 
@@ -8236,7 +8310,7 @@ exports.setTyped = function (on) {
 
 exports.setTyped(TYPED_OK);
 
-},{}],70:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 'use strict';
 
 // Note: adler32 takes 12% for level 0 and 2% for level 6.
@@ -8270,7 +8344,7 @@ function adler32(adler, buf, len, pos) {
 
 module.exports = adler32;
 
-},{}],71:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 'use strict';
 
 
@@ -8322,7 +8396,7 @@ module.exports = {
   //Z_NULL:                 null // Use -1 or null inline, depending on var type
 };
 
-},{}],72:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 'use strict';
 
 // Note: we can't get significant speed boost here.
@@ -8365,7 +8439,7 @@ function crc32(crc, buf, len, pos) {
 
 module.exports = crc32;
 
-},{}],73:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
 'use strict';
 
 var utils   = require('../utils/common');
@@ -10222,7 +10296,7 @@ exports.deflatePrime = deflatePrime;
 exports.deflateTune = deflateTune;
 */
 
-},{"../utils/common":69,"./adler32":70,"./crc32":72,"./messages":77,"./trees":78}],74:[function(require,module,exports){
+},{"../utils/common":68,"./adler32":69,"./crc32":71,"./messages":76,"./trees":77}],73:[function(require,module,exports){
 'use strict';
 
 // See state defs from inflate.js
@@ -10550,7 +10624,7 @@ module.exports = function inflate_fast(strm, start) {
   return;
 };
 
-},{}],75:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 'use strict';
 
 
@@ -12090,7 +12164,7 @@ exports.inflateSyncPoint = inflateSyncPoint;
 exports.inflateUndermine = inflateUndermine;
 */
 
-},{"../utils/common":69,"./adler32":70,"./crc32":72,"./inffast":74,"./inftrees":76}],76:[function(require,module,exports){
+},{"../utils/common":68,"./adler32":69,"./crc32":71,"./inffast":73,"./inftrees":75}],75:[function(require,module,exports){
 'use strict';
 
 
@@ -12419,7 +12493,7 @@ module.exports = function inflate_table(type, lens, lens_index, codes, table, ta
   return 0;
 };
 
-},{"../utils/common":69}],77:[function(require,module,exports){
+},{"../utils/common":68}],76:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -12434,7 +12508,7 @@ module.exports = {
   '-6':   'incompatible version' /* Z_VERSION_ERROR (-6) */
 };
 
-},{}],78:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
 'use strict';
 
 
@@ -13638,7 +13712,7 @@ exports._tr_flush_block  = _tr_flush_block;
 exports._tr_tally = _tr_tally;
 exports._tr_align = _tr_align;
 
-},{"../utils/common":69}],79:[function(require,module,exports){
+},{"../utils/common":68}],78:[function(require,module,exports){
 'use strict';
 
 
@@ -13669,7 +13743,7 @@ function ZStream() {
 
 module.exports = ZStream;
 
-},{}],80:[function(require,module,exports){
+},{}],79:[function(require,module,exports){
 'use strict';
 var errorEx = require('error-ex');
 var fallback = require('./vendor/parse');
@@ -13706,7 +13780,7 @@ module.exports = function (x, reviver, filename) {
 	}
 };
 
-},{"./vendor/parse":81,"error-ex":31}],81:[function(require,module,exports){
+},{"./vendor/parse":80,"error-ex":24}],80:[function(require,module,exports){
 /*
  * Author: Alex Kocharin <alex@kocharin.ru>
  * GIT: https://github.com/rlidwka/jju
@@ -14460,7 +14534,7 @@ module.exports.tokenize = function tokenizeJSON(input, options) {
 }
 
 
-},{"./unicode":82}],82:[function(require,module,exports){
+},{"./unicode":81}],81:[function(require,module,exports){
 
 // This is autogenerated with esprima tools, see:
 // https://github.com/ariya/esprima/blob/master/esprima.js
@@ -14533,7 +14607,7 @@ module.exports.NonAsciiIdentifierStart = /[\xAA\xB5\xBA\xC0-\xD6\xD8-\xF6\xF8-\u
 
 module.exports.NonAsciiIdentifierPart = /[\xAA\xB5\xBA\xC0-\xD6\xD8-\xF6\xF8-\u02C1\u02C6-\u02D1\u02E0-\u02E4\u02EC\u02EE\u0300-\u0374\u0376\u0377\u037A-\u037D\u0386\u0388-\u038A\u038C\u038E-\u03A1\u03A3-\u03F5\u03F7-\u0481\u0483-\u0487\u048A-\u0527\u0531-\u0556\u0559\u0561-\u0587\u0591-\u05BD\u05BF\u05C1\u05C2\u05C4\u05C5\u05C7\u05D0-\u05EA\u05F0-\u05F2\u0610-\u061A\u0620-\u0669\u066E-\u06D3\u06D5-\u06DC\u06DF-\u06E8\u06EA-\u06FC\u06FF\u0710-\u074A\u074D-\u07B1\u07C0-\u07F5\u07FA\u0800-\u082D\u0840-\u085B\u08A0\u08A2-\u08AC\u08E4-\u08FE\u0900-\u0963\u0966-\u096F\u0971-\u0977\u0979-\u097F\u0981-\u0983\u0985-\u098C\u098F\u0990\u0993-\u09A8\u09AA-\u09B0\u09B2\u09B6-\u09B9\u09BC-\u09C4\u09C7\u09C8\u09CB-\u09CE\u09D7\u09DC\u09DD\u09DF-\u09E3\u09E6-\u09F1\u0A01-\u0A03\u0A05-\u0A0A\u0A0F\u0A10\u0A13-\u0A28\u0A2A-\u0A30\u0A32\u0A33\u0A35\u0A36\u0A38\u0A39\u0A3C\u0A3E-\u0A42\u0A47\u0A48\u0A4B-\u0A4D\u0A51\u0A59-\u0A5C\u0A5E\u0A66-\u0A75\u0A81-\u0A83\u0A85-\u0A8D\u0A8F-\u0A91\u0A93-\u0AA8\u0AAA-\u0AB0\u0AB2\u0AB3\u0AB5-\u0AB9\u0ABC-\u0AC5\u0AC7-\u0AC9\u0ACB-\u0ACD\u0AD0\u0AE0-\u0AE3\u0AE6-\u0AEF\u0B01-\u0B03\u0B05-\u0B0C\u0B0F\u0B10\u0B13-\u0B28\u0B2A-\u0B30\u0B32\u0B33\u0B35-\u0B39\u0B3C-\u0B44\u0B47\u0B48\u0B4B-\u0B4D\u0B56\u0B57\u0B5C\u0B5D\u0B5F-\u0B63\u0B66-\u0B6F\u0B71\u0B82\u0B83\u0B85-\u0B8A\u0B8E-\u0B90\u0B92-\u0B95\u0B99\u0B9A\u0B9C\u0B9E\u0B9F\u0BA3\u0BA4\u0BA8-\u0BAA\u0BAE-\u0BB9\u0BBE-\u0BC2\u0BC6-\u0BC8\u0BCA-\u0BCD\u0BD0\u0BD7\u0BE6-\u0BEF\u0C01-\u0C03\u0C05-\u0C0C\u0C0E-\u0C10\u0C12-\u0C28\u0C2A-\u0C33\u0C35-\u0C39\u0C3D-\u0C44\u0C46-\u0C48\u0C4A-\u0C4D\u0C55\u0C56\u0C58\u0C59\u0C60-\u0C63\u0C66-\u0C6F\u0C82\u0C83\u0C85-\u0C8C\u0C8E-\u0C90\u0C92-\u0CA8\u0CAA-\u0CB3\u0CB5-\u0CB9\u0CBC-\u0CC4\u0CC6-\u0CC8\u0CCA-\u0CCD\u0CD5\u0CD6\u0CDE\u0CE0-\u0CE3\u0CE6-\u0CEF\u0CF1\u0CF2\u0D02\u0D03\u0D05-\u0D0C\u0D0E-\u0D10\u0D12-\u0D3A\u0D3D-\u0D44\u0D46-\u0D48\u0D4A-\u0D4E\u0D57\u0D60-\u0D63\u0D66-\u0D6F\u0D7A-\u0D7F\u0D82\u0D83\u0D85-\u0D96\u0D9A-\u0DB1\u0DB3-\u0DBB\u0DBD\u0DC0-\u0DC6\u0DCA\u0DCF-\u0DD4\u0DD6\u0DD8-\u0DDF\u0DF2\u0DF3\u0E01-\u0E3A\u0E40-\u0E4E\u0E50-\u0E59\u0E81\u0E82\u0E84\u0E87\u0E88\u0E8A\u0E8D\u0E94-\u0E97\u0E99-\u0E9F\u0EA1-\u0EA3\u0EA5\u0EA7\u0EAA\u0EAB\u0EAD-\u0EB9\u0EBB-\u0EBD\u0EC0-\u0EC4\u0EC6\u0EC8-\u0ECD\u0ED0-\u0ED9\u0EDC-\u0EDF\u0F00\u0F18\u0F19\u0F20-\u0F29\u0F35\u0F37\u0F39\u0F3E-\u0F47\u0F49-\u0F6C\u0F71-\u0F84\u0F86-\u0F97\u0F99-\u0FBC\u0FC6\u1000-\u1049\u1050-\u109D\u10A0-\u10C5\u10C7\u10CD\u10D0-\u10FA\u10FC-\u1248\u124A-\u124D\u1250-\u1256\u1258\u125A-\u125D\u1260-\u1288\u128A-\u128D\u1290-\u12B0\u12B2-\u12B5\u12B8-\u12BE\u12C0\u12C2-\u12C5\u12C8-\u12D6\u12D8-\u1310\u1312-\u1315\u1318-\u135A\u135D-\u135F\u1380-\u138F\u13A0-\u13F4\u1401-\u166C\u166F-\u167F\u1681-\u169A\u16A0-\u16EA\u16EE-\u16F0\u1700-\u170C\u170E-\u1714\u1720-\u1734\u1740-\u1753\u1760-\u176C\u176E-\u1770\u1772\u1773\u1780-\u17D3\u17D7\u17DC\u17DD\u17E0-\u17E9\u180B-\u180D\u1810-\u1819\u1820-\u1877\u1880-\u18AA\u18B0-\u18F5\u1900-\u191C\u1920-\u192B\u1930-\u193B\u1946-\u196D\u1970-\u1974\u1980-\u19AB\u19B0-\u19C9\u19D0-\u19D9\u1A00-\u1A1B\u1A20-\u1A5E\u1A60-\u1A7C\u1A7F-\u1A89\u1A90-\u1A99\u1AA7\u1B00-\u1B4B\u1B50-\u1B59\u1B6B-\u1B73\u1B80-\u1BF3\u1C00-\u1C37\u1C40-\u1C49\u1C4D-\u1C7D\u1CD0-\u1CD2\u1CD4-\u1CF6\u1D00-\u1DE6\u1DFC-\u1F15\u1F18-\u1F1D\u1F20-\u1F45\u1F48-\u1F4D\u1F50-\u1F57\u1F59\u1F5B\u1F5D\u1F5F-\u1F7D\u1F80-\u1FB4\u1FB6-\u1FBC\u1FBE\u1FC2-\u1FC4\u1FC6-\u1FCC\u1FD0-\u1FD3\u1FD6-\u1FDB\u1FE0-\u1FEC\u1FF2-\u1FF4\u1FF6-\u1FFC\u200C\u200D\u203F\u2040\u2054\u2071\u207F\u2090-\u209C\u20D0-\u20DC\u20E1\u20E5-\u20F0\u2102\u2107\u210A-\u2113\u2115\u2119-\u211D\u2124\u2126\u2128\u212A-\u212D\u212F-\u2139\u213C-\u213F\u2145-\u2149\u214E\u2160-\u2188\u2C00-\u2C2E\u2C30-\u2C5E\u2C60-\u2CE4\u2CEB-\u2CF3\u2D00-\u2D25\u2D27\u2D2D\u2D30-\u2D67\u2D6F\u2D7F-\u2D96\u2DA0-\u2DA6\u2DA8-\u2DAE\u2DB0-\u2DB6\u2DB8-\u2DBE\u2DC0-\u2DC6\u2DC8-\u2DCE\u2DD0-\u2DD6\u2DD8-\u2DDE\u2DE0-\u2DFF\u2E2F\u3005-\u3007\u3021-\u302F\u3031-\u3035\u3038-\u303C\u3041-\u3096\u3099\u309A\u309D-\u309F\u30A1-\u30FA\u30FC-\u30FF\u3105-\u312D\u3131-\u318E\u31A0-\u31BA\u31F0-\u31FF\u3400-\u4DB5\u4E00-\u9FCC\uA000-\uA48C\uA4D0-\uA4FD\uA500-\uA60C\uA610-\uA62B\uA640-\uA66F\uA674-\uA67D\uA67F-\uA697\uA69F-\uA6F1\uA717-\uA71F\uA722-\uA788\uA78B-\uA78E\uA790-\uA793\uA7A0-\uA7AA\uA7F8-\uA827\uA840-\uA873\uA880-\uA8C4\uA8D0-\uA8D9\uA8E0-\uA8F7\uA8FB\uA900-\uA92D\uA930-\uA953\uA960-\uA97C\uA980-\uA9C0\uA9CF-\uA9D9\uAA00-\uAA36\uAA40-\uAA4D\uAA50-\uAA59\uAA60-\uAA76\uAA7A\uAA7B\uAA80-\uAAC2\uAADB-\uAADD\uAAE0-\uAAEF\uAAF2-\uAAF6\uAB01-\uAB06\uAB09-\uAB0E\uAB11-\uAB16\uAB20-\uAB26\uAB28-\uAB2E\uABC0-\uABEA\uABEC\uABED\uABF0-\uABF9\uAC00-\uD7A3\uD7B0-\uD7C6\uD7CB-\uD7FB\uF900-\uFA6D\uFA70-\uFAD9\uFB00-\uFB06\uFB13-\uFB17\uFB1D-\uFB28\uFB2A-\uFB36\uFB38-\uFB3C\uFB3E\uFB40\uFB41\uFB43\uFB44\uFB46-\uFBB1\uFBD3-\uFD3D\uFD50-\uFD8F\uFD92-\uFDC7\uFDF0-\uFDFB\uFE00-\uFE0F\uFE20-\uFE26\uFE33\uFE34\uFE4D-\uFE4F\uFE70-\uFE74\uFE76-\uFEFC\uFF10-\uFF19\uFF21-\uFF3A\uFF3F\uFF41-\uFF5A\uFF66-\uFFBE\uFFC2-\uFFC7\uFFCA-\uFFCF\uFFD2-\uFFD7\uFFDA-\uFFDC]/
 
-},{}],83:[function(require,module,exports){
+},{}],82:[function(require,module,exports){
 const assert = require('assert')
 
 module.exports = match
@@ -14553,12 +14627,12 @@ function match (route) {
     .replace(/\/$/, '')
 }
 
-},{"assert":9}],84:[function(require,module,exports){
+},{"assert":2}],83:[function(require,module,exports){
 'use strict';
 
 module.exports = typeof Promise === 'function' ? Promise : require('pinkie');
 
-},{"pinkie":85}],85:[function(require,module,exports){
+},{"pinkie":84}],84:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -14854,7 +14928,7 @@ Promise.reject = function (reason) {
 module.exports = Promise;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],86:[function(require,module,exports){
+},{}],85:[function(require,module,exports){
 'use strict';
 module.exports = function (url) {
 	if (typeof url !== 'string') {
@@ -14870,7 +14944,7 @@ module.exports = function (url) {
 	return url.replace(/^(?!(?:\w+:)?\/\/)/, 'http://');
 };
 
-},{}],87:[function(require,module,exports){
+},{}],86:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -14917,7 +14991,7 @@ function nextTick(fn, arg1, arg2, arg3) {
 }
 
 }).call(this,require('_process'))
-},{"_process":88}],88:[function(require,module,exports){
+},{"_process":87}],87:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -14947,17 +15021,45 @@ var cachedClearTimeout;
 } ())
 function runTimeout(fun) {
     if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
         return setTimeout(fun, 0);
-    } else {
-        return cachedSetTimeout.call(null, fun, 0);
     }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
 }
 function runClearTimeout(marker) {
     if (cachedClearTimeout === clearTimeout) {
-        clearTimeout(marker);
-    } else {
-        cachedClearTimeout.call(null, marker);
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
     }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
 }
 var queue = [];
 var draining = false;
@@ -15051,7 +15153,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],89:[function(require,module,exports){
+},{}],88:[function(require,module,exports){
 (function (global){
 /*! https://mths.be/punycode v1.4.1 by @mathias */
 ;(function(root) {
@@ -15588,7 +15690,7 @@ process.umask = function() { return 0; };
 }(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],90:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -15674,7 +15776,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],91:[function(require,module,exports){
+},{}],90:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -15761,13 +15863,13 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],92:[function(require,module,exports){
+},{}],91:[function(require,module,exports){
 'use strict';
 
 exports.decode = exports.parse = require('./decode');
 exports.encode = exports.stringify = require('./encode');
 
-},{"./decode":90,"./encode":91}],93:[function(require,module,exports){
+},{"./decode":89,"./encode":90}],92:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -15843,7 +15945,7 @@ module.exports = function read(stream, options, cb) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":19,"pinkie-promise":84,"readable-stream":99,"util":118}],94:[function(require,module,exports){
+},{"buffer":12,"pinkie-promise":83,"readable-stream":99,"util":118}],93:[function(require,module,exports){
 // a duplex stream is just a stream that is both readable and writable.
 // Since JS doesn't have multiple prototypal inheritance, this class
 // prototypally inherits from Readable, and then parasitically from
@@ -15919,7 +16021,7 @@ function forEach(xs, f) {
     f(xs[i], i);
   }
 }
-},{"./_stream_readable":96,"./_stream_writable":98,"core-util-is":24,"inherits":52,"process-nextick-args":87}],95:[function(require,module,exports){
+},{"./_stream_readable":95,"./_stream_writable":97,"core-util-is":17,"inherits":45,"process-nextick-args":86}],94:[function(require,module,exports){
 // a passthrough stream.
 // basically just the most minimal sort of Transform stream.
 // Every written chunk gets output as-is.
@@ -15946,7 +16048,7 @@ function PassThrough(options) {
 PassThrough.prototype._transform = function (chunk, encoding, cb) {
   cb(null, chunk);
 };
-},{"./_stream_transform":97,"core-util-is":24,"inherits":52}],96:[function(require,module,exports){
+},{"./_stream_transform":96,"core-util-is":17,"inherits":45}],95:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -16001,21 +16103,21 @@ if (debugUtil && debugUtil.debuglog) {
 }
 /*</replacement>*/
 
+var BufferList = require('./internal/streams/BufferList');
 var StringDecoder;
 
 util.inherits(Readable, Stream);
 
-var hasPrependListener = typeof EE.prototype.prependListener === 'function';
-
 function prependListener(emitter, event, fn) {
-  if (hasPrependListener) return emitter.prependListener(event, fn);
-
-  // This is a brutally ugly hack to make sure that our error handler
-  // is attached before any userland ones.  NEVER DO THIS. This is here
-  // only because this code needs to continue to work with older versions
-  // of Node.js that do not include the prependListener() method. The goal
-  // is to eventually remove this hack.
-  if (!emitter._events || !emitter._events[event]) emitter.on(event, fn);else if (isArray(emitter._events[event])) emitter._events[event].unshift(fn);else emitter._events[event] = [fn, emitter._events[event]];
+  if (typeof emitter.prependListener === 'function') {
+    return emitter.prependListener(event, fn);
+  } else {
+    // This is a hack to make sure that our error handler is attached before any
+    // userland ones.  NEVER DO THIS. This is here only because this code needs
+    // to continue to work with older versions of Node.js that do not include
+    // the prependListener() method. The goal is to eventually remove this hack.
+    if (!emitter._events || !emitter._events[event]) emitter.on(event, fn);else if (isArray(emitter._events[event])) emitter._events[event].unshift(fn);else emitter._events[event] = [fn, emitter._events[event]];
+  }
 }
 
 var Duplex;
@@ -16039,7 +16141,10 @@ function ReadableState(options, stream) {
   // cast to ints.
   this.highWaterMark = ~ ~this.highWaterMark;
 
-  this.buffer = [];
+  // A linked list is used to store data chunks instead of an array because the
+  // linked list can remove elements from the beginning faster than
+  // array.shift()
+  this.buffer = new BufferList();
   this.length = 0;
   this.pipes = null;
   this.pipesCount = 0;
@@ -16202,7 +16307,8 @@ function computeNewHighWaterMark(n) {
   if (n >= MAX_HWM) {
     n = MAX_HWM;
   } else {
-    // Get the next highest power of 2
+    // Get the next highest power of 2 to prevent increasing hwm excessively in
+    // tiny amounts
     n--;
     n |= n >>> 1;
     n |= n >>> 2;
@@ -16214,44 +16320,34 @@ function computeNewHighWaterMark(n) {
   return n;
 }
 
+// This function is designed to be inlinable, so please take care when making
+// changes to the function body.
 function howMuchToRead(n, state) {
-  if (state.length === 0 && state.ended) return 0;
-
-  if (state.objectMode) return n === 0 ? 0 : 1;
-
-  if (n === null || isNaN(n)) {
-    // only flow one buffer at a time
-    if (state.flowing && state.buffer.length) return state.buffer[0].length;else return state.length;
+  if (n <= 0 || state.length === 0 && state.ended) return 0;
+  if (state.objectMode) return 1;
+  if (n !== n) {
+    // Only flow one buffer at a time
+    if (state.flowing && state.length) return state.buffer.head.data.length;else return state.length;
   }
-
-  if (n <= 0) return 0;
-
-  // If we're asking for more than the target buffer level,
-  // then raise the water mark.  Bump up to the next highest
-  // power of 2, to prevent increasing it excessively in tiny
-  // amounts.
+  // If we're asking for more than the current hwm, then raise the hwm.
   if (n > state.highWaterMark) state.highWaterMark = computeNewHighWaterMark(n);
-
-  // don't have that much.  return null, unless we've ended.
-  if (n > state.length) {
-    if (!state.ended) {
-      state.needReadable = true;
-      return 0;
-    } else {
-      return state.length;
-    }
+  if (n <= state.length) return n;
+  // Don't have enough
+  if (!state.ended) {
+    state.needReadable = true;
+    return 0;
   }
-
-  return n;
+  return state.length;
 }
 
 // you can override either this method, or the async _read(n) below.
 Readable.prototype.read = function (n) {
   debug('read', n);
+  n = parseInt(n, 10);
   var state = this._readableState;
   var nOrig = n;
 
-  if (typeof n !== 'number' || n > 0) state.emittedReadable = false;
+  if (n !== 0) state.emittedReadable = false;
 
   // if we're doing read(0) to trigger a readable event, but we
   // already have a bunch of data in the buffer, then just trigger
@@ -16307,9 +16403,7 @@ Readable.prototype.read = function (n) {
   if (state.ended || state.reading) {
     doRead = false;
     debug('reading or ended', doRead);
-  }
-
-  if (doRead) {
+  } else if (doRead) {
     debug('do read');
     state.reading = true;
     state.sync = true;
@@ -16318,11 +16412,10 @@ Readable.prototype.read = function (n) {
     // call internal read method
     this._read(state.highWaterMark);
     state.sync = false;
+    // If _read pushed data synchronously, then `reading` will be false,
+    // and we need to re-evaluate how much data we can return to the user.
+    if (!state.reading) n = howMuchToRead(nOrig, state);
   }
-
-  // If _read pushed data synchronously, then `reading` will be false,
-  // and we need to re-evaluate how much data we can return to the user.
-  if (doRead && !state.reading) n = howMuchToRead(nOrig, state);
 
   var ret;
   if (n > 0) ret = fromList(n, state);else ret = null;
@@ -16330,16 +16423,18 @@ Readable.prototype.read = function (n) {
   if (ret === null) {
     state.needReadable = true;
     n = 0;
+  } else {
+    state.length -= n;
   }
 
-  state.length -= n;
+  if (state.length === 0) {
+    // If we have nothing in the buffer, then we want to know
+    // as soon as we *do* get something into the buffer.
+    if (!state.ended) state.needReadable = true;
 
-  // If we have nothing in the buffer, then we want to know
-  // as soon as we *do* get something into the buffer.
-  if (state.length === 0 && !state.ended) state.needReadable = true;
-
-  // If we tried to read() past the EOF, then emit end on the next tick.
-  if (nOrig !== n && state.ended && state.length === 0) endReadable(this);
+    // If we tried to read() past the EOF, then emit end on the next tick.
+    if (nOrig !== n && state.ended) endReadable(this);
+  }
 
   if (ret !== null) this.emit('data', ret);
 
@@ -16487,11 +16582,17 @@ Readable.prototype.pipe = function (dest, pipeOpts) {
     if (state.awaitDrain && (!dest._writableState || dest._writableState.needDrain)) ondrain();
   }
 
+  // If the user pushes more data while we're writing to dest then we'll end up
+  // in ondata again. However, we only want to increase awaitDrain once because
+  // dest will only emit one 'drain' event for the multiple writes.
+  // => Introduce a guard on increasing awaitDrain.
+  var increasedAwaitDrain = false;
   src.on('data', ondata);
   function ondata(chunk) {
     debug('ondata');
+    increasedAwaitDrain = false;
     var ret = dest.write(chunk);
-    if (false === ret) {
+    if (false === ret && !increasedAwaitDrain) {
       // If the user unpiped during `dest.write()`, it is possible
       // to get stuck in a permanently paused state if that write
       // also returned false.
@@ -16499,6 +16600,7 @@ Readable.prototype.pipe = function (dest, pipeOpts) {
       if ((state.pipesCount === 1 && state.pipes === dest || state.pipesCount > 1 && indexOf(state.pipes, dest) !== -1) && !cleanedUp) {
         debug('false write response, pause', src._readableState.awaitDrain);
         src._readableState.awaitDrain++;
+        increasedAwaitDrain = true;
       }
       src.pause();
     }
@@ -16612,18 +16714,14 @@ Readable.prototype.unpipe = function (dest) {
 Readable.prototype.on = function (ev, fn) {
   var res = Stream.prototype.on.call(this, ev, fn);
 
-  // If listening to data, and it has not explicitly been paused,
-  // then call resume to start the flow of data on the next tick.
-  if (ev === 'data' && false !== this._readableState.flowing) {
-    this.resume();
-  }
-
-  if (ev === 'readable' && !this._readableState.endEmitted) {
+  if (ev === 'data') {
+    // Start flowing on next tick if stream isn't explicitly paused
+    if (this._readableState.flowing !== false) this.resume();
+  } else if (ev === 'readable') {
     var state = this._readableState;
-    if (!state.readableListening) {
-      state.readableListening = true;
+    if (!state.endEmitted && !state.readableListening) {
+      state.readableListening = state.needReadable = true;
       state.emittedReadable = false;
-      state.needReadable = true;
       if (!state.reading) {
         processNextTick(nReadingNextTick, this);
       } else if (state.length) {
@@ -16667,6 +16765,7 @@ function resume_(stream, state) {
   }
 
   state.resumeScheduled = false;
+  state.awaitDrain = 0;
   stream.emit('resume');
   flow(stream);
   if (state.flowing && !state.reading) stream.read(0);
@@ -16685,11 +16784,7 @@ Readable.prototype.pause = function () {
 function flow(stream) {
   var state = stream._readableState;
   debug('flow', state.flowing);
-  if (state.flowing) {
-    do {
-      var chunk = stream.read();
-    } while (null !== chunk && state.flowing);
-  }
+  while (state.flowing && stream.read() !== null) {}
 }
 
 // wrap an old-style stream as the async data source.
@@ -16760,50 +16855,101 @@ Readable._fromList = fromList;
 
 // Pluck off n bytes from an array of buffers.
 // Length is the combined lengths of all the buffers in the list.
+// This function is designed to be inlinable, so please take care when making
+// changes to the function body.
 function fromList(n, state) {
-  var list = state.buffer;
-  var length = state.length;
-  var stringMode = !!state.decoder;
-  var objectMode = !!state.objectMode;
+  // nothing buffered
+  if (state.length === 0) return null;
+
   var ret;
-
-  // nothing in the list, definitely empty.
-  if (list.length === 0) return null;
-
-  if (length === 0) ret = null;else if (objectMode) ret = list.shift();else if (!n || n >= length) {
-    // read it all, truncate the array.
-    if (stringMode) ret = list.join('');else if (list.length === 1) ret = list[0];else ret = Buffer.concat(list, length);
-    list.length = 0;
+  if (state.objectMode) ret = state.buffer.shift();else if (!n || n >= state.length) {
+    // read it all, truncate the list
+    if (state.decoder) ret = state.buffer.join('');else if (state.buffer.length === 1) ret = state.buffer.head.data;else ret = state.buffer.concat(state.length);
+    state.buffer.clear();
   } else {
-    // read just some of it.
-    if (n < list[0].length) {
-      // just take a part of the first list item.
-      // slice is the same for buffers and strings.
-      var buf = list[0];
-      ret = buf.slice(0, n);
-      list[0] = buf.slice(n);
-    } else if (n === list[0].length) {
-      // first list is a perfect match
-      ret = list.shift();
-    } else {
-      // complex case.
-      // we have enough to cover it, but it spans past the first buffer.
-      if (stringMode) ret = '';else ret = bufferShim.allocUnsafe(n);
-
-      var c = 0;
-      for (var i = 0, l = list.length; i < l && c < n; i++) {
-        var _buf = list[0];
-        var cpy = Math.min(n - c, _buf.length);
-
-        if (stringMode) ret += _buf.slice(0, cpy);else _buf.copy(ret, c, 0, cpy);
-
-        if (cpy < _buf.length) list[0] = _buf.slice(cpy);else list.shift();
-
-        c += cpy;
-      }
-    }
+    // read part of list
+    ret = fromListPartial(n, state.buffer, state.decoder);
   }
 
+  return ret;
+}
+
+// Extracts only enough buffered data to satisfy the amount requested.
+// This function is designed to be inlinable, so please take care when making
+// changes to the function body.
+function fromListPartial(n, list, hasStrings) {
+  var ret;
+  if (n < list.head.data.length) {
+    // slice is the same for buffers and strings
+    ret = list.head.data.slice(0, n);
+    list.head.data = list.head.data.slice(n);
+  } else if (n === list.head.data.length) {
+    // first chunk is a perfect match
+    ret = list.shift();
+  } else {
+    // result spans more than one buffer
+    ret = hasStrings ? copyFromBufferString(n, list) : copyFromBuffer(n, list);
+  }
+  return ret;
+}
+
+// Copies a specified amount of characters from the list of buffered data
+// chunks.
+// This function is designed to be inlinable, so please take care when making
+// changes to the function body.
+function copyFromBufferString(n, list) {
+  var p = list.head;
+  var c = 1;
+  var ret = p.data;
+  n -= ret.length;
+  while (p = p.next) {
+    var str = p.data;
+    var nb = n > str.length ? str.length : n;
+    if (nb === str.length) ret += str;else ret += str.slice(0, n);
+    n -= nb;
+    if (n === 0) {
+      if (nb === str.length) {
+        ++c;
+        if (p.next) list.head = p.next;else list.head = list.tail = null;
+      } else {
+        list.head = p;
+        p.data = str.slice(nb);
+      }
+      break;
+    }
+    ++c;
+  }
+  list.length -= c;
+  return ret;
+}
+
+// Copies a specified amount of bytes from the list of buffered data chunks.
+// This function is designed to be inlinable, so please take care when making
+// changes to the function body.
+function copyFromBuffer(n, list) {
+  var ret = bufferShim.allocUnsafe(n);
+  var p = list.head;
+  var c = 1;
+  p.data.copy(ret);
+  n -= p.data.length;
+  while (p = p.next) {
+    var buf = p.data;
+    var nb = n > buf.length ? buf.length : n;
+    buf.copy(ret, ret.length - n, 0, nb);
+    n -= nb;
+    if (n === 0) {
+      if (nb === buf.length) {
+        ++c;
+        if (p.next) list.head = p.next;else list.head = list.tail = null;
+      } else {
+        list.head = p;
+        p.data = buf.slice(nb);
+      }
+      break;
+    }
+    ++c;
+  }
+  list.length -= c;
   return ret;
 }
 
@@ -16842,7 +16988,7 @@ function indexOf(xs, x) {
   return -1;
 }
 }).call(this,require('_process'))
-},{"./_stream_duplex":94,"_process":88,"buffer":19,"buffer-shims":18,"core-util-is":24,"events":32,"inherits":52,"isarray":60,"process-nextick-args":87,"string_decoder/":110,"util":14}],97:[function(require,module,exports){
+},{"./_stream_duplex":93,"./internal/streams/BufferList":98,"_process":87,"buffer":12,"buffer-shims":11,"core-util-is":17,"events":25,"inherits":45,"isarray":53,"process-nextick-args":86,"string_decoder/":110,"util":7}],96:[function(require,module,exports){
 // a transform stream is a readable/writable stream where you do
 // something with the data.  Sometimes it's called a "filter",
 // but that's not a great name for it, since that implies a thing where
@@ -17023,7 +17169,7 @@ function done(stream, er) {
 
   return stream.push(null);
 }
-},{"./_stream_duplex":94,"core-util-is":24,"inherits":52}],98:[function(require,module,exports){
+},{"./_stream_duplex":93,"core-util-is":17,"inherits":45}],97:[function(require,module,exports){
 (function (process){
 // A bit simpler than readable streams.
 // Implement an async ._write(chunk, encoding, cb), and it'll handle all
@@ -17552,7 +17698,72 @@ function CorkedRequest(state) {
   };
 }
 }).call(this,require('_process'))
-},{"./_stream_duplex":94,"_process":88,"buffer":19,"buffer-shims":18,"core-util-is":24,"events":32,"inherits":52,"process-nextick-args":87,"util-deprecate":116}],99:[function(require,module,exports){
+},{"./_stream_duplex":93,"_process":87,"buffer":12,"buffer-shims":11,"core-util-is":17,"events":25,"inherits":45,"process-nextick-args":86,"util-deprecate":116}],98:[function(require,module,exports){
+'use strict';
+
+var Buffer = require('buffer').Buffer;
+/*<replacement>*/
+var bufferShim = require('buffer-shims');
+/*</replacement>*/
+
+module.exports = BufferList;
+
+function BufferList() {
+  this.head = null;
+  this.tail = null;
+  this.length = 0;
+}
+
+BufferList.prototype.push = function (v) {
+  var entry = { data: v, next: null };
+  if (this.length > 0) this.tail.next = entry;else this.head = entry;
+  this.tail = entry;
+  ++this.length;
+};
+
+BufferList.prototype.unshift = function (v) {
+  var entry = { data: v, next: this.head };
+  if (this.length === 0) this.tail = entry;
+  this.head = entry;
+  ++this.length;
+};
+
+BufferList.prototype.shift = function () {
+  if (this.length === 0) return;
+  var ret = this.head.data;
+  if (this.length === 1) this.head = this.tail = null;else this.head = this.head.next;
+  --this.length;
+  return ret;
+};
+
+BufferList.prototype.clear = function () {
+  this.head = this.tail = null;
+  this.length = 0;
+};
+
+BufferList.prototype.join = function (s) {
+  if (this.length === 0) return '';
+  var p = this.head;
+  var ret = '' + p.data;
+  while (p = p.next) {
+    ret += s + p.data;
+  }return ret;
+};
+
+BufferList.prototype.concat = function (n) {
+  if (this.length === 0) return bufferShim.alloc(0);
+  if (this.length === 1) return this.head.data;
+  var ret = bufferShim.allocUnsafe(n >>> 0);
+  var p = this.head;
+  var i = 0;
+  while (p) {
+    p.data.copy(ret, i);
+    i += p.data.length;
+    p = p.next;
+  }
+  return ret;
+};
+},{"buffer":12,"buffer-shims":11}],99:[function(require,module,exports){
 (function (process){
 var Stream = (function (){
   try {
@@ -17572,10 +17783,10 @@ if (!process.browser && process.env.READABLE_STREAM === 'disable' && Stream) {
 }
 
 }).call(this,require('_process'))
-},{"./lib/_stream_duplex.js":94,"./lib/_stream_passthrough.js":95,"./lib/_stream_readable.js":96,"./lib/_stream_transform.js":97,"./lib/_stream_writable.js":98,"_process":88}],100:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":93,"./lib/_stream_passthrough.js":94,"./lib/_stream_readable.js":95,"./lib/_stream_transform.js":96,"./lib/_stream_writable.js":97,"_process":87}],100:[function(require,module,exports){
 module.exports = require("./lib/_stream_transform.js")
 
-},{"./lib/_stream_transform.js":97}],101:[function(require,module,exports){
+},{"./lib/_stream_transform.js":96}],101:[function(require,module,exports){
 const window = require('global/window')
 const assert = require('assert')
 
@@ -17591,7 +17802,7 @@ function hash (cb) {
   }
 }
 
-},{"assert":9,"global/window":41}],102:[function(require,module,exports){
+},{"assert":2,"global/window":34}],102:[function(require,module,exports){
 const document = require('global/document')
 const window = require('global/window')
 const assert = require('assert')
@@ -17608,7 +17819,7 @@ function history (cb) {
   }
 }
 
-},{"assert":9,"global/document":40,"global/window":41}],103:[function(require,module,exports){
+},{"assert":2,"global/document":33,"global/window":34}],103:[function(require,module,exports){
 const window = require('global/window')
 const assert = require('assert')
 
@@ -17639,7 +17850,7 @@ function href (cb) {
   }
 }
 
-},{"assert":9,"global/window":41}],104:[function(require,module,exports){
+},{"assert":2,"global/window":34}],104:[function(require,module,exports){
 const pathname = require('pathname-match')
 const wayfarer = require('wayfarer')
 const assert = require('assert')
@@ -17710,7 +17921,7 @@ function _createRoute (route, inline, child) {
   return [ route, inline, child ]
 }
 
-},{"assert":9,"pathname-match":83,"wayfarer":119}],105:[function(require,module,exports){
+},{"assert":2,"pathname-match":82,"wayfarer":119}],105:[function(require,module,exports){
 (function (global){
 var ClientRequest = require('./lib/request')
 var extend = require('xtend')
@@ -17792,7 +18003,7 @@ http.METHODS = [
 	'UNSUBSCRIBE'
 ]
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./lib/request":107,"builtin-status-codes":20,"url":114,"xtend":122}],106:[function(require,module,exports){
+},{"./lib/request":107,"builtin-status-codes":13,"url":114,"xtend":122}],106:[function(require,module,exports){
 (function (global){
 exports.fetch = isFunction(global.fetch) && isFunction(global.ReadableStream)
 
@@ -18117,7 +18328,7 @@ var unsafeHeaders = [
 ]
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
-},{"./capability":106,"./response":108,"_process":88,"buffer":19,"inherits":52,"readable-stream":99,"to-arraybuffer":112}],108:[function(require,module,exports){
+},{"./capability":106,"./response":108,"_process":87,"buffer":12,"inherits":45,"readable-stream":99,"to-arraybuffer":112}],108:[function(require,module,exports){
 (function (process,global,Buffer){
 var capability = require('./capability')
 var inherits = require('inherits')
@@ -18301,7 +18512,7 @@ IncomingMessage.prototype._onXHRProgress = function () {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
-},{"./capability":106,"_process":88,"buffer":19,"inherits":52,"readable-stream":99}],109:[function(require,module,exports){
+},{"./capability":106,"_process":87,"buffer":12,"inherits":45,"readable-stream":99}],109:[function(require,module,exports){
 module.exports = shift
 
 function shift (stream) {
@@ -18546,7 +18757,7 @@ function base64DetectIncompleteChar(buffer) {
   this.charLength = this.charReceived ? 3 : 0;
 }
 
-},{"buffer":19}],111:[function(require,module,exports){
+},{"buffer":12}],111:[function(require,module,exports){
 'use strict';
 
 module.exports = function (req, time) {
@@ -18611,7 +18822,7 @@ module.exports = function (buf) {
 	}
 }
 
-},{"buffer":19}],113:[function(require,module,exports){
+},{"buffer":12}],113:[function(require,module,exports){
 'use strict';
 var url = require('url');
 var prependHttp = require('prepend-http');
@@ -18627,7 +18838,7 @@ module.exports = function (x) {
 	return parsed;
 };
 
-},{"prepend-http":86,"url":114}],114:[function(require,module,exports){
+},{"prepend-http":85,"url":114}],114:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -19361,7 +19572,7 @@ Url.prototype.parseHost = function() {
   if (host) this.hostname = host;
 };
 
-},{"./util":115,"punycode":89,"querystring":92}],115:[function(require,module,exports){
+},{"./util":115,"punycode":88,"querystring":91}],115:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -20047,7 +20258,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":117,"_process":88,"inherits":52}],119:[function(require,module,exports){
+},{"./support/isBuffer":117,"_process":87,"inherits":45}],119:[function(require,module,exports){
 const assert = require('assert')
 const trie = require('./trie')
 
@@ -20108,7 +20319,7 @@ function Wayfarer (dft) {
   }
 }
 
-},{"./trie":120,"assert":9}],120:[function(require,module,exports){
+},{"./trie":120,"assert":2}],120:[function(require,module,exports){
 const mutate = require('xtend/mutable')
 const assert = require('assert')
 const xtend = require('xtend')
@@ -20225,7 +20436,7 @@ Trie.prototype.mount = function (route, trie) {
   }
 }
 
-},{"assert":9,"xtend":122,"xtend/mutable":123}],121:[function(require,module,exports){
+},{"assert":2,"xtend":122,"xtend/mutable":123}],121:[function(require,module,exports){
 // Returns a wrapper function that returns a wrapped callback
 // The wrapper function should do some stuff, and return a
 // presumably different callback function.
@@ -20336,7 +20547,7 @@ module.exports.update = function (fromNode, toNode, opts) {
   }
 }
 
-},{"./update-events.js":125,"bel":13,"morphdom":62}],125:[function(require,module,exports){
+},{"./update-events.js":125,"bel":6,"morphdom":61}],125:[function(require,module,exports){
 module.exports = [
   // attribute events (can be set with attributes)
   'onclick',
