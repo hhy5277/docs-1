@@ -11,7 +11,7 @@
 <div id="choo-root" class="minidocs">
     <div class="_68ad6959 minidocs-sidebar">
     <div class="minidocs-header">
-      <h1><a href="/"><img src="/dat-data-logo.png" alt="Dat Data" class="minidocs-logo" /></a></h1>
+      <h1><a href="/"><img src="/dat-data-logo.svg" alt="Dat Data" class="minidocs-logo" /></a></h1>
     </div>
     <div class="_df8df972 minidocs-contents">
     <button class="minidocs-menu-toggle">Menu</button>
@@ -89,7 +89,7 @@ swarm.on(<span class="hljs-string">'connection'</span>, <span class="hljs-functi
 <p>If you want to write/read files to the file system provide a storage driver as the file option</p>
 <pre><code class="lang-js"><span class="hljs-keyword">var</span> raf = <span class="hljs-built_in">require</span>(<span class="hljs-string">'random-access-file'</span>) <span class="hljs-comment">// a storage driver that writes to the file system</span>
 <span class="hljs-keyword">var</span> archive = drive.createArchive({
-  file: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">name</span>) </span>{
+  <span class="hljs-attr">file</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">name</span>) </span>{
     <span class="hljs-keyword">return</span> raf(<span class="hljs-string">'my-download-folder/'</span> + name)
   }
 })
@@ -101,7 +101,7 @@ swarm.on(<span class="hljs-string">'connection'</span>, <span class="hljs-functi
 <p>Creates an archive instance. If you want to download/upload an existing archive provide the archive key
 as the first argument. Options include</p>
 <pre><code class="lang-js">{
-  live: <span class="hljs-literal">false</span>, <span class="hljs-comment">// set this to share the archive without finalizing it</span>
+  <span class="hljs-attr">live</span>: <span class="hljs-literal">false</span>, <span class="hljs-comment">// set this to share the archive without finalizing it</span>
   sparse: <span class="hljs-literal">false</span>, <span class="hljs-comment">// set this to only download the pieces of the feed you are requesting / prioritizing</span>
   file: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">name</span>) </span>{
     <span class="hljs-comment">// set this to determine how file data is stored.</span>
@@ -123,7 +123,7 @@ or an unfinalized archive.</p>
 <p>If you set the file option in the archive constructor you can use this method to append an already
 existing file to the archive.</p>
 <pre><code class="lang-js"><span class="hljs-keyword">var</span> archive = drive.createArchive({
-  file: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">name</span>) </span>{
+  <span class="hljs-attr">file</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">name</span>) </span>{
     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'returning storage for'</span>, name)
     <span class="hljs-keyword">return</span> raf(name)
   }
@@ -156,7 +156,7 @@ archive.append(<span class="hljs-string">'hello.txt'</span>, <span class="hljs-f
 <p>Returns a readable stream of the file content of an file in the archive.</p>
 <p>Options include:</p>
 <pre><code class="lang-js">{
-  start: startOffset, <span class="hljs-comment">// defaults to 0</span>
+  <span class="hljs-attr">start</span>: startOffset, <span class="hljs-comment">// defaults to 0</span>
   end: endOffset <span class="hljs-comment">// defaults to file.length</span>
 }
 </code></pre>
@@ -181,7 +181,7 @@ cursor.seek(<span class="hljs-number">10000</span>, <span class="hljs-function">
 </code></pre>
 <p>Options include</p>
 <pre><code class="lang-js">{
-  start: startOffset, <span class="hljs-comment">// defaults to 0</span>
+  <span class="hljs-attr">start</span>: startOffset, <span class="hljs-comment">// defaults to 0</span>
   end: endOffset <span class="hljs-comment">// defaults to file.length</span>
 }
 </code></pre>

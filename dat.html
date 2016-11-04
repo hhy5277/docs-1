@@ -11,7 +11,7 @@
 <div id="choo-root" class="minidocs">
     <div class="_68ad6959 minidocs-sidebar">
     <div class="minidocs-header">
-      <h1><a href="/"><img src="/dat-data-logo.png" alt="Dat Data" class="minidocs-logo" /></a></h1>
+      <h1><a href="/"><img src="/dat-data-logo.svg" alt="Dat Data" class="minidocs-logo" /></a></h1>
     </div>
     <div class="_df8df972 minidocs-contents">
     <button class="minidocs-menu-toggle">Menu</button>
@@ -93,22 +93,25 @@
 
   share directory and create a dat-link
 
-  --snapshot            create a snapshot of directory
-  --port, -p            set a specific inbound tcp port
-
+  -<span class="ruby">-snapshot            create a snapshot of directory
+</span>  -<span class="ruby">-port, -p            set a specific inbound tcp port
+</span>
 dat &lt;dat-link&gt; &lt;directory&gt;
 
   download a dat-link into directory
 
-  --<span class="hljs-keyword">exit</span>                <span class="hljs-keyword">exit</span> process after download finishes
-  --port, -p            set a specific inbound tcp port
-
+  -<span class="ruby">-exit                exit process after download finishes
+</span>  -<span class="ruby">-port, -p            set a specific inbound tcp port
+</span>
 general options
 
-  --version, -v         get installed dat version
-  --doctor              run dat doctor
-  --quiet, -q           output only dat-link, no progress information
-  --debug               show debugging output
+  -<span class="ruby">-version, -v         get installed dat version
+</span>  -<span class="ruby">-temp                use <span class="hljs-keyword">in</span>-memory database instead of .dat folder
+</span>  -<span class="ruby">-webrtc              connect to webrtc peers via electron-webrtc
+</span>  -<span class="ruby">-doctor              run dat doctor
+</span>  -<span class="ruby">-quiet, -q           output only dat-link, no progress information
+</span>  -<span class="ruby">-debug               show debugging output
+</span>  -<span class="ruby">-ignore-hidden       ignore hidden files (<span class="hljs-literal">true</span> by default)</span>
 </code></pre><h3 id="sharing-files">Sharing Files</h3>
 <p>Share a directory by typing <code>dat &lt;directory&gt;</code>:</p>
 <pre><code>$ dat my_data/
@@ -144,7 +147,7 @@ Connected <span class="hljs-keyword">to</span> <span class="hljs-number">1</span
 </code></pre><p>Dat will start downloading the data into the <code>download_dir</code> folder. Once the download is finished (a message will print and the bar will turn green), you can safely exit the process with <code>Ctrl-C</code> (<code>Cmd-C</code> on Mac). </p>
 <p>While downloading, you may be connected to more than 1 peer. Anyone who has the Dat link will be able to download and re-host a copy of the data. So you may be downloading from (and sharing to) other people that are also downloading that data! You only need one block of data to start helping as a host. It&#39;s distributed mad science!</p>
 <h4 id="updating-the-downloaded-files">Updating the Downloaded Files</h4>
-<p>What happens if the files get updated? IfDat auto-syncs new files if it is still running. If you exited the process, you can run the same command you ran before (with the same link and directory) and the files will update!</p>
+<p>What happens if the files get updated? Dat auto-syncs new files if it is still running. If you exited the process, you can run the same command you ran before (with the same link and directory) and the files will update!</p>
 <h4 id="download-options">Download Options</h4>
 <p><code>dat &lt;dat-link&gt; &lt;directory&gt; --exit</code> </p>
 <p>After files are done downloading, exit the process. If you are connected to a live Dat you will not get new files unless you run the command again.</p>
@@ -156,6 +159,10 @@ Connected <span class="hljs-keyword">to</span> <span class="hljs-number">1</span
 <p>To create a snapshot when sharing files use the snapshot option: <code>dat my_data/ --snapshot</code>. A snapshot reads the files and creates a specific link that will never change (as long as the files don&#39;t change).</p>
 <h3 id="dat-metadata-storage">Dat Metadata Storage</h3>
 <p>When you run a command, Dat creates a hidden folder, <code>.dat</code>, in the directory specified. Similar to git, this folder stores information about your Dat. File metadata and the Dat link are stored to make it easy to continue sharing or downloading the same directory.</p>
+<h4 id="temporary-database">Temporary Database</h4>
+<p>Use the <code>--temp</code> option to keep the metadata in memory instead of the <code>.dat</code> folder.</p>
+<h3 id="sharing-or-download-files-with-dat-land-http-dat-land-">Sharing or Download files with <a href="http://dat.land">dat.land</a></h3>
+<p>You can use the <code>--webrtc</code> option to share files to dat.land. You&#39;ll need to install <code>electron-webrtc</code> in order for this to work.</p>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <p>We&#39;ve provided some troubleshooting tips based on issues users have seen. Please <a href="https://github.com/datproject/dat/issues/new">open an issue</a> or ask us in our <a href="https://gitter.im/datproject/discussions">chat room</a> if you need help troubleshooting and it is not covered here.</p>
 <p>If you have trouble sharing/downloading in a directory with a <code>.dat</code> folder, try deleting it and running the command again.</p>
@@ -248,20 +255,20 @@ npm -v
 <h4 id="internal-stats">Internal Stats</h4>
 <pre><code class="lang-javascript">
 dat.stats = {
-    filesTotal: <span class="hljs-number">0</span>, <span class="hljs-comment">// Latest archive size</span>
+    <span class="hljs-attr">filesTotal</span>: <span class="hljs-number">0</span>, <span class="hljs-comment">// Latest archive size</span>
     bytesTotal: <span class="hljs-number">0</span>,
-    bytesUp: <span class="hljs-number">0</span>,
-    bytesDown: <span class="hljs-number">0</span>,
-    rateUp: speedometer(),
-    rateDown: speedometer()
+    <span class="hljs-attr">bytesUp</span>: <span class="hljs-number">0</span>,
+    <span class="hljs-attr">bytesDown</span>: <span class="hljs-number">0</span>,
+    <span class="hljs-attr">rateUp</span>: speedometer(),
+    <span class="hljs-attr">rateDown</span>: speedometer()
 }
 
 <span class="hljs-comment">// Calculated on share before append starts. Used for append progress.</span>
 <span class="hljs-comment">// Not updated for live.</span>
 dat.appendStats = {
-    files: <span class="hljs-number">0</span>,
-    bytes: <span class="hljs-number">0</span>,
-    dirs: <span class="hljs-number">0</span>
+    <span class="hljs-attr">files</span>: <span class="hljs-number">0</span>,
+    <span class="hljs-attr">bytes</span>: <span class="hljs-number">0</span>,
+    <span class="hljs-attr">dirs</span>: <span class="hljs-number">0</span>
 }
 </code></pre>
 <h2 id="license">License</h2>

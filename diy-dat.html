@@ -11,7 +11,7 @@
 <div id="choo-root" class="minidocs">
     <div class="_68ad6959 minidocs-sidebar">
     <div class="minidocs-header">
-      <h1><a href="/"><img src="/dat-data-logo.png" alt="Dat Data" class="minidocs-logo" /></a></h1>
+      <h1><a href="/"><img src="/dat-data-logo.svg" alt="Dat Data" class="minidocs-logo" /></a></h1>
     </div>
     <div class="_df8df972 minidocs-contents">
     <button class="minidocs-menu-toggle">Menu</button>
@@ -94,14 +94,14 @@ touch index.js
 <span class="hljs-keyword">var</span> db = memdb()
 <span class="hljs-keyword">var</span> drive = Hyperdrive(db)
 <span class="hljs-keyword">var</span> archive = drive.createArchive(link, {
-  file: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">name</span>) </span>{
+  <span class="hljs-attr">file</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">name</span>) </span>{
     <span class="hljs-keyword">return</span> raf(path.join(<span class="hljs-string">'download'</span>, name)) <span class="hljs-comment">// download into a "download" dir</span>
   }
 })
 <span class="hljs-keyword">var</span> swarm = Swarm(archive)
 </code></pre>
 <p>Now that we are setup, we can work with the archive. The <code>archive.download</code> function downloads the file content (to wherever you specified in the file option). To download all the files, we will need a list of files and then we will call download on each of them. <code>archive.list</code> will give us the list of the files. We use the stream-each module to make it easy to iterate over each item in the archive, then exit when the stream is finished.</p>
-<pre><code class="lang-js"><span class="hljs-keyword">var</span> stream = archive.list({live: <span class="hljs-literal">false</span>}) <span class="hljs-comment">// Use {live: false} for now to make the stream easier to handle.</span>
+<pre><code class="lang-js"><span class="hljs-keyword">var</span> stream = archive.list({<span class="hljs-attr">live</span>: <span class="hljs-literal">false</span>}) <span class="hljs-comment">// Use {live: false} for now to make the stream easier to handle.</span>
 each(stream, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">entry, next</span>) </span>{
   archive.download(entry, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err</span>) </span>{
     <span class="hljs-keyword">if</span> (err) <span class="hljs-keyword">return</span> <span class="hljs-built_in">console</span>.error(err)

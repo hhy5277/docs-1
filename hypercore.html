@@ -11,7 +11,7 @@
 <div id="choo-root" class="minidocs">
     <div class="_68ad6959 minidocs-sidebar">
     <div class="minidocs-header">
-      <h1><a href="/"><img src="/dat-data-logo.png" alt="Dat Data" class="minidocs-logo" /></a></h1>
+      <h1><a href="/"><img src="/dat-data-logo.svg" alt="Dat Data" class="minidocs-logo" /></a></h1>
     </div>
     <div class="_df8df972 minidocs-contents">
     <button class="minidocs-menu-toggle">Menu</button>
@@ -72,21 +72,27 @@ feed.on('download', function (block, data) {
 <p>Create a new feed. A feed stores a list of append-only data (buffers). A feed has a <code>.key</code> property that you can pass in to <code>createFeed</code> if you want to retrieve an old feed. Per default all feeds are appendable (live).</p>
 <p>Options include:</p>
 <pre><code class="lang-js">{
-  live: <span class="hljs-literal">true</span>,
-  storage: externalStorage,
-  sparse: <span class="hljs-literal">false</span>
+  <span class="hljs-attr">live</span>: <span class="hljs-literal">true</span>,
+  <span class="hljs-attr">storage</span>: externalStorage,
+  <span class="hljs-attr">sparse</span>: <span class="hljs-literal">false</span>
 }
 </code></pre>
 <p>Set <code>sparse</code> to <code>true</code> if you only want to download the pieces of the feed you are requesting / prioritizing. Otherwise the entire feed will be downloaded if nothing else is prioritized.</p>
 <p>If you want to create a static feed, one you cannot reappend data to, pass the <code>{live: false}</code> option.
 The storage option allows you to store data outside of leveldb. This is very useful if you use hypercore to distribute files.</p>
 <p>See the <a href="#storage-api">Storage API</a> section for more info</p>
-<h4 id="-var-stream-core-replicate-"><code>var stream = core.replicate()</code></h4>
-<p>Create a generic replication stream. Use the <code>feed.replicate(stream)</code> API described below to replicate specific feeds of data.</p>
+<h4 id="-var-stream-core-replicate-opts-"><code>var stream = core.replicate(opts)</code></h4>
+<p>Create a generic replication stream. Use the <code>feed.replicate(stream)</code> API described below to replicate specific feeds of data.
+Options include:</p>
+<pre><code class="lang-js">{
+  <span class="hljs-attr">upload</span>: <span class="hljs-literal">true</span>, <span class="hljs-comment">// upload data to other peer</span>
+  download: <span class="hljs-literal">true</span> <span class="hljs-comment">// download data from other peer</span>
+}
+</code></pre>
 <h4 id="-var-stream-core-list-options-callback-"><code>var stream = core.list([options], [callback])</code></h4>
 <p>List all feed keys in the database. Optionally you can pass a callback to buffer them into an array. Options include:</p>
 <pre><code class="lang-js">{
-  values: <span class="hljs-literal">false</span> <span class="hljs-comment">// set this to get feed attributes, not just feed keys</span>
+  <span class="hljs-attr">values</span>: <span class="hljs-literal">false</span> <span class="hljs-comment">// set this to get feed attributes, not just feed keys</span>
 }
 </code></pre>
 <h2 id="-feed-api-"><code>Feed API</code></h2>
@@ -110,9 +116,9 @@ You can use the discovery key to find other peers sharing this feed without disc
 <p>Prioritize a range of blocks to download. Will call the callback when done.
 Range should look like this</p>
 <pre><code class="lang-js">{
-  start: startBlock,
-  end: optionalEndBlock,
-  priority: <span class="hljs-number">2</span> <span class="hljs-comment">// a priority level spanning [0-5]</span>
+  <span class="hljs-attr">start</span>: startBlock,
+  <span class="hljs-attr">end</span>: optionalEndBlock,
+  <span class="hljs-attr">priority</span>: <span class="hljs-number">2</span> <span class="hljs-comment">// a priority level spanning [0-5]</span>
   linear: <span class="hljs-literal">false</span> <span class="hljs-comment">// download the range linearly</span>
 }
 </code></pre>
@@ -128,7 +134,7 @@ Finalizing will set the <code>.key</code> property and allow other peers to get 
 <h4 id="-var-stream-feed-createreadstream-options-"><code>var stream = feed.createReadStream([options])</code></h4>
 <p>Create a readable stream that reads from the feed. Options include:</p>
 <pre><code class="lang-js">{
-  start: startIndex, <span class="hljs-comment">// read from this index</span>
+  <span class="hljs-attr">start</span>: startIndex, <span class="hljs-comment">// read from this index</span>
   end: endIndex, <span class="hljs-comment">// read until this index</span>
   live: <span class="hljs-literal">false</span> <span class="hljs-comment">// set this to keep the read stream open</span>
 }
@@ -140,7 +146,7 @@ If you create multiple replication streams to multiple peers you&#39;ll upload/d
 <p>Set <code>{private: false}</code> to disable this.</p>
 <p>Hypercore uses a simple multiplexed protocol that allows one replication stream to be used for multiple feeds at once.
 If you want to join another replication stream simply pass it as the stream option</p>
-<pre><code class="lang-js">feed.replicate({stream: anotherReplicationStream})
+<pre><code class="lang-js">feed.replicate({<span class="hljs-attr">stream</span>: anotherReplicationStream})
 </code></pre>
 <p>As a shorthand you can also do <code>feed.replicate(stream)</code>.</p>
 <h4 id="-stream-on-open-discoverykey-"><code>stream.on(&#39;open&#39;, discoveryKey)</code></h4>

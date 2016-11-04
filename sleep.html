@@ -11,7 +11,7 @@
 <div id="choo-root" class="minidocs">
     <div class="_68ad6959 minidocs-sidebar">
     <div class="minidocs-header">
-      <h1><a href="/"><img src="/dat-data-logo.png" alt="Dat Data" class="minidocs-logo" /></a></h1>
+      <h1><a href="/"><img src="/dat-data-logo.svg" alt="Dat Data" class="minidocs-logo" /></a></h1>
     </div>
     <div class="_df8df972 minidocs-contents">
     <button class="minidocs-menu-toggle">Menu</button>
@@ -73,49 +73,49 @@ hash(<span class="hljs-name">d</span>)
 </ul>
 <p>When initializing a register an asymmetric Ed25519 keypair is derived. The private key is never shared. The public key is used as the URL for the register. When signing hashes in the tree the public key is used to generate an EdDSA signature. For the example register above, &#39;abcd&#39;, the register index (in JSON) would be:</p>
 <pre><code class="lang-js"><span class="hljs-keyword">var</span> keys = {
-  public: <span class="hljs-string">'cc0cf6eeb82ca946ca60265ce0863fb2b3e3075ae25cba14d162ef20e3f9f223'</span>,
-  private: <span class="hljs-string">'87399f90815db81e687efe4fd9fc60af336f4d9ae560fda106f94cb7a92a8804cc0cf6eeb82ca946ca60265ce0863fb2b3e3075ae25cba14d162ef20e3f9f223'</span>
+  <span class="hljs-attr">public</span>: <span class="hljs-string">'cc0cf6eeb82ca946ca60265ce0863fb2b3e3075ae25cba14d162ef20e3f9f223'</span>,
+  <span class="hljs-attr">private</span>: <span class="hljs-string">'87399f90815db81e687efe4fd9fc60af336f4d9ae560fda106f94cb7a92a8804cc0cf6eeb82ca946ca60265ce0863fb2b3e3075ae25cba14d162ef20e3f9f223'</span>
 }
 
 <span class="hljs-keyword">var</span> index = {
   <span class="hljs-comment">// sha256 of children[0].hash + children[1].hash</span>
   hash: <span class="hljs-string">'0440c655d63fec5c02cffd5d9b42d146aca03b255102b9b44b51c6a919b31351'</span>,
-  signature: <span class="hljs-string">'1713dfbaf4a7f288003394b72ec486aa4fa1a837aa0b08662b3a14b63381b84c2e6965e2638fb5375ae2e92b47c2ab8718ec1914778518fcb3c0563eb2c09604'</span>,
-  span: <span class="hljs-number">4</span>,
-  children: [
+  <span class="hljs-attr">signature</span>: <span class="hljs-string">'1713dfbaf4a7f288003394b72ec486aa4fa1a837aa0b08662b3a14b63381b84c2e6965e2638fb5375ae2e92b47c2ab8718ec1914778518fcb3c0563eb2c09604'</span>,
+  <span class="hljs-attr">span</span>: <span class="hljs-number">4</span>,
+  <span class="hljs-attr">children</span>: [
     {
       <span class="hljs-comment">// echo -n "$(echo -n "a" | shasum -a 256)$(echo -n "b" | shasum -a 256)" | shasum -a 256</span>
       hash: <span class="hljs-string">'9ad4d5608a7a40db60c35f255fad821b762a82de168b4f4ed477d5d899b11796'</span>,
-      signature: <span class="hljs-string">'2714b99e305ce46aa6d24eb2888cf0cbde33ad4a8bcd08705b59882837bf1e482f8dcab2ae94c2359914b1fe92831bfc73af99f1c6b1f5eba47efc4efa32de0d'</span>,
-      span: <span class="hljs-number">2</span>,
-      children: [
+      <span class="hljs-attr">signature</span>: <span class="hljs-string">'2714b99e305ce46aa6d24eb2888cf0cbde33ad4a8bcd08705b59882837bf1e482f8dcab2ae94c2359914b1fe92831bfc73af99f1c6b1f5eba47efc4efa32de0d'</span>,
+      <span class="hljs-attr">span</span>: <span class="hljs-number">2</span>,
+      <span class="hljs-attr">children</span>: [
         {
           <span class="hljs-comment">// echo -n "a" | shasum -a 256</span>
           hash: <span class="hljs-string">'ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb'</span>,
-          endByte: <span class="hljs-number">1</span>
+          <span class="hljs-attr">endByte</span>: <span class="hljs-number">1</span>
         },
         {
           <span class="hljs-comment">// echo -n "b" | shasum -a 256</span>
           hash: <span class="hljs-string">'3e23e8160039594a33894f6564e1b1348bbd7a0088d42c4acb73eeaed59c009d'</span>,
-          endByte: <span class="hljs-number">2</span>
+          <span class="hljs-attr">endByte</span>: <span class="hljs-number">2</span>
         }
       ]
     },
     {
       <span class="hljs-comment">// echo -n "$(echo -n "c" | shasum -a 256)$(echo -n "d" | shasum -a 256)" | shasum -a 256</span>
       hash: <span class="hljs-string">'09114d1a8a78b5d091e492c524ad7f8e941f403db0a6d3d52d36f17b9a86ce1c'</span>,
-      signature: <span class="hljs-string">'6ac5e25206f69f22612e9b58c14f9ae6738233a57ab7f6e10c1384c4e074f6c8c606edbd95a9c099a0120947866079e3d13ef66dd7d5ed1756a89a5e9032a20d'</span>,
-      span: <span class="hljs-number">2</span>,
-      children: [
+      <span class="hljs-attr">signature</span>: <span class="hljs-string">'6ac5e25206f69f22612e9b58c14f9ae6738233a57ab7f6e10c1384c4e074f6c8c606edbd95a9c099a0120947866079e3d13ef66dd7d5ed1756a89a5e9032a20d'</span>,
+      <span class="hljs-attr">span</span>: <span class="hljs-number">2</span>,
+      <span class="hljs-attr">children</span>: [
         {
           <span class="hljs-comment">// echo -n "c" | shasum -a 256</span>
           hash: <span class="hljs-string">'2e7d2c03a9507ae265ecf5b5356885a53393a2029d241394997265a1a25aefc6'</span>,
-          endByte: <span class="hljs-number">3</span>
+          <span class="hljs-attr">endByte</span>: <span class="hljs-number">3</span>
         },
         {
           <span class="hljs-comment">// echo -n "d" | shasum -a 256</span>
           hash: <span class="hljs-string">'18ac3e7343f016890c510e93f935261169d9e3f565436429830faf0934f4f8e4'</span>,
-          endByte: <span class="hljs-number">4</span>
+          <span class="hljs-attr">endByte</span>: <span class="hljs-number">4</span>
         }
       ]
     }
