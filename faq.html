@@ -6,14 +6,15 @@
 
 <link rel="stylesheet" href="/bundle.css">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/style.css">
 </head>
 <body>
 <div id="choo-root" class="minidocs">
-    <div class="_68ad6959 minidocs-sidebar">
+    <div class="_2bbb10f8 minidocs-sidebar">
     <div class="minidocs-header">
       <h1><a href="/"><img src="/dat-data-logo.svg" alt="Dat Data" class="minidocs-logo" /></a></h1>
     </div>
-    <div class="_df8df972 minidocs-contents">
+    <div class="_606ae572 minidocs-contents">
     <button class="minidocs-menu-toggle">Menu</button>
     <div class="minidocs-menu menu-closed menu-small">
       <div class="minidocs-menu-wrapper">
@@ -22,24 +23,29 @@
     </div>
   </div>
   </div>
-    <div class="_6781b8a1 minidocs-main">
+    <div class="_571b6797 minidocs-main">
       <div class="markdown-body">
-        <div class="_d706bf45 minidocs-content">
+        <div class="_3f4b1fbc minidocs-content">
     
     
     <div><h1 id="faq">FAQ</h1>
+<h2 id="who-is-behind-the-project-">Who is behind the project?</h2>
+<p>Code for Science and Society (CSS), a US based 501(c)(3) not for profit organization set up to support the Dat project. CSS employs a Dat core development team. Dat is currently funded exclusively by philanthropic non-profit grants. The mission of CSS is to work with public institutions to produce open source infrastructure to improve the ability for researchers, civic hackers and journalists to find and use datasets. However, we actively welcome outside contributors and use cases beyond our own.</p>
 <h2 id="is-dat-different-from-hyperdrive-">Is Dat different from hyperdrive?</h2>
-<p><a href="http://github.com/mafintosh/hyperdrive">Hyperdrive</a> is a file sharing network originally built for dat.</p>
-<p>Dat uses hyperdrive and a variety of other modules. Hyperdrive and Dat are compatible with each other but hyperdrive is able to make more lower-level decisions. Dat presents a user-friendly interface and ecosystem for scientists, researchers, and data analysts.</p>
+<p><a href="http://github.com/mafintosh/hyperdrive">Hyperdrive</a> is a file sharing network built for Dat.</p>
+<p>Dat uses hyperdrive and a variety of other modules. Hyperdrive and Dat are compatible with each other but hyperdrive is able to make lower-level decisions. Dat presents a user-friendly interface and ecosystem for scientists, researchers, and data analysts.</p>
 <h2 id="how-is-dat-different-than-ipfs-">How is Dat different than IPFS?</h2>
-<h2 id="is-there-javascript-implementation-">Is there JavaScript implementation?</h2>
-<p>Yes, find it on GitHub: <a href="http://github.com/joehand/dat-js">dat-js</a>.</p>
-<h2 id="is-there-any-non-persistent-js-dat-implementation-">Is there any non-persistent JS Dat implementation?</h2>
-<p>Not yet. Want to work on it? Start here to learn more: <a href="http://github.com/joehand/dat-js">dat-js</a>.</p>
+<p>IPFS and Dat share a number of underlying similarities but address different problems. Both deduplicate content-addressed pieces of data and have a mechanism for searching for peers who have a specific piece of data. Both have implementations which work in modern Web browsers, as well as command line tools.</p>
+<p>The two systems also have a number of differences. Dat keeps a secure version log of changes to a dataset over time which allows Dat to act as a version control tool. The type of Merkle tree used by Dat lets peers compare which pieces of a specific version of a dataset they each have and efficiently exchange the deltas to complete a full sync. It is not possible to synchronize or version a dataset in this way in IPFS without implementing such functionality yourself, as IPFS provides a CDN and/or filesystem interface but not a synchronization mechanism. In short, IPFS provides distribution of objects, Dat provides synchronization of datasets.</p>
+<p>In order for IPFS to provide guarantees about interoperability, IPFS applications must use only the IPFS network stack. In contrast, Dat is only an application protocol and is agnostic to which network protocols (transports and naming systems) are used. As a result, Dat cannot make the same types of interoperability guarantees as IPFS.</p>
+<h2 id="is-there-a-javascript-implementation-">Is there a JavaScript implementation?</h2>
+<p>Yes, it is our only implementation. Find it on GitHub: <a href="http://github.com/joehand/dat-js">dat-js</a>.</p>
 <h2 id="is-there-an-online-dataset-registry-like-github-">Is there an online dataset registry, like GitHub?</h2>
 <p>Yes, but currently under heavy construction. See <a href="http://github.com/datproject/dat.land">dat.land</a></p>
 <h2 id="is-there-a-desktop-application-">Is there a desktop application?</h2>
 <p>Yes, but currently under heavy construction. See <a href="http://github.com/juliangruber/dat-desktop">dat-desktop</a></p>
+<h2 id="does-dat-use-webrtc-">Does Dat use WebRTC?</h2>
+<p>Our <a href="http://github.com/datproject/dat.land">dat.land</a> prototype used WebRTC to transfer data between peers. Moving forward, we are not planning on immediately supporting WebRTC in any Dat client because of reliability issues and lack of support in non-browser environments. Our future browser implementations of Dat will use websockets to transfer data to non-browser Dat interfaces.</p>
 <h2 id="do-you-plan-to-have-python-or-r-or-other-third-party-language-integrations-">Do you plan to have Python or R or other third-party language integrations?</h2>
 <p>Yes. We are currently developing the serialization format (like .zip archives) called <a href="/sleep">SLEEP</a> so that third-party libraries can read data without reimplementing all of hyperdrive (which is node-only).</p>
 </div>
