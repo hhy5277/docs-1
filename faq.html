@@ -48,6 +48,12 @@
 <p>Our <a href="http://github.com/datproject/dat.land">dat.land</a> prototype used WebRTC to transfer data between peers. Moving forward, we are not planning on immediately supporting WebRTC in any Dat client because of reliability issues and lack of support in non-browser environments. Our future browser implementations of Dat will use websockets to transfer data to non-browser Dat interfaces.</p>
 <h2 id="do-you-plan-to-have-python-or-r-or-other-third-party-language-integrations-">Do you plan to have Python or R or other third-party language integrations?</h2>
 <p>Yes. We are currently developing the serialization format (like .zip archives) called <a href="/sleep">SLEEP</a> so that third-party libraries can read data without reimplementing all of hyperdrive (which is node-only).</p>
+<h2 id="dat-on-the-cli-isn-t-connecting-how-do-i-debug-">Dat on the CLI isn&#39;t connecting, how do I debug?</h2>
+<ol>
+<li>Try running <code>dat doctor</code> and following the instructions</li>
+<li>Try running your command with <code>DEBUG=discovery*</code> in front, e.g. <code>DEBUG=discovery* dat sync</code></li>
+</ol>
+<p>When reading debug output, look for <code>inbound connection</code> (means someone else successfully connected to you) or <code>onconnect</code> (you successfully connected to someone else). <code>discovery peer=</code> messages mean you found a candidate and will try to connect to them.</p>
 </div>
   </div>
       </div>
