@@ -56,8 +56,7 @@ body #choo-root.minidocs {
     font-size: 1.4em; }
   body #choo-root.minidocs .minidocs-menu .content-link {
     transition-property: background-color, color, border-color, padding-left;
-    color: #505F6D;
-    padding-left: 0; }
+    color: #505F6D; }
     body #choo-root.minidocs .minidocs-menu .content-link:hover, body #choo-root.minidocs .minidocs-menu .content-link:focus {
       color: #293648;
       border-left-color: transparent;
