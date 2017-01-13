@@ -78,11 +78,11 @@
     padding: 125.9px 6% 70.6px 6%;
   }
 }
-._606ae572 {
+._689fec56 {
 
 }
 
-._606ae572 .h2 {
+._689fec56 .h2 {
   display: block;
   font-size: 1.5em;
   font-weight: bold;
@@ -90,12 +90,12 @@
   margin-bottom: 12px;
 }
 
-._606ae572 .minidocs-menu, ._606ae572 .minidocs-menu.menu-closed {
+._689fec56 .minidocs-menu, ._689fec56 .minidocs-menu.menu-closed {
   display: none;
   z-index: 1000;
 }
 
-._606ae572 .minidocs-menu.menu-open.menu-small {
+._689fec56 .minidocs-menu.menu-open.menu-small {
   display: block;
   background-color: rgb(240,240,240);
   position: fixed;
@@ -107,13 +107,13 @@
   box-sizing: border-box;
 }
 
-._606ae572 .minidocs-menu.menu-open.menu-small .minidocs-menu-wrapper {
+._689fec56 .minidocs-menu.menu-open.menu-small .minidocs-menu-wrapper {
   height: 100%;
   overflow-y: auto;
 }
 
-._606ae572 a.content-link {
-  padding: 2px 8px 2px 5px;
+._689fec56 a.content-link {
+  padding: 6px 8px 6px 5px;
   margin-bottom: 1px;
   cursor: pointer;
   text-decoration: none;
@@ -122,12 +122,17 @@
   border-left: 3px solid #eee;
 }
 
-._606ae572 a.content-link.active, ._606ae572 a.content-link:hover {
+._689fec56 a.content-link.active {
   background-color: #fff;
   border-left: 3px solid rgb(200,200,200);
 }
 
-._606ae572 .minidocs-menu-toggle {
+._689fec56 a.content-link:hover {
+  background-color: #fff;
+  border-left: 3px solid rgb(200,200,200);
+}
+
+._689fec56 .minidocs-menu-toggle {
   display: block;
   position: absolute;
   top: 10px;
@@ -141,7 +146,7 @@
   font-size: 16px;
 }
 
-._606ae572 .minidocs-menu-toggle:before {
+._689fec56 .minidocs-menu-toggle:before {
   content: "";
   position: absolute;
   left: 0;
@@ -154,13 +159,24 @@
     0 0.5em 0 0 black;
 }
 
+._689fec56 .minidocs-menu-toc {
+  margin-top:-2px;
+  background-color: #f8f8f8;
+  border-left: 3px solid rgb(200,200,200);
+}
+
+._689fec56 .minidocs-menu-toc a.content-link {
+  border-left:0px;
+  padding: 4px 0px 4px 10px;
+}
+
 @media (min-width: 600px) {
-  ._606ae572 .minidocs-menu {
+  ._689fec56 .minidocs-menu {
     display: block;
     margin-bottom: 25px;
   }
 
-  ._606ae572 .minidocs-menu-toggle {
+  ._689fec56 .minidocs-menu-toggle {
     display: none;
   }
 }

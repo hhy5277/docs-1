@@ -14,11 +14,16 @@
     <div class="minidocs-header">
       <h1><a href="/"><img src="/dat-data-logo.svg" alt="Dat Data" class="minidocs-logo" /></a></h1>
     </div>
-    <div class="_606ae572 minidocs-contents">
+    <div class="_689fec56 minidocs-contents">
     <button class="minidocs-menu-toggle">Menu</button>
     <div class="minidocs-menu menu-closed menu-small">
       <div class="minidocs-menu-wrapper">
-        <div class="h1">Dat</div><div><a href="/dat" class="content-link ">Introduction</a></div><div><a href="/how-dat-works" class="content-link ">How Dat Works</a></div><div><a href="/terms" class="content-link ">Terminology</a></div><div><a href="/faq" class="content-link ">FAQ</a></div><div class="h1">Cookbook</div><div><a href="/browser" class="content-link ">Browser Dat</a></div><div><a href="/diy-dat" class="content-link active">DIY Dat</a></div><div class="h1">Ecosystem</div><div><a href="/ecosystem" class="content-link ">Overview</a></div><div><a href="/sleep" class="content-link ">SLEEP</a></div><div><a href="/hyperdrive" class="content-link ">Hyperdrive</a></div><div><a href="/hypercore" class="content-link ">Hypercore</a></div>
+        <div class="h1">Dat</div><div><a href="/dat" class="content-link ">Introduction</a></div><div><a href="/how-dat-works" class="content-link ">How Dat Works</a></div><div><a href="/terms" class="content-link ">Terminology</a></div><div><a href="/faq" class="content-link ">FAQ</a></div><div class="h1">Cookbook</div><div><a href="/browser" class="content-link ">Browser Dat</a></div><div>
+            <a href="/diy-dat" class="content-link active">DIY Dat</a>
+            <div class="minidocs-menu-toc">
+              <a href="#getting-started" class="h3 content-link">Getting Started</a><a href="#module-1-download-a-file" class="h3 content-link">Module #1: Download a File</a><a href="#module-1-bonus-display-any-file-in-the-dat" class="h5 content-link">Module #1 Bonus: Display any file in the Dat</a><a href="#module-2-download-all-files-to-computer" class="h3 content-link">Module #2: Download all files to computer</a><a href="#module-3-sharing-a-file" class="h3 content-link">Module #3: Sharing a file</a><a href="#module-4-sharing-a-directory-of-files" class="h3 content-link">Module #4: Sharing a directory of files</a>
+            </div>
+          </div><div class="h1">Ecosystem</div><div><a href="/ecosystem" class="content-link ">Overview</a></div><div><a href="/sleep" class="content-link ">SLEEP</a></div><div><a href="/hyperdrive" class="content-link ">Hyperdrive</a></div><div><a href="/hypercore" class="content-link ">Hypercore</a></div>
       </div>
     </div>
   </div>
@@ -28,8 +33,7 @@
         <div class="_3f4b1fbc minidocs-content">
     
     
-    <div><h1 id="build-with-dat">Build with Dat</h1>
-<p>In this guide, we will show how to develop applications with the Dat ecosystem. The Dat ecosystem is very modular making it easy to develop custom applications using Dat.</p>
+    <div><h1 id="build-with-dat"><a href="#build-with-dat" class="anchor"></a>Build with Dat</h1><p>In this guide, we will show how to develop applications with the Dat ecosystem. The Dat ecosystem is very modular making it easy to develop custom applications using Dat.</p>
 <p>For any Dat application, there are three essential modules you will start with: </p>
 <ol>
 <li><a href="https://npmjs.org/hyperdrive">hyperdrive</a> for file synchronization and versioning</li>
@@ -37,10 +41,8 @@
 <li>A <a href="https://npmjs.org/level">LevelDB</a> compatible database for storing metadata.</li>
 </ol>
 <p>The <a href="https://npmjs.org/dat">Dat CLI</a> module itself combines these modules and wraps them in a command-line API. These modules can be swapped out for a similarly compatible module, such as switching LevelDb for <a href="https://github.com/juliangruber/memdb">MemDB</a> (which we do in the first example). More details on how these module work together are available in <a href="how-dat-works.md">How Dat Works</a>.</p>
-<h2 id="getting-started">Getting Started</h2>
-<p>You will need node and npm installed to build with Dat. <a href="https://github.com/datproject/dat/blob/master/CONTRIBUTING.md#development-workflow">Read more</a> about our development work flow to learn how we manage our module dependencies during development.</p>
-<h2 id="module-1-download-a-file">Module #1: Download a File</h2>
-<p>Our first module will download files from a Dat link entered by the user. View the code for this module on <a href="https://github.com/joehand/diy-dat-examples/tree/master/module-1">Github</a>.</p>
+<h2 id="getting-started"><a href="#getting-started" class="anchor"></a>Getting Started</h2><p>You will need node and npm installed to build with Dat. <a href="https://github.com/datproject/dat/blob/master/CONTRIBUTING.md#development-workflow">Read more</a> about our development work flow to learn how we manage our module dependencies during development.</p>
+<h2 id="module-1-download-a-file"><a href="#module-1-download-a-file" class="anchor"></a>Module #1: Download a File</h2><p>Our first module will download files from a Dat link entered by the user. View the code for this module on <a href="https://github.com/joehand/diy-dat-examples/tree/master/module-1">Github</a>.</p>
 <pre><code class="lang-bash">mkdir module-1 &amp;&amp; <span class="hljs-built_in">cd</span> module-1
 npm init
 npm install --save hyperdrive memdb hyperdrive-archive-swarm
@@ -65,8 +67,7 @@ stream.pipe(process.stdout)
 <p>Now, you can run the module! To download the first file from our docs Dat, run:</p>
 <pre><code><span class="hljs-keyword">node</span> <span class="hljs-title">index</span>.js <span class="hljs-number">395</span>e3467bb5b2fa083ee8a4a17a706c5574b740b5e1be6efd65754d4ab7328c2
 </code></pre><p>You should see the first file in our docs repo.</p>
-<h4 id="module-1-bonus-display-any-file-in-the-dat">Module #1 Bonus: Display any file in the Dat</h4>
-<p>With a few more lines of code, the user can enter a file to display from the Dat link.</p>
+<h4 id="module-1-bonus-display-any-file-in-the-dat"><a href="#module-1-bonus-display-any-file-in-the-dat" class="anchor"></a>Module #1 Bonus: Display any file in the Dat</h4><p>With a few more lines of code, the user can enter a file to display from the Dat link.</p>
 <p>Challenge: create a module that will allow the user to input a Dat link and a filename: <code>node bonus.js &lt;dat-link&gt; &lt;filename&gt;</code>. The module will print out that file from the link, as we did above. To get a specific file you can change the file stream to use the filename instead of the index number:</p>
 <pre><code class="lang-js"><span class="hljs-keyword">var</span> stream = archive.createFileReadStream(fileName)
 </code></pre>
@@ -74,8 +75,7 @@ stream.pipe(process.stdout)
 <pre><code class="lang-bash">node bonus.js 395e3467bb5b2fa083ee8a4a17a706c5574b740b5e1be6efd65754d4ab7328c2 cookbook/diy-dat.md
 </code></pre>
 <p><a href="https://github.com/joehand/diy-dat-examples/blob/master/module-1/bonus.js">See how we coded it</a>. </p>
-<h2 id="module-2-download-all-files-to-computer">Module #2: Download all files to computer</h2>
-<p>This module will build on the last module. Instead of displaying a single file, we will download all of the files from a Dat into a local directory. View the code for this module on <a href="https://github.com/joehand/diy-dat-examples/tree/master/module-2">Github</a>.</p>
+<h2 id="module-2-download-all-files-to-computer"><a href="#module-2-download-all-files-to-computer" class="anchor"></a>Module #2: Download all files to computer</h2><p>This module will build on the last module. Instead of displaying a single file, we will download all of the files from a Dat into a local directory. View the code for this module on <a href="https://github.com/joehand/diy-dat-examples/tree/master/module-2">Github</a>.</p>
 <p>To download the files to the file system, instead of to a database, we will use the <code>file</code> option in <code>hyperdrive</code> and the <a href="http://npmjs.org/random-access-file">random-access-file</a> module. We will also learn two new archive functions that make handling all the files a bit easier than the file stream in module #1. </p>
 <p>Setup will be the same as before (make sure you install random-access-file and stream-each this time): </p>
 <pre><code class="lang-bash">mkdir module-2 &amp;&amp; <span class="hljs-built_in">cd</span> module-2
@@ -116,9 +116,7 @@ each(stream, <span class="hljs-function"><span class="hljs-keyword">function</sp
 <p>You should be able to run the module and see all our docs files in the <code>download</code> folder:</p>
 <pre><code class="lang-bash">node index.js 395e3467bb5b2fa083ee8a4a17a706c5574b740b5e1be6efd65754d4ab7328c2
 </code></pre>
-<h2 id="module-3-sharing-a-file">Module #3: Sharing a file</h2>
-<h2 id="module-4-sharing-a-directory-of-files">Module #4: Sharing a directory of files</h2>
-</div>
+<h2 id="module-3-sharing-a-file"><a href="#module-3-sharing-a-file" class="anchor"></a>Module #3: Sharing a file</h2><h2 id="module-4-sharing-a-directory-of-files"><a href="#module-4-sharing-a-directory-of-files" class="anchor"></a>Module #4: Sharing a directory of files</h2></div>
   </div>
       </div>
     </div>

@@ -14,11 +14,16 @@
     <div class="minidocs-header">
       <h1><a href="/"><img src="/dat-data-logo.svg" alt="Dat Data" class="minidocs-logo" /></a></h1>
     </div>
-    <div class="_606ae572 minidocs-contents">
+    <div class="_689fec56 minidocs-contents">
     <button class="minidocs-menu-toggle">Menu</button>
     <div class="minidocs-menu menu-closed menu-small">
       <div class="minidocs-menu-wrapper">
-        <div class="h1">Dat</div><div><a href="/dat" class="content-link active">Introduction</a></div><div><a href="/how-dat-works" class="content-link ">How Dat Works</a></div><div><a href="/terms" class="content-link ">Terminology</a></div><div><a href="/faq" class="content-link ">FAQ</a></div><div class="h1">Cookbook</div><div><a href="/browser" class="content-link ">Browser Dat</a></div><div><a href="/diy-dat" class="content-link ">DIY Dat</a></div><div class="h1">Ecosystem</div><div><a href="/ecosystem" class="content-link ">Overview</a></div><div><a href="/sleep" class="content-link ">SLEEP</a></div><div><a href="/hyperdrive" class="content-link ">Hyperdrive</a></div><div><a href="/hypercore" class="content-link ">Hypercore</a></div>
+        <div class="h1">Dat</div><div>
+            <a href="/dat" class="content-link active">Introduction</a>
+            <div class="minidocs-menu-toc">
+              <a href="#key-features-" class="h4 content-link">Key features:</a><a href="#-a-href-http-docs-datproject-org-documentation-a-a-href-https-www-youtube-com-watch-v-fxkjsycoqo4-video-demo-a-a-href-https-github-com-clkao-awesome-dat-ecosystem-a-" class="h4 content-link">&lt;a href="http://docs.datproject.org"&gt;Documentation&lt;/a&gt; | &lt;a href="https://www.youtube.com/watch?v=fxKjSyCoqO4"&gt;Video Demo&lt;/a&gt; | &lt;a href="https://github.com/clkao/awesome-dat"&gt;Ecosystem&lt;/a&gt;</a><a href="#dat-command-line-tool" class="h3 content-link">Dat Command Line Tool</a><a href="#table-of-contents" class="h4 content-link">Table of Contents</a><a href="#getting-started" class="h3 content-link">Getting Started</a><a href="#installation" class="h4 content-link">Installation</a><a href="#demo" class="h4 content-link">Demo</a><a href="#cli-development-status" class="h4 content-link">CLI Development Status</a><a href="#using-dat" class="h3 content-link">Using Dat</a><a href="#sharing-files" class="h4 content-link">Sharing Files</a><a href="#updating-shared-files" class="h5 content-link">Updating Shared Files</a><a href="#creating-a-snapshot" class="h5 content-link">Creating a snapshot</a><a href="#sharing-options" class="h5 content-link">Sharing Options</a><a href="#downloading-files" class="h4 content-link">Downloading Files</a><a href="#updating-the-downloaded-files" class="h5 content-link">Updating the Downloaded Files</a><a href="#download-options" class="h5 content-link">Download Options</a><a href="#live-sync-amp-snapshots" class="h4 content-link">Live Sync &amp;amp; Snapshots</a><a href="#dat-metadata-storage" class="h4 content-link">Dat Metadata Storage</a><a href="#temporary-database" class="h5 content-link">Temporary Database</a><a href="#sharing-or-download-files-with-a-href-http-dat-land-dat-land-a-" class="h4 content-link">Sharing or Download files with &lt;a href="http://dat.land"&gt;dat.land&lt;/a&gt;</a><a href="#troubleshooting" class="h3 content-link">Troubleshooting</a><a href="#check-your-dat-version" class="h5 content-link">Check Your Dat Version</a><a href="#installation-issues" class="h4 content-link">Installation Issues</a><a href="#node-amp-npm" class="h5 content-link">Node &amp;amp; npm</a><a href="#global-install" class="h5 content-link">Global Install</a><a href="#networking-issues" class="h4 content-link">Networking Issues</a><a href="#dat-doctor" class="h5 content-link">Dat Doctor</a><a href="#for-developers" class="h3 content-link">For Developers</a><a href="#installing-from-source" class="h4 content-link">Installing from source</a><a href="#internal-api" class="h4 content-link">Internal API</a><a href="#dat-download-cb-" class="h5 content-link">dat.download(cb)</a><a href="#dat-share-cb-" class="h5 content-link">dat.share(cb)</a><a href="#events" class="h5 content-link">Events</a><a href="#initialization" class="h6 content-link">Initialization</a><a href="#swarm" class="h6 content-link">Swarm</a><a href="#share" class="h6 content-link">Share</a><a href="#download" class="h6 content-link">Download</a><a href="#other-api" class="h5 content-link">Other API</a><a href="#internal-stats" class="h5 content-link">Internal Stats</a><a href="#license" class="h3 content-link">License</a>
+            </div>
+          </div><div><a href="/how-dat-works" class="content-link ">How Dat Works</a></div><div><a href="/terms" class="content-link ">Terminology</a></div><div><a href="/faq" class="content-link ">FAQ</a></div><div class="h1">Cookbook</div><div><a href="/browser" class="content-link ">Browser Dat</a></div><div><a href="/diy-dat" class="content-link ">DIY Dat</a></div><div class="h1">Ecosystem</div><div><a href="/ecosystem" class="content-link ">Overview</a></div><div><a href="/sleep" class="content-link ">SLEEP</a></div><div><a href="/hyperdrive" class="content-link ">Hyperdrive</a></div><div><a href="/hypercore" class="content-link ">Hypercore</a></div>
       </div>
     </div>
   </div>
@@ -28,31 +33,25 @@
         <div class="_3f4b1fbc minidocs-content">
     
     
-    <div><h1 id="dat">Dat</h1>
-<p>Dat is a decentralized data tool for distributing data small and large.</p>
+    <div><h1 id="dat"><a href="#dat" class="anchor"></a>Dat</h1><p>Dat is a decentralized data tool for distributing data small and large.</p>
 <p><a href="http://webchat.freenode.net/?channels=dat"><img src="https://img.shields.io/badge/irc%20channel-%23dat%20on%20freenode-blue.svg" alt="#dat IRC channel on freenode"></a>
 <a href="https://gitter.im/datproject/discussions?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://badges.gitter.im/Join%20Chat.svg" alt="datproject/discussions"></a>
 <a href="http://docs.datproject.org"><img src="https://img.shields.io/badge/Dat%20Project-Docs-green.svg" alt="docs"></a></p>
-<h3 id="key-features-">Key features:</h3>
-<ul>
+<h3 id="key-features-"><a href="#key-features-" class="anchor"></a>Key features:</h3><ul>
 <li><strong>Live sync</strong> folders by sharing files as they are added or changed.</li>
 <li><strong>Distribute large files</strong> without copying data to a central server by connecting directly to peers.</li>
 <li><strong>Intelligently sync</strong> by deduplicating data between versions.</li>
 <li><strong>Verify data integrity</strong> using strong cryptographic hashes.</li>
 <li><strong>Work everywhere</strong>, including on the <a href="https://github.com/datproject/dat">command line</a>, in the <a href="https://github.com/datproject/dat.land">browser</a>, and on the <a href="https://github.com/juliangruber/dat-desktop">desktop</a>.</li>
 </ul>
-<h3 id="-documentation-http-docs-datproject-org-video-demo-https-www-youtube-com-watch-v-fxkjsycoqo4-ecosystem-https-github-com-clkao-awesome-dat-"><a href="http://docs.datproject.org">Documentation</a> | <a href="https://www.youtube.com/watch?v=fxKjSyCoqO4">Video Demo</a> | <a href="https://github.com/clkao/awesome-dat">Ecosystem</a></h3>
-<hr>
-<h2 id="dat-command-line-tool">Dat Command Line Tool</h2>
-<p>This guide will help you get started with the Dat command line tool. We are also developing <a href="https://github.com/datproject/dat.land">web</a> and <a href="https://github.com/juliangruber/dat-desktop">desktop</a> applications for Dat.</p>
-<h3 id="table-of-contents">Table of Contents</h3>
-<li><a href="#getting-started">Getting Started</a></li>
+<h3 id="-a-href-http-docs-datproject-org-documentation-a-a-href-https-www-youtube-com-watch-v-fxkjsycoqo4-video-demo-a-a-href-https-github-com-clkao-awesome-dat-ecosystem-a-"><a href="#-a-href-http-docs-datproject-org-documentation-a-a-href-https-www-youtube-com-watch-v-fxkjsycoqo4-video-demo-a-a-href-https-github-com-clkao-awesome-dat-ecosystem-a-" class="anchor"></a><a href="http://docs.datproject.org">Documentation</a> | <a href="https://www.youtube.com/watch?v=fxKjSyCoqO4">Video Demo</a> | <a href="https://github.com/clkao/awesome-dat">Ecosystem</a></h3><hr>
+<h2 id="dat-command-line-tool"><a href="#dat-command-line-tool" class="anchor"></a>Dat Command Line Tool</h2><p>This guide will help you get started with the Dat command line tool. We are also developing <a href="https://github.com/datproject/dat.land">web</a> and <a href="https://github.com/juliangruber/dat-desktop">desktop</a> applications for Dat.</p>
+<h3 id="table-of-contents"><a href="#table-of-contents" class="anchor"></a>Table of Contents</h3><li><a href="#getting-started">Getting Started</a></li>
 <li><a href="#using-dat">Using Dat</a></li>
 <li><a href="#troubleshooting">Troubleshooting</a></li>
 <li><a href="#for-developers">For Developers</a></li>
 
-<h2 id="getting-started">Getting Started</h2>
-<p>The Dat command line tool can be used to share, download, and sync files across many computers via the command line.</p>
+<h2 id="getting-started"><a href="#getting-started" class="anchor"></a>Getting Started</h2><p>The Dat command line tool can be used to share, download, and sync files across many computers via the command line.</p>
 <table>
 <thead>
 <tr>
@@ -69,22 +68,18 @@
 </tr>
 </tbody>
 </table>
-<h3 id="installation">Installation</h3>
-<pre><code>npm <span class="hljs-keyword">install</span> -g dat
+<h3 id="installation"><a href="#installation" class="anchor"></a>Installation</h3><pre><code>npm <span class="hljs-keyword">install</span> -g dat
 </code></pre><p>You should be able to run the <code>dat</code> command now. If not, see the <a href="#troubleshooting">installation troubleshooting</a> for tips.</p>
-<h3 id="demo">Demo</h3>
-<p>We have Dat installed, now let&#39;s use it! In this quick demo we will download our documentation files using Dat.</p>
+<h3 id="demo"><a href="#demo" class="anchor"></a>Demo</h3><p>We have Dat installed, now let&#39;s use it! In this quick demo we will download our documentation files using Dat.</p>
 <p>You tell Dat what files to download by giving it a Dat link. Dat links are 64 characters long, for example <code>acd8aa85a22bc65e3933bcbd785639d6382bcd3b78faff1d22a482c5f9e5a39d</code>.</p>
 <p>Along with the link, you tell Dat where to download the files. All together, you can download files by typing <code>dat &lt;dat-link&gt; &lt;download-directory&gt;</code>.</p>
 <p>We have our Dat documentation folders being shared by Dat (at the key above). For this example, we can download those files to your computer. In your console, run:</p>
 <pre><code>dat acd<span class="hljs-number">8</span>aa<span class="hljs-number">85</span>a<span class="hljs-number">22</span>bc<span class="hljs-number">65e3933</span>bcbd<span class="hljs-number">785639</span>d<span class="hljs-number">6382</span>bcd<span class="hljs-number">3</span>b<span class="hljs-number">78</span>faff<span class="hljs-number">1</span>d<span class="hljs-number">22</span>a<span class="hljs-number">482</span><span class="hljs-keyword">c</span><span class="hljs-number">5</span>f<span class="hljs-number">9e5</span>a<span class="hljs-number">39</span>d dat_docs
 </code></pre><p>You should see the output below. Once the download is finished, the files will be available on your computer in the <code>dat_docs</code> folder!</p>
 <p><img src="https://raw.githubusercontent.com/datproject/docs/master/assets/cli_download.gif" alt="Download gif"></p>
-<h3 id="cli-development-status">CLI Development Status</h3>
-<p>This is the Dat CLI 1.0 release candidate (RC2). We are actively seeking feedback &amp; developing this release candidate. Follow <a href="https://github.com/datproject/projects/issues/5">this issue</a> for the Dat CLI road map discussion and see <a href="https://github.com/datproject/dat/issues/486">known RC2 issues</a>.</p>
+<h3 id="cli-development-status"><a href="#cli-development-status" class="anchor"></a>CLI Development Status</h3><p>This is the Dat CLI 1.0 release candidate (RC2). We are actively seeking feedback &amp; developing this release candidate. Follow <a href="https://github.com/datproject/projects/issues/5">this issue</a> for the Dat CLI road map discussion and see <a href="https://github.com/datproject/dat/issues/486">known RC2 issues</a>.</p>
 <p><strong>Please note</strong> that previous versions of Dat (alpha, beta) are incompatible with the 1.0 release candidate.</p>
-<h2 id="using-dat">Using Dat</h2>
-<p>There are two commands in Dat:</p>
+<h2 id="using-dat"><a href="#using-dat" class="anchor"></a>Using Dat</h2><p>There are two commands in Dat:</p>
 <ol>
 <li>Share data: <code>dat &lt;directory&gt;</code> will share a directory on your computer.</li>
 <li>Download data: <code>dat &lt;dat-link&gt; &lt;download-directory&gt;</code> will download files from the Dat link to a directory on your computer. </li>
@@ -114,8 +109,7 @@ General options
   <span class="hljs-comment">--debug               show debugging output</span>
   <span class="hljs-comment">--ignore-hidden       ignore hidden files (true by default)</span>
   <span class="hljs-comment">--port, -p            set a specific inbound tcp port</span>
-</code></pre><h3 id="sharing-files">Sharing Files</h3>
-<p>Share a directory by typing <code>dat &lt;directory&gt;</code>:</p>
+</code></pre><h3 id="sharing-files"><a href="#sharing-files" class="anchor"></a>Sharing Files</h3><p>Share a directory by typing <code>dat &lt;directory&gt;</code>:</p>
 <pre><code>$ dat my_data/
 Sharing /Users/joe/my_data/
 
@@ -126,17 +120,13 @@ The Share Link <span class="hljs-keyword">is</span> secret <span class="hljs-bui
 
 Connected <span class="hljs-keyword">to</span> <span class="hljs-number">1</span> peers. Uploading <span class="hljs-number">288.2</span> B/s. Watching <span class="hljs-keyword">for</span> updates...
 </code></pre><p>You are now publishing that data from your computer. It will be publicly accessible as long as your terminal is open and the process is still running. The hash is a <strong>secret hash</strong>, your data is visible to anyone you send the hash to.</p>
-<h4 id="updating-shared-files">Updating Shared Files</h4>
-<p>Dat makes it easy to share a folder and send files as they are added to the folder. By default, when you share using <code>dat my_data/</code> you will be in live sync mode. Anyone connected to you will receive new files.</p>
-<h4 id="creating-a-snapshot">Creating a snapshot</h4>
-<p>A snapshot reads the files and creates a unique link that will always be the same for that set of files (if they remain unchanged). To create a snapshot use the snapshot option: <code>dat my_data/ --snapshot</code>. Snapshots are automatically created for you in live mode as files update.</p>
-<h4 id="sharing-options">Sharing Options</h4>
-<p><code>dat &lt;directory&gt; --snapshot</code></p>
+<h4 id="updating-shared-files"><a href="#updating-shared-files" class="anchor"></a>Updating Shared Files</h4><p>Dat makes it easy to share a folder and send files as they are added to the folder. By default, when you share using <code>dat my_data/</code> you will be in live sync mode. Anyone connected to you will receive new files.</p>
+<h4 id="creating-a-snapshot"><a href="#creating-a-snapshot" class="anchor"></a>Creating a snapshot</h4><p>A snapshot reads the files and creates a unique link that will always be the same for that set of files (if they remain unchanged). To create a snapshot use the snapshot option: <code>dat my_data/ --snapshot</code>. Snapshots are automatically created for you in live mode as files update.</p>
+<h4 id="sharing-options"><a href="#sharing-options" class="anchor"></a>Sharing Options</h4><p><code>dat &lt;directory&gt; --snapshot</code></p>
 <p>Share a snapshot of the current files. </p>
 <p><code>dat &lt;directory&gt; --port=1234</code></p>
 <p>Set your inbound TCP port. This is useful for debugging or on restrictive networks. </p>
-<h3 id="downloading-files">Downloading Files</h3>
-<p>Download files from a Dat link by typing: <code>dat &lt;dat-link&gt; &lt;download-directory&gt;</code>:</p>
+<h3 id="downloading-files"><a href="#downloading-files" class="anchor"></a>Downloading Files</h3><p>Download files from a Dat link by typing: <code>dat &lt;dat-link&gt; &lt;download-directory&gt;</code>:</p>
 <pre><code>$ dat d6e1875598fae25165eff440ffd01513197ad0db9dbb9898f2a141288b9322c6 download_dir
 Downloading in /Users/joe/download_dir
 
@@ -148,45 +138,33 @@ The Share Link <span class="hljs-keyword">is</span> secret <span class="hljs-bui
 Connected <span class="hljs-keyword">to</span> <span class="hljs-number">1</span> peers. Downloading <span class="hljs-number">1.44</span> kB/s. Watching <span class="hljs-keyword">for</span> updates...
 </code></pre><p>Dat will start downloading the data into the <code>download_dir</code> folder. Once the download is finished (a message will print and the bar will turn green), you can safely exit the process with <code>Ctrl-C</code> (<code>Cmd-C</code> on Mac). </p>
 <p>While downloading, you may be connected to more than 1 peer. Anyone who has the Dat link will be able to download and re-host a copy of the data. So you may be downloading from (and sharing to) other people that are also downloading that data! You only need one block of data to start helping as a host. It&#39;s distributed mad science!</p>
-<h4 id="updating-the-downloaded-files">Updating the Downloaded Files</h4>
-<p>What happens if the files get updated? Dat auto-syncs new files if it is still running. If you exited the process, you can run the same command you ran before (with the same link and directory) and the files will update!</p>
-<h4 id="download-options">Download Options</h4>
-<p><code>dat &lt;dat-link&gt; &lt;directory&gt; --exit</code> </p>
+<h4 id="updating-the-downloaded-files"><a href="#updating-the-downloaded-files" class="anchor"></a>Updating the Downloaded Files</h4><p>What happens if the files get updated? Dat auto-syncs new files if it is still running. If you exited the process, you can run the same command you ran before (with the same link and directory) and the files will update!</p>
+<h4 id="download-options"><a href="#download-options" class="anchor"></a>Download Options</h4><p><code>dat &lt;dat-link&gt; &lt;directory&gt; --exit</code> </p>
 <p>After files are done downloading, exit the process. If you are connected to a live Dat you will not get new files unless you run the command again.</p>
 <p><code>dat &lt;dat-link&gt; &lt;directory&gt; --port=1234</code></p>
 <p>Set your inbound TCP port. This is useful for debugging or on restrictive networks. </p>
-<h3 id="live-sync-snapshots">Live Sync &amp; Snapshots</h3>
-<p>Dat makes it easy to share a folder and send files as they are changed or added. By default, when you share using Dat you will be in <em>live sync</em> mode. Anyone connected to you will receive file changes as you make them.</p>
+<h3 id="live-sync-amp-snapshots"><a href="#live-sync-amp-snapshots" class="anchor"></a>Live Sync &amp; Snapshots</h3><p>Dat makes it easy to share a folder and send files as they are changed or added. By default, when you share using Dat you will be in <em>live sync</em> mode. Anyone connected to you will receive file changes as you make them.</p>
 <p>When downloading a Dat, you do not have to worry about live mode. It will automatically start in the right mode based on the link. </p>
 <p>To create a snapshot when sharing files use the snapshot option: <code>dat my_data/ --snapshot</code>. A snapshot reads the files and creates a specific link that will never change (as long as the files don&#39;t change).</p>
-<h3 id="dat-metadata-storage">Dat Metadata Storage</h3>
-<p>When you run a command, Dat creates a hidden folder, <code>.dat</code>, in the directory specified. Similar to git, this folder stores information about your Dat. File metadata and the Dat link are stored to make it easy to continue sharing or downloading the same directory.</p>
-<h4 id="temporary-database">Temporary Database</h4>
-<p>Use the <code>--temp</code> option to keep the metadata in memory instead of the <code>.dat</code> folder.</p>
-<h3 id="sharing-or-download-files-with-dat-land-http-dat-land-">Sharing or Download files with <a href="http://dat.land">dat.land</a></h3>
-<p>Sharing files with dat.land to the CLI is currently not supported. The prototype version of dat.land used WebRTC, which we are no longer supporting (see our <a href="http://docs.datproject.org/faq">faq</a> for details). We will be using websockets in the next version of dat.land to support transfer across all of our interfaces.</p>
-<h2 id="troubleshooting">Troubleshooting</h2>
-<p>We&#39;ve provided some troubleshooting tips based on issues users have seen. Please <a href="https://github.com/datproject/dat/issues/new">open an issue</a> or ask us in our <a href="https://gitter.im/datproject/discussions">chat room</a> if you need help troubleshooting and it is not covered here.</p>
+<h3 id="dat-metadata-storage"><a href="#dat-metadata-storage" class="anchor"></a>Dat Metadata Storage</h3><p>When you run a command, Dat creates a hidden folder, <code>.dat</code>, in the directory specified. Similar to git, this folder stores information about your Dat. File metadata and the Dat link are stored to make it easy to continue sharing or downloading the same directory.</p>
+<h4 id="temporary-database"><a href="#temporary-database" class="anchor"></a>Temporary Database</h4><p>Use the <code>--temp</code> option to keep the metadata in memory instead of the <code>.dat</code> folder.</p>
+<h3 id="sharing-or-download-files-with-a-href-http-dat-land-dat-land-a-"><a href="#sharing-or-download-files-with-a-href-http-dat-land-dat-land-a-" class="anchor"></a>Sharing or Download files with <a href="http://dat.land">dat.land</a></h3><p>Sharing files with dat.land to the CLI is currently not supported. The prototype version of dat.land used WebRTC, which we are no longer supporting (see our <a href="http://docs.datproject.org/faq">faq</a> for details). We will be using websockets in the next version of dat.land to support transfer across all of our interfaces.</p>
+<h2 id="troubleshooting"><a href="#troubleshooting" class="anchor"></a>Troubleshooting</h2><p>We&#39;ve provided some troubleshooting tips based on issues users have seen. Please <a href="https://github.com/datproject/dat/issues/new">open an issue</a> or ask us in our <a href="https://gitter.im/datproject/discussions">chat room</a> if you need help troubleshooting and it is not covered here.</p>
 <p>If you have trouble sharing/downloading in a directory with a <code>.dat</code> folder, try deleting it and running the command again.</p>
-<h4 id="check-your-dat-version">Check Your Dat Version</h4>
-<p>Knowing the version is really helpful if you run into any bugs, and will help us troubleshoot your issue.</p>
+<h4 id="check-your-dat-version"><a href="#check-your-dat-version" class="anchor"></a>Check Your Dat Version</h4><p>Knowing the version is really helpful if you run into any bugs, and will help us troubleshoot your issue.</p>
 <p>Check your Dat version:</p>
 <pre><code><span class="hljs-attribute">dat -v</span>
 </code></pre><p>You should see the Dat semantic version printed, e.g. 11.1.2.</p>
-<h3 id="installation-issues">Installation Issues</h3>
-<h4 id="node-npm">Node &amp; npm</h4>
-<p>To use the Dat command line tool you will need to have <a href="https://docs.npmjs.com/getting-started/installing-node">node and npm installed</a>. Make sure those are installed correctly before installing Dat. You can check the version of each:</p>
+<h3 id="installation-issues"><a href="#installation-issues" class="anchor"></a>Installation Issues</h3><h4 id="node-amp-npm"><a href="#node-amp-npm" class="anchor"></a>Node &amp; npm</h4><p>To use the Dat command line tool you will need to have <a href="https://docs.npmjs.com/getting-started/installing-node">node and npm installed</a>. Make sure those are installed correctly before installing Dat. You can check the version of each:</p>
 <pre><code><span class="hljs-keyword">node</span> <span class="hljs-title">-v</span>
 npm -v
-</code></pre><h4 id="global-install">Global Install</h4>
-<p>The <code>-g</code> option installs Dat globally allowing you to run it as a command. Make sure you installed with that option.</p>
+</code></pre><h4 id="global-install"><a href="#global-install" class="anchor"></a>Global Install</h4><p>The <code>-g</code> option installs Dat globally allowing you to run it as a command. Make sure you installed with that option.</p>
 <ul>
 <li>If you receive an <code>EACCES</code> error, read <a href="https://docs.npmjs.com/getting-started/fixing-npm-permissions">this guide</a> on fixing npm permissions.</li>
 <li>If you receive an <code>EACCES</code> error, you may also install dat with sudo: <code>sudo npm install -g dat</code>.</li>
 <li>Have other installation issues? Let us know, you can <a href="https://github.com/datproject/dat/issues/new">open an issue</a> or ask us in our <a href="https://gitter.im/datproject/discussions">chat room</a>.</li>
 </ul>
-<h3 id="networking-issues">Networking Issues</h3>
-<p>Networking capabilities vary widely with each computer, network, and configuration. Whenever you run a Dat there are several steps to share or download files with peers:</p>
+<h3 id="networking-issues"><a href="#networking-issues" class="anchor"></a>Networking Issues</h3><p>Networking capabilities vary widely with each computer, network, and configuration. Whenever you run a Dat there are several steps to share or download files with peers:</p>
 <ol>
 <li>Discovering Peers</li>
 <li>Connecting to Peers</li>
@@ -196,39 +174,29 @@ npm -v
 <ul>
 <li>Dat may <a href="https://github.com/datproject/dat/issues/503">have issues</a> connecting if you are using iptables.</li>
 </ul>
-<h4 id="dat-doctor">Dat Doctor</h4>
-<p>We&#39;ve included a tool to identify network issues with Dat, the Dat doctor. You will need to run the command on both the computers you are trying to share data between. On the first computer, run:</p>
+<h4 id="dat-doctor"><a href="#dat-doctor" class="anchor"></a>Dat Doctor</h4><p>We&#39;ve included a tool to identify network issues with Dat, the Dat doctor. You will need to run the command on both the computers you are trying to share data between. On the first computer, run:</p>
 <pre><code>dat <span class="hljs-comment">--doctor</span>
 </code></pre><p>The doctor will print out a command to run on the other computer, <code>dat --doctor=&lt;64-character-string&gt;</code>. The doctor will run through the key steps in the process of sharing data between computers to help identify the issue.</p>
 <hr>
-<h2 id="for-developers">For Developers</h2>
-<p>Please see <a href="https://github.com/datproject/dat/blob/master/CONTRIBUTING.md">guidelines on contributing</a> before submitting an issue or PR.</p>
-<h3 id="installing-from-source">Installing from source</h3>
-<p>Clone this repository and in a terminal inside of the folder you cloned run this command:</p>
+<h2 id="for-developers"><a href="#for-developers" class="anchor"></a>For Developers</h2><p>Please see <a href="https://github.com/datproject/dat/blob/master/CONTRIBUTING.md">guidelines on contributing</a> before submitting an issue or PR.</p>
+<h3 id="installing-from-source"><a href="#installing-from-source" class="anchor"></a>Installing from source</h3><p>Clone this repository and in a terminal inside of the folder you cloned run this command:</p>
 <pre><code><span class="hljs-built_in">npm</span> link
 </code></pre><p>This should add a <code>dat</code> command line command to your PATH. Now you can run the <code>dat</code> command to try it out.</p>
 <p>The contribution guide also has more tips on our <a href="https://github.com/datproject/dat/blob/master/CONTRIBUTING.md#development-workflow">development workflow</a>.</p>
-<h3 id="internal-api">Internal API</h3>
-<p><strong>Note: we are in the process of moving the js library to a separate module, <a href="https://github.com/joehand/dat-js">joehand/dat-js</a>.</strong></p>
-<h4 id="dat-download-cb-">dat.download(cb)</h4>
-<p>download <code>dat.key</code> to <code>dat.dir</code></p>
-<h4 id="dat-share-cb-">dat.share(cb)</h4>
-<p>share directory specified in <code>opts.dir</code></p>
+<h3 id="internal-api"><a href="#internal-api" class="anchor"></a>Internal API</h3><p><strong>Note: we are in the process of moving the js library to a separate module, <a href="https://github.com/joehand/dat-js">joehand/dat-js</a>.</strong></p>
+<h4 id="dat-download-cb-"><a href="#dat-download-cb-" class="anchor"></a>dat.download(cb)</h4><p>download <code>dat.key</code> to <code>dat.dir</code></p>
+<h4 id="dat-share-cb-"><a href="#dat-share-cb-" class="anchor"></a>dat.share(cb)</h4><p>share directory specified in <code>opts.dir</code></p>
 <p>Swarm is automatically joined for key when it is available for share &amp; download (<code>dat.joinSwarm()</code>).</p>
-<h4 id="events">Events</h4>
-<h5 id="initialization">Initialization</h5>
-<ul>
+<h4 id="events"><a href="#events" class="anchor"></a>Events</h4><h5 id="initialization"><a href="#initialization" class="anchor"></a>Initialization</h5><ul>
 <li><code>dat.on(&#39;ready&#39;)</code>: db created/read &amp; hyperdrive archive created.</li>
 <li><code>dat.on(&#39;error&#39;)</code>: init/database error</li>
 </ul>
-<h5 id="swarm">Swarm</h5>
-<p>Swarm events and stats are available from <code>dat.swarm</code>.</p>
+<h5 id="swarm"><a href="#swarm" class="anchor"></a>Swarm</h5><p>Swarm events and stats are available from <code>dat.swarm</code>.</p>
 <ul>
 <li><code>dat.on(&#39;connecting&#39;)</code>: looking for peers</li>
 <li><code>dat.on(&#39;swarm-update&#39;)</code>: peer number changed</li>
 </ul>
-<h5 id="share">Share</h5>
-<ul>
+<h5 id="share"><a href="#share" class="anchor"></a>Share</h5><ul>
 <li><code>dat.on(&#39;key&#39;)</code>: key is available (this is at archive-finalized for snapshots)</li>
 <li><code>dat.on(&#39;append-ready&#39;)</code>: file count available (<code>dat.appendStats</code>), about to start appending to hyperdrive</li>
 <li><code>dat.on(&#39;file-added&#39;)</code>: file added to archive</li>
@@ -236,16 +204,14 @@ npm -v
 <li><code>dat.on(&#39;archive-finalized&#39;)</code>: archive finalized, all files appended</li>
 <li><code>dat.on(&#39;archive-updated&#39;)</code>: live archive changed</li>
 </ul>
-<h5 id="download">Download</h5>
-<ul>
+<h5 id="download"><a href="#download" class="anchor"></a>Download</h5><ul>
 <li><code>dat.on(&#39;key&#39;)</code>: key is available</li>
 <li><code>dat.on(&#39;file-downloaded&#39;, file)</code>: file downloaded</li>
 <li><code>dat.on(&#39;download&#39;, data)</code>: piece of data downloaded</li>
 <li><code>dat.on(&#39;upload&#39;, data)</code>: piece of data uploaded</li>
 <li><code>dat.on(&#39;download-finished&#39;)</code>: archive download finished</li>
 </ul>
-<h4 id="other-api">Other API</h4>
-<ul>
+<h4 id="other-api"><a href="#other-api" class="anchor"></a>Other API</h4><ul>
 <li><code>dat.key</code>: key</li>
 <li><code>dat.dir</code>: directory</li>
 <li><code>dat.datPath</code>: path to .dat folder</li>
@@ -254,8 +220,7 @@ npm -v
 <li><code>dat.archive</code>: hyperdrive archive</li>
 <li><code>dat.snapshot</code> (boolean): sharing snapshot archive</li>
 </ul>
-<h4 id="internal-stats">Internal Stats</h4>
-<pre><code class="lang-javascript">
+<h4 id="internal-stats"><a href="#internal-stats" class="anchor"></a>Internal Stats</h4><pre><code class="lang-javascript">
 dat.stats = {
     <span class="hljs-attr">filesTotal</span>: <span class="hljs-number">0</span>, <span class="hljs-comment">// Latest archive size</span>
     bytesTotal: <span class="hljs-number">0</span>,
@@ -273,8 +238,7 @@ dat.appendStats = {
     <span class="hljs-attr">dirs</span>: <span class="hljs-number">0</span>
 }
 </code></pre>
-<h2 id="license">License</h2>
-<p>BSD-3-Clause</p>
+<h2 id="license"><a href="#license" class="anchor"></a>License</h2><p>BSD-3-Clause</p>
 </div>
   </div>
       </div>

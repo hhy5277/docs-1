@@ -14,11 +14,16 @@
     <div class="minidocs-header">
       <h1><a href="/"><img src="/dat-data-logo.svg" alt="Dat Data" class="minidocs-logo" /></a></h1>
     </div>
-    <div class="_606ae572 minidocs-contents">
+    <div class="_689fec56 minidocs-contents">
     <button class="minidocs-menu-toggle">Menu</button>
     <div class="minidocs-menu menu-closed menu-small">
       <div class="minidocs-menu-wrapper">
-        <div class="h1">Dat</div><div><a href="/dat" class="content-link ">Introduction</a></div><div><a href="/how-dat-works" class="content-link ">How Dat Works</a></div><div><a href="/terms" class="content-link active">Terminology</a></div><div><a href="/faq" class="content-link ">FAQ</a></div><div class="h1">Cookbook</div><div><a href="/browser" class="content-link ">Browser Dat</a></div><div><a href="/diy-dat" class="content-link ">DIY Dat</a></div><div class="h1">Ecosystem</div><div><a href="/ecosystem" class="content-link ">Overview</a></div><div><a href="/sleep" class="content-link ">SLEEP</a></div><div><a href="/hyperdrive" class="content-link ">Hyperdrive</a></div><div><a href="/hypercore" class="content-link ">Hypercore</a></div>
+        <div class="h1">Dat</div><div><a href="/dat" class="content-link ">Introduction</a></div><div><a href="/how-dat-works" class="content-link ">How Dat Works</a></div><div>
+            <a href="/terms" class="content-link active">Terminology</a>
+            <div class="minidocs-menu-toc">
+              <a href="#general-terminology" class="h3 content-link">General Terminology</a><a href="#dat-archive" class="h4 content-link">Dat archive</a><a href="#distributed-web" class="h4 content-link">Distributed Web</a><a href="#peer-to-peer-p2p-" class="h4 content-link">Peer to Peer (P2P)</a><a href="#peer" class="h4 content-link">Peer</a><a href="#swarm-or-network" class="h4 content-link">Swarm or Network</a><a href="#owner" class="h4 content-link">Owner</a><a href="#collaborator" class="h4 content-link">Collaborator</a><a href="#secure-register" class="h4 content-link">Secure Register</a><a href="#dat-link" class="h4 content-link">Dat Link</a><a href="#snapshot-archive" class="h4 content-link">Snapshot Archive</a><a href="#beaker" class="h4 content-link">Beaker</a><a href="#technical-terms" class="h3 content-link">Technical Terms</a><a href="#metadata" class="h4 content-link">Metadata</a><a href="#content-feed" class="h4 content-link">Content Feed</a><a href="#key" class="h4 content-link">Key</a><a href="#public-key-vs-secret-key" class="h4 content-link">Public Key vs Secret Key</a><a href="#discovery-key" class="h4 content-link">Discovery Key</a><a href="#feed-core-feed" class="h4 content-link">Feed / Core Feed</a><a href="#hyperdrive" class="h4 content-link">Hyperdrive</a><a href="#hypercore" class="h4 content-link">Hypercore</a><a href="#hyper-modules-" class="h4 content-link">Hyper- (modules)</a>
+            </div>
+          </div><div><a href="/faq" class="content-link ">FAQ</a></div><div class="h1">Cookbook</div><div><a href="/browser" class="content-link ">Browser Dat</a></div><div><a href="/diy-dat" class="content-link ">DIY Dat</a></div><div class="h1">Ecosystem</div><div><a href="/ecosystem" class="content-link ">Overview</a></div><div><a href="/sleep" class="content-link ">SLEEP</a></div><div><a href="/hyperdrive" class="content-link ">Hyperdrive</a></div><div><a href="/hypercore" class="content-link ">Hypercore</a></div>
       </div>
     </div>
   </div>
@@ -28,57 +33,35 @@
         <div class="_3f4b1fbc minidocs-content">
     
     
-    <div><h2 id="general-terminology">General Terminology</h2>
-<h3 id="dat-archive">Dat archive</h3>
-<p>A folder containing files of any type, which can be synced to other people on the distributed web. A Dat archive has content (files) and metadata, both shared to peers.</p>
+    <div><h2 id="general-terminology"><a href="#general-terminology" class="anchor"></a>General Terminology</h2><h3 id="dat-archive"><a href="#dat-archive" class="anchor"></a>Dat archive</h3><p>A folder containing files of any type, which can be synced to other people on the distributed web. A Dat archive has content (files) and metadata, both shared to peers.</p>
 <p>A Dat archive has a Dat link used to share with other people.</p>
-<h3 id="distributed-web">Distributed Web</h3>
-<p>In a Distributed Web (P2P) model, those who are downloading the data are also providing some of the bandwidth and storage to run it. Instead of one server, we have many. The more people or organizations that are involved in the Distributed Web, the more redundant, safe, and fast it will become.</p>
+<h3 id="distributed-web"><a href="#distributed-web" class="anchor"></a>Distributed Web</h3><p>In a Distributed Web (P2P) model, those who are downloading the data are also providing some of the bandwidth and storage to run it. Instead of one server, we have many. The more people or organizations that are involved in the Distributed Web, the more redundant, safe, and fast it will become.</p>
 <p>Currently, the Web is centralized: if someone controls the hardware or the communication line, then they control all the uses of that website. <a href="http://brewster.kahle.org/2015/08/11/locking-the-web-open-a-call-for-a-distributed-web-2/">Read more here</a>.</p>
-<h3 id="peer-to-peer-p2p-">Peer to Peer (P2P)</h3>
-<p>A P2P software program searches for other connected computers on a P2P network to locate the desired content. The peers of such networks are end-user computer systems that are interconnected via the Internet.</p>
+<h3 id="peer-to-peer-p2p-"><a href="#peer-to-peer-p2p-" class="anchor"></a>Peer to Peer (P2P)</h3><p>A P2P software program searches for other connected computers on a P2P network to locate the desired content. The peers of such networks are end-user computer systems that are interconnected via the Internet.</p>
 <p>In Dat, peers only connect if they both have the same Dat link.</p>
-<h3 id="peer">Peer</h3>
-<p>Another user or server who has downloaded the data (or parts of it) and is uploading it to others in the Dat Swarm.</p>
-<h3 id="swarm-or-network">Swarm or Network</h3>
-<p>A group of peers that want or have downloaded data for a Dat archive and are connected to each other over the Distributed Web.</p>
-<h3 id="owner">Owner</h3>
-<p>User who owns a Dat archive. This user has the secret key on local machine allowing them to write data.</p>
-<h3 id="collaborator">Collaborator</h3>
-<p>User who are granted read access to a Dat archive by the owner. A collaborator can access a Dat archive if the owner or another collaborator sends the the Dat link.</p>
+<h3 id="peer"><a href="#peer" class="anchor"></a>Peer</h3><p>Another user or server who has downloaded the data (or parts of it) and is uploading it to others in the Dat Swarm.</p>
+<h3 id="swarm-or-network"><a href="#swarm-or-network" class="anchor"></a>Swarm or Network</h3><p>A group of peers that want or have downloaded data for a Dat archive and are connected to each other over the Distributed Web.</p>
+<h3 id="owner"><a href="#owner" class="anchor"></a>Owner</h3><p>User who owns a Dat archive. This user has the secret key on local machine allowing them to write data.</p>
+<h3 id="collaborator"><a href="#collaborator" class="anchor"></a>Collaborator</h3><p>User who are granted read access to a Dat archive by the owner. A collaborator can access a Dat archive if the owner or another collaborator sends the the Dat link.</p>
 <p>In the future, owners will be able to grant collaborators write access to the Dat archive, allowing them to modify and create files in the archive.</p>
-<h3 id="secure-register">Secure Register</h3>
-<p>A <a href="https://gds.blog.gov.uk/2015/09/01/registers-authoritative-lists-you-can-trust/">register</a> is an authoritative list of information you can trust. We maintain an open register called <a href="datfolder.org">Dat Folder</a> which contains public data, and is open to everyone.</p>
-<h3 id="dat-link">Dat Link</h3>
-<p>Identifier for a Dat archive, e.g. <code>dat://ab3ed4f...</code>. These are 64 character hashes with the <code>dat://</code> protocol prefix. Anyone with the Dat link can download and re-share files in a Dat archive.</p>
-<h3 id="snapshot-archive">Snapshot Archive</h3>
-<p>A snapshot archive uses a content-based hash as the Dat link. This means that the link is unique for that set of files and content. Once the content changes, the link will change.</p>
+<h3 id="secure-register"><a href="#secure-register" class="anchor"></a>Secure Register</h3><p>A <a href="https://gds.blog.gov.uk/2015/09/01/registers-authoritative-lists-you-can-trust/">register</a> is an authoritative list of information you can trust. We maintain an open register called <a href="datfolder.org">Dat Folder</a> which contains public data, and is open to everyone.</p>
+<h3 id="dat-link"><a href="#dat-link" class="anchor"></a>Dat Link</h3><p>Identifier for a Dat archive, e.g. <code>dat://ab3ed4f...</code>. These are 64 character hashes with the <code>dat://</code> protocol prefix. Anyone with the Dat link can download and re-share files in a Dat archive.</p>
+<h3 id="snapshot-archive"><a href="#snapshot-archive" class="anchor"></a>Snapshot Archive</h3><p>A snapshot archive uses a content-based hash as the Dat link. This means that the link is unique for that set of files and content. Once the content changes, the link will change.</p>
 <p>Snapshot archives can be used as checkpoints or for publishing specific versions of datasets with guarantees that the content will not change.</p>
-<h3 id="beaker">Beaker</h3>
-<p>The <a href="https://beakerbrowser.com/">Beaker Browser</a> is an experimental p2p browser that can view and publish dats alongside traditional web browsing.</p>
-<h2 id="technical-terms">Technical Terms</h2>
-<h3 id="metadata">Metadata</h3>
-<p>Like an HTTP header, the metadata contains a pointer to the contents of Dat and the file list.</p>
+<h3 id="beaker"><a href="#beaker" class="anchor"></a>Beaker</h3><p>The <a href="https://beakerbrowser.com/">Beaker Browser</a> is an experimental p2p browser that can view and publish dats alongside traditional web browsing.</p>
+<h2 id="technical-terms"><a href="#technical-terms" class="anchor"></a>Technical Terms</h2><h3 id="metadata"><a href="#metadata" class="anchor"></a>Metadata</h3><p>Like an HTTP header, the metadata contains a pointer to the contents of Dat and the file list.</p>
 <p>The metadata is a hypercore feed.</p>
-<h3 id="content-feed">Content Feed</h3>
-<p>The content feed is a hypercore feed containing the file contents for a Dat archive. The content feed together with a metadata feed make a Dat archive.</p>
-<h3 id="key">Key</h3>
-<p>A 32-bit hash that uniquely represents a feed. All feeds have keys. The metadata key is used as the public key for an archive.</p>
-<h3 id="public-key-vs-secret-key">Public Key vs Secret Key</h3>
-<p>The public key is the key that is shared in the Dat Link. Messages are signed using the secret key, allowing write access to feeds. The owner is the only user with the secret key.</p>
-<h3 id="discovery-key">Discovery Key</h3>
-<p>The discovery key is a hashed public key. The discovery key is used to find peers on the public key without exposing the original public key to network.</p>
-<h3 id="feed-core-feed">Feed / Core Feed</h3>
-<p>A feed is a term we use interchangeably with the term &quot;append-only log&quot;. It’s the lowest level component of Dat.</p>
+<h3 id="content-feed"><a href="#content-feed" class="anchor"></a>Content Feed</h3><p>The content feed is a hypercore feed containing the file contents for a Dat archive. The content feed together with a metadata feed make a Dat archive.</p>
+<h3 id="key"><a href="#key" class="anchor"></a>Key</h3><p>A 32-bit hash that uniquely represents a feed. All feeds have keys. The metadata key is used as the public key for an archive.</p>
+<h3 id="public-key-vs-secret-key"><a href="#public-key-vs-secret-key" class="anchor"></a>Public Key vs Secret Key</h3><p>The public key is the key that is shared in the Dat Link. Messages are signed using the secret key, allowing write access to feeds. The owner is the only user with the secret key.</p>
+<h3 id="discovery-key"><a href="#discovery-key" class="anchor"></a>Discovery Key</h3><p>The discovery key is a hashed public key. The discovery key is used to find peers on the public key without exposing the original public key to network.</p>
+<h3 id="feed-core-feed"><a href="#feed-core-feed" class="anchor"></a>Feed / Core Feed</h3><p>A feed is a term we use interchangeably with the term &quot;append-only log&quot;. It’s the lowest level component of Dat.</p>
 <p>Feeds are created with hypercore.</p>
-<h3 id="hyperdrive">Hyperdrive</h3>
-<p><a href="https://github.com/mafintosh/hyperdrive">Hyperdrive</a> is peer to peer directories. We built hyperdrive to efficiently share scientific data in real time between research institutions. Hyperdrive handles the distribution of files while encrypting data transfer and ensuring content integrity. Hyperdrive creates append-only logs for file changes allow users to download partial datasets and to create versioned data. Hyperdrive is built on hypercore.</p>
+<h3 id="hyperdrive"><a href="#hyperdrive" class="anchor"></a>Hyperdrive</h3><p><a href="https://github.com/mafintosh/hyperdrive">Hyperdrive</a> is peer to peer directories. We built hyperdrive to efficiently share scientific data in real time between research institutions. Hyperdrive handles the distribution of files while encrypting data transfer and ensuring content integrity. Hyperdrive creates append-only logs for file changes allow users to download partial datasets and to create versioned data. Hyperdrive is built on hypercore.</p>
 <p>Archives created with hyperdrive are made with two feeds, one for the metadata and one for the content. A hyperdrive instance can store any number of archives.</p>
-<h3 id="hypercore">Hypercore</h3>
-<p><a href="https://github.com/mafintosh/hypercore">Hypercore</a> is a protocol and network for distributing and replicating feeds of binary data. This creates an efficient gossip network where latency is reduced to a minimum. Hypercore is an eventually consistent, highly available, partition tolerant system.</p>
+<h3 id="hypercore"><a href="#hypercore" class="anchor"></a>Hypercore</h3><p><a href="https://github.com/mafintosh/hypercore">Hypercore</a> is a protocol and network for distributing and replicating feeds of binary data. This creates an efficient gossip network where latency is reduced to a minimum. Hypercore is an eventually consistent, highly available, partition tolerant system.</p>
 <p>Hypercore instances can contain any number of feeds.</p>
-<h3 id="hyper-modules-">Hyper- (modules)</h3>
-<p>Modules that are use hyperdrive archives or hypercore feeds in a cross-compatible way, for example <a href="https://github.com/karissa/hyperdiscovery">hyperdiscovery</a> or <a href="https://github.com/karissa/hyperhealth">hyperhealth</a>.</p>
+<h3 id="hyper-modules-"><a href="#hyper-modules-" class="anchor"></a>Hyper- (modules)</h3><p>Modules that are use hyperdrive archives or hypercore feeds in a cross-compatible way, for example <a href="https://github.com/karissa/hyperdiscovery">hyperdiscovery</a> or <a href="https://github.com/karissa/hyperhealth">hyperhealth</a>.</p>
 <p>If a module is only compatible with one one of hyperdrive or hypercore, they should be prefixed with that name, e.g. <a href="https://github.com/juliangruber/hyperdrive-import-files">hyperdrive-import-files</a>.</p>
 </div>
   </div>

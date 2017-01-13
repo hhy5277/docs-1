@@ -14,11 +14,16 @@
     <div class="minidocs-header">
       <h1><a href="/"><img src="/dat-data-logo.svg" alt="Dat Data" class="minidocs-logo" /></a></h1>
     </div>
-    <div class="_606ae572 minidocs-contents">
+    <div class="_689fec56 minidocs-contents">
     <button class="minidocs-menu-toggle">Menu</button>
     <div class="minidocs-menu menu-closed menu-small">
       <div class="minidocs-menu-wrapper">
-        <div class="h1">Dat</div><div><a href="/dat" class="content-link ">Introduction</a></div><div><a href="/how-dat-works" class="content-link ">How Dat Works</a></div><div><a href="/terms" class="content-link ">Terminology</a></div><div><a href="/faq" class="content-link ">FAQ</a></div><div class="h1">Cookbook</div><div><a href="/browser" class="content-link ">Browser Dat</a></div><div><a href="/diy-dat" class="content-link ">DIY Dat</a></div><div class="h1">Ecosystem</div><div><a href="/ecosystem" class="content-link ">Overview</a></div><div><a href="/sleep" class="content-link ">SLEEP</a></div><div><a href="/hyperdrive" class="content-link active">Hyperdrive</a></div><div><a href="/hypercore" class="content-link ">Hypercore</a></div>
+        <div class="h1">Dat</div><div><a href="/dat" class="content-link ">Introduction</a></div><div><a href="/how-dat-works" class="content-link ">How Dat Works</a></div><div><a href="/terms" class="content-link ">Terminology</a></div><div><a href="/faq" class="content-link ">FAQ</a></div><div class="h1">Cookbook</div><div><a href="/browser" class="content-link ">Browser Dat</a></div><div><a href="/diy-dat" class="content-link ">DIY Dat</a></div><div class="h1">Ecosystem</div><div><a href="/ecosystem" class="content-link ">Overview</a></div><div><a href="/sleep" class="content-link ">SLEEP</a></div><div>
+            <a href="/hyperdrive" class="content-link active">Hyperdrive</a>
+            <div class="minidocs-menu-toc">
+              <a href="#usage" class="h3 content-link">Usage</a><a href="#api" class="h3 content-link">API</a><a href="#-code-var-drive-hyperdrive-db-code-" class="h5 content-link">&lt;code&gt;var drive = hyperdrive(db)&lt;/code&gt;</a><a href="#-code-var-archive-drive-createarchive-key-options-code-" class="h5 content-link">&lt;code&gt;var archive = drive.createArchive([key], [options])&lt;/code&gt;</a><a href="#-code-archive-key-code-" class="h5 content-link">&lt;code&gt;archive.key&lt;/code&gt;</a><a href="#-code-archive-live-code-" class="h5 content-link">&lt;code&gt;archive.live&lt;/code&gt;</a><a href="#-code-archive-append-entry-callback-code-" class="h5 content-link">&lt;code&gt;archive.append(entry, callback)&lt;/code&gt;</a><a href="#-code-archive-finalize-callback-code-" class="h5 content-link">&lt;code&gt;archive.finalize([callback])&lt;/code&gt;</a><a href="#-code-archive-get-index-options-callback-code-" class="h5 content-link">&lt;code&gt;archive.get(index, [options], callback)&lt;/code&gt;</a><a href="#-code-archive-download-index-callback-code-" class="h5 content-link">&lt;code&gt;archive.download(index, callback)&lt;/code&gt;</a><a href="#-code-archive-close-callback-code-" class="h5 content-link">&lt;code&gt;archive.close([callback])&lt;/code&gt;</a><a href="#-code-archive-on-39-download-39-data-code-" class="h5 content-link">&lt;code&gt;archive.on(&amp;#39;download&amp;#39;, data)&lt;/code&gt;</a><a href="#-code-archive-on-39-upload-39-data-code-" class="h5 content-link">&lt;code&gt;archive.on(&amp;#39;upload&amp;#39;, data)&lt;/code&gt;</a><a href="#-code-var-rs-archive-list-opts-cb-code-" class="h5 content-link">&lt;code&gt;var rs = archive.list(opts={}, cb)&lt;/code&gt;</a><a href="#-code-var-rs-archive-createfilereadstream-entry-options-code-" class="h5 content-link">&lt;code&gt;var rs = archive.createFileReadStream(entry, [options])&lt;/code&gt;</a><a href="#-code-var-ws-archive-createfilewritestream-entry-code-" class="h5 content-link">&lt;code&gt;var ws = archive.createFileWriteStream(entry)&lt;/code&gt;</a><a href="#-code-var-cursor-archive-createbytecursor-entry-options-code-" class="h5 content-link">&lt;code&gt;var cursor = archive.createByteCursor(entry, [options])&lt;/code&gt;</a><a href="#-code-var-stream-archive-replicate-options-code-" class="h5 content-link">&lt;code&gt;var stream = archive.replicate([options])&lt;/code&gt;</a><a href="#-code-archive-unreplicate-stream-code-" class="h5 content-link">&lt;code&gt;archive.unreplicate([stream])&lt;/code&gt;</a><a href="#-code-archive-countdownloadedblocks-entry-code-" class="h5 content-link">&lt;code&gt;archive.countDownloadedBlocks(entry)&lt;/code&gt;</a><a href="#-code-archive-isentrydownloaded-entry-code-" class="h5 content-link">&lt;code&gt;archive.isEntryDownloaded(entry)&lt;/code&gt;</a><a href="#license" class="h3 content-link">License</a>
+            </div>
+          </div><div><a href="/hypercore" class="content-link ">Hypercore</a></div>
       </div>
     </div>
   </div>
@@ -28,13 +33,11 @@
         <div class="_3f4b1fbc minidocs-content">
     
     
-    <div><h1 id="hyperdrive">hyperdrive</h1>
-<p>A file sharing network based on <a href="https://github.com/maxogden/rabin">rabin</a> file chunking and <a href="https://github.com/mafintosh/hypercore">append only feeds of data verified by merkle trees</a>.</p>
+    <div><h1 id="hyperdrive"><a href="#hyperdrive" class="anchor"></a>hyperdrive</h1><p>A file sharing network based on <a href="https://github.com/maxogden/rabin">rabin</a> file chunking and <a href="https://github.com/mafintosh/hypercore">append only feeds of data verified by merkle trees</a>.</p>
 <pre><code>npm <span class="hljs-keyword">install</span> hyperdrive
 </code></pre><p><a href="http://travis-ci.org/mafintosh/hyperdrive"><img src="http://img.shields.io/travis/mafintosh/hyperdrive.svg?style=flat" alt="build status"></a></p>
 <p>If you are interested in learning how hyperdrive works on a technical level a specification is available in the <a href="https://github.com/datproject/docs/blob/master/docs/hyperdrive_spec.md">Dat docs repo</a></p>
-<h2 id="usage">Usage</h2>
-<p>First create a new feed and share it</p>
+<h2 id="usage"><a href="#usage" class="anchor"></a>Usage</h2><p>First create a new feed and share it</p>
 <pre><code class="lang-js"><span class="hljs-keyword">var</span> hyperdrive = <span class="hljs-built_in">require</span>(<span class="hljs-string">'hyperdrive'</span>)
 <span class="hljs-keyword">var</span> level = <span class="hljs-built_in">require</span>(<span class="hljs-string">'level'</span>)
 <span class="hljs-keyword">var</span> swarm = <span class="hljs-built_in">require</span>(<span class="hljs-string">'discovery-swarm'</span>)()
@@ -95,11 +98,8 @@ swarm.on(<span class="hljs-string">'connection'</span>, <span class="hljs-functi
   }
 })
 </code></pre>
-<h2 id="api">API</h2>
-<h4 id="-var-drive-hyperdrive-db-"><code>var drive = hyperdrive(db)</code></h4>
-<p>Create a new hyperdrive instance. db should be a <a href="https://github.com/level/levelup">levelup</a> instance.</p>
-<h4 id="-var-archive-drive-createarchive-key-options-"><code>var archive = drive.createArchive([key], [options])</code></h4>
-<p>Creates an archive instance. If you want to download/upload an existing archive provide the archive key
+<h2 id="api"><a href="#api" class="anchor"></a>API</h2><h4 id="-code-var-drive-hyperdrive-db-code-"><a href="#-code-var-drive-hyperdrive-db-code-" class="anchor"></a><code>var drive = hyperdrive(db)</code></h4><p>Create a new hyperdrive instance. db should be a <a href="https://github.com/level/levelup">levelup</a> instance.</p>
+<h4 id="-code-var-archive-drive-createarchive-key-options-code-"><a href="#-code-var-archive-drive-createarchive-key-options-code-" class="anchor"></a><code>var archive = drive.createArchive([key], [options])</code></h4><p>Creates an archive instance. If you want to download/upload an existing archive provide the archive key
 as the first argument. Options include</p>
 <pre><code class="lang-js">{
   <span class="hljs-attr">live</span>: <span class="hljs-literal">false</span>, <span class="hljs-comment">// set this to share the archive without finalizing it</span>
@@ -119,13 +119,10 @@ as the first argument. Options include</p>
   <span class="hljs-attr">content</span>: core.createFeed(contentKey)
 })
 </code></pre>
-<h4 id="-archive-key-"><code>archive.key</code></h4>
-<p>A buffer that verifies the archive content. In live mode this is a 32 byte public key.
+<h4 id="-code-archive-key-code-"><a href="#-code-archive-key-code-" class="anchor"></a><code>archive.key</code></h4><p>A buffer that verifies the archive content. In live mode this is a 32 byte public key.
 Otherwise it is a 32 byte hash.</p>
-<h4 id="-archive-live-"><code>archive.live</code></h4>
-<p>Boolean whether archive is live. <code>true</code> by default. Note that its only populated after archive.open(cb) has been fired.</p>
-<h4 id="-archive-append-entry-callback-"><code>archive.append(entry, callback)</code></h4>
-<p>Append an entry to the archive. Only possible if this is an live archive you originally created
+<h4 id="-code-archive-live-code-"><a href="#-code-archive-live-code-" class="anchor"></a><code>archive.live</code></h4><p>Boolean whether archive is live. <code>true</code> by default. Note that its only populated after archive.open(cb) has been fired.</p>
+<h4 id="-code-archive-append-entry-callback-code-"><a href="#-code-archive-append-entry-callback-code-" class="anchor"></a><code>archive.append(entry, callback)</code></h4><p>Append an entry to the archive. Only possible if this is an live archive you originally created
 or an unfinalized archive.</p>
 <p>If you set the file option in the archive constructor you can use this method to append an already
 existing file to the archive.</p>
@@ -140,44 +137,34 @@ archive.append(<span class="hljs-string">'hello.txt'</span>, <span class="hljs-f
   <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'hello.txt was read and appended'</span>)
 })
 </code></pre>
-<h4 id="-archive-finalize-callback-"><code>archive.finalize([callback])</code></h4>
-<p>Finalize the archive. You need to do this before sharing it if the archive is not live (it is live per default).</p>
+<h4 id="-code-archive-finalize-callback-code-"><a href="#-code-archive-finalize-callback-code-" class="anchor"></a><code>archive.finalize([callback])</code></h4><p>Finalize the archive. You need to do this before sharing it if the archive is not live (it is live per default).</p>
 <p>You should only call <code>archive.finalize()</code> on archives you own.</p>
-<h4 id="-archive-get-index-options-callback-"><code>archive.get(index, [options], callback)</code></h4>
-<p>Reads an entry from the archive. Options include:</p>
+<h4 id="-code-archive-get-index-options-callback-code-"><a href="#-code-archive-get-index-options-callback-code-" class="anchor"></a><code>archive.get(index, [options], callback)</code></h4><p>Reads an entry from the archive. Options include:</p>
 <pre><code class="lang-js">{
   <span class="hljs-attr">timeout</span>: <span class="hljs-number">1000</span> <span class="hljs-comment">// time out after 1000ms. Default is Infinity</span>
 }
 </code></pre>
-<h4 id="-archive-download-index-callback-"><code>archive.download(index, callback)</code></h4>
-<p>Fully downloads a file / entry from the archive and calls the callback afterwards.</p>
-<h4 id="-archive-close-callback-"><code>archive.close([callback])</code></h4>
-<p>Closes and releases all resources used by the archive. Call this when you are done using it.</p>
-<h4 id="-archive-on-download-data-"><code>archive.on(&#39;download&#39;, data)</code></h4>
-<p>Emitted every time a piece of data is downloaded</p>
-<h4 id="-archive-on-upload-data-"><code>archive.on(&#39;upload&#39;, data)</code></h4>
-<p>Emitted every time a piece of data is uploaded</p>
-<h4 id="-var-rs-archive-list-opts-cb-"><code>var rs = archive.list(opts={}, cb)</code></h4>
-<p>Returns a readable stream of all entries in the archive.</p>
+<h4 id="-code-archive-download-index-callback-code-"><a href="#-code-archive-download-index-callback-code-" class="anchor"></a><code>archive.download(index, callback)</code></h4><p>Fully downloads a file / entry from the archive and calls the callback afterwards.</p>
+<h4 id="-code-archive-close-callback-code-"><a href="#-code-archive-close-callback-code-" class="anchor"></a><code>archive.close([callback])</code></h4><p>Closes and releases all resources used by the archive. Call this when you are done using it.</p>
+<h4 id="-code-archive-on-39-download-39-data-code-"><a href="#-code-archive-on-39-download-39-data-code-" class="anchor"></a><code>archive.on(&#39;download&#39;, data)</code></h4><p>Emitted every time a piece of data is downloaded</p>
+<h4 id="-code-archive-on-39-upload-39-data-code-"><a href="#-code-archive-on-39-upload-39-data-code-" class="anchor"></a><code>archive.on(&#39;upload&#39;, data)</code></h4><p>Emitted every time a piece of data is uploaded</p>
+<h4 id="-code-var-rs-archive-list-opts-cb-code-"><a href="#-code-var-rs-archive-list-opts-cb-code-" class="anchor"></a><code>var rs = archive.list(opts={}, cb)</code></h4><p>Returns a readable stream of all entries in the archive.</p>
 <ul>
 <li><code>opts.offset</code> - start streaming from this offset (default: 0)</li>
 <li><code>opts.limit</code> - stop streaming at this offset (default: no limit)</li>
 <li><code>opts.live</code> - keep the stream open as new updates arrive (default: <code>true</code> if no callback given, <code>false</code> if callback is given)</li>
 </ul>
 <p>You can collect the results of the stream with <code>cb(err, entries)</code>.</p>
-<h4 id="-var-rs-archive-createfilereadstream-entry-options-"><code>var rs = archive.createFileReadStream(entry, [options])</code></h4>
-<p>Returns a readable stream of the file content of an file in the archive.</p>
+<h4 id="-code-var-rs-archive-createfilereadstream-entry-options-code-"><a href="#-code-var-rs-archive-createfilereadstream-entry-options-code-" class="anchor"></a><code>var rs = archive.createFileReadStream(entry, [options])</code></h4><p>Returns a readable stream of the file content of an file in the archive.</p>
 <p>Options include:</p>
 <pre><code class="lang-js">{
   <span class="hljs-attr">start</span>: startOffset, <span class="hljs-comment">// defaults to 0</span>
   end: endOffset <span class="hljs-comment">// defaults to file.length</span>
 }
 </code></pre>
-<h4 id="-var-ws-archive-createfilewritestream-entry-"><code>var ws = archive.createFileWriteStream(entry)</code></h4>
-<p>Returns a writable stream that writes a new file to the archive. Only possible if the archive is live and you own it
+<h4 id="-code-var-ws-archive-createfilewritestream-entry-code-"><a href="#-code-var-ws-archive-createfilewritestream-entry-code-" class="anchor"></a><code>var ws = archive.createFileWriteStream(entry)</code></h4><p>Returns a writable stream that writes a new file to the archive. Only possible if the archive is live and you own it
 or if the archive is not finalized.</p>
-<h4 id="-var-cursor-archive-createbytecursor-entry-options-"><code>var cursor = archive.createByteCursor(entry, [options])</code></h4>
-<p>Creates a cursor that can seek and traverse parts of the file.</p>
+<h4 id="-code-var-cursor-archive-createbytecursor-entry-options-code-"><a href="#-code-var-cursor-archive-createbytecursor-entry-options-code-" class="anchor"></a><code>var cursor = archive.createByteCursor(entry, [options])</code></h4><p>Creates a cursor that can seek and traverse parts of the file.</p>
 <pre><code class="lang-js"><span class="hljs-keyword">var</span> cursor = archive.createByteCursor(<span class="hljs-string">'hello.txt'</span>)
 
 <span class="hljs-comment">// seek to byte offset 10000 and read the rest.</span>
@@ -198,26 +185,21 @@ cursor.seek(<span class="hljs-number">10000</span>, <span class="hljs-function">
   end: endOffset <span class="hljs-comment">// defaults to file.length</span>
 }
 </code></pre>
-<h4 id="-var-stream-archive-replicate-options-"><code>var stream = archive.replicate([options])</code></h4>
-<p>Pipe this stream together with another peer that is interested in the same archive to replicate the content.
+<h4 id="-code-var-stream-archive-replicate-options-code-"><a href="#-code-var-stream-archive-replicate-options-code-" class="anchor"></a><code>var stream = archive.replicate([options])</code></h4><p>Pipe this stream together with another peer that is interested in the same archive to replicate the content.
 Options include:</p>
 <pre><code class="lang-js">{
   <span class="hljs-attr">upload</span>: <span class="hljs-literal">true</span>, <span class="hljs-comment">// upload content to remote peer</span>
   download: <span class="hljs-literal">true</span> <span class="hljs-comment">// downlod content from remote peer</span>
 }
 </code></pre>
-<h4 id="-archive-unreplicate-stream-"><code>archive.unreplicate([stream])</code></h4>
-<p>Stop replicating an archive to all streams, or to a specific stream.</p>
-<h4 id="-archive-countdownloadedblocks-entry-"><code>archive.countDownloadedBlocks(entry)</code></h4>
-<p>Count the number of blocks in the entry that have been downloaded.
+<h4 id="-code-archive-unreplicate-stream-code-"><a href="#-code-archive-unreplicate-stream-code-" class="anchor"></a><code>archive.unreplicate([stream])</code></h4><p>Stop replicating an archive to all streams, or to a specific stream.</p>
+<h4 id="-code-archive-countdownloadedblocks-entry-code-"><a href="#-code-archive-countdownloadedblocks-entry-code-" class="anchor"></a><code>archive.countDownloadedBlocks(entry)</code></h4><p>Count the number of blocks in the entry that have been downloaded.
 You can calculate the file&#39;s download progress, as a percentage, with:</p>
 <pre><code class="lang-js"><span class="hljs-keyword">var</span> downloaded = archive.countDownloadedBlocks(entry)
 <span class="hljs-keyword">var</span> progress =  downloaded / entry.blocks
 </code></pre>
-<h4 id="-archive-isentrydownloaded-entry-"><code>archive.isEntryDownloaded(entry)</code></h4>
-<p>Has all of the entry&#39;s blocks been downloaded?</p>
-<h2 id="license">License</h2>
-<p>MIT</p>
+<h4 id="-code-archive-isentrydownloaded-entry-code-"><a href="#-code-archive-isentrydownloaded-entry-code-" class="anchor"></a><code>archive.isEntryDownloaded(entry)</code></h4><p>Has all of the entry&#39;s blocks been downloaded?</p>
+<h2 id="license"><a href="#license" class="anchor"></a>License</h2><p>MIT</p>
 </div>
   </div>
       </div>

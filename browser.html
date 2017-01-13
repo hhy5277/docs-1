@@ -14,11 +14,16 @@
     <div class="minidocs-header">
       <h1><a href="/"><img src="/dat-data-logo.svg" alt="Dat Data" class="minidocs-logo" /></a></h1>
     </div>
-    <div class="_606ae572 minidocs-contents">
+    <div class="_689fec56 minidocs-contents">
     <button class="minidocs-menu-toggle">Menu</button>
     <div class="minidocs-menu menu-closed menu-small">
       <div class="minidocs-menu-wrapper">
-        <div class="h1">Dat</div><div><a href="/dat" class="content-link ">Introduction</a></div><div><a href="/how-dat-works" class="content-link ">How Dat Works</a></div><div><a href="/terms" class="content-link ">Terminology</a></div><div><a href="/faq" class="content-link ">FAQ</a></div><div class="h1">Cookbook</div><div><a href="/browser" class="content-link active">Browser Dat</a></div><div><a href="/diy-dat" class="content-link ">DIY Dat</a></div><div class="h1">Ecosystem</div><div><a href="/ecosystem" class="content-link ">Overview</a></div><div><a href="/sleep" class="content-link ">SLEEP</a></div><div><a href="/hyperdrive" class="content-link ">Hyperdrive</a></div><div><a href="/hypercore" class="content-link ">Hypercore</a></div>
+        <div class="h1">Dat</div><div><a href="/dat" class="content-link ">Introduction</a></div><div><a href="/how-dat-works" class="content-link ">How Dat Works</a></div><div><a href="/terms" class="content-link ">Terminology</a></div><div><a href="/faq" class="content-link ">FAQ</a></div><div class="h1">Cookbook</div><div>
+            <a href="/browser" class="content-link active">Browser Dat</a>
+            <div class="minidocs-menu-toc">
+              <a href="#hyperdrive" class="h3 content-link">Hyperdrive</a><a href="#the-most-basic-example" class="h4 content-link">The most basic example</a><a href="#patterns-for-browser-based-data-storage-and-transfer" class="h3 content-link">Patterns for browser-based data storage and transfer</a><a href="#in-memory-storage" class="h4 content-link">In-memory storage</a><a href="#persistence-with-indexeddb" class="h4 content-link">Persistence with IndexedDB</a><a href="#persistent-metadata-in-indexeddb-with-in-memory-file-content" class="h4 content-link">Persistent metadata in IndexedDB with in-memory file content</a><a href="#writing-large-files-from-the-filesystem-to-the-browser" class="h4 content-link">Writing large files from the filesystem to the browser</a><a href="#unsatisfied-" class="h3 content-link">Unsatisfied?</a>
+            </div>
+          </div><div><a href="/diy-dat" class="content-link ">DIY Dat</a></div><div class="h1">Ecosystem</div><div><a href="/ecosystem" class="content-link ">Overview</a></div><div><a href="/sleep" class="content-link ">SLEEP</a></div><div><a href="/hyperdrive" class="content-link ">Hyperdrive</a></div><div><a href="/hypercore" class="content-link ">Hypercore</a></div>
       </div>
     </div>
   </div>
@@ -28,20 +33,17 @@
         <div class="_3f4b1fbc minidocs-content">
     
     
-    <div><h1 id="browser-dat">Browser Dat</h1>
-<p>Dat is written in JavaScript, so naturally, it can work entirely in the browser! The great part about this is that as more peers connect to each other in their client, the site assets will be shared between users rather hitting any sever.</p>
+    <div><h1 id="browser-dat"><a href="#browser-dat" class="anchor"></a>Browser Dat</h1><p>Dat is written in JavaScript, so naturally, it can work entirely in the browser! The great part about this is that as more peers connect to each other in their client, the site assets will be shared between users rather hitting any sever.</p>
 <p>This approach is similar to that used in Feross&#39; <a href="http://webtorrent.io">Web Torrent</a>. The difference is that Dat links can be rendered live and read dynamically, whereas BitTorrent links are static. In other words, the original owner can update a Dat and all peers will receive the updates automatically.</p>
 <p>OK, now for the goods:</p>
-<h2 id="hyperdrive">Hyperdrive</h2>
-<p>For now, there isn&#39;t an easy dat implementation for the browser. We have a simpler interface for node at <a href="http://github.com/joehand/dat-js">dat-js</a>.  </p>
+<h2 id="hyperdrive"><a href="#hyperdrive" class="anchor"></a>Hyperdrive</h2><p>For now, there isn&#39;t an easy dat implementation for the browser. We have a simpler interface for node at <a href="http://github.com/joehand/dat-js">dat-js</a>.  </p>
 <p>If you want to get your hands dirty, here is the lower-level implementations to create a browser-based hyperdrive instance that will be compatible with dat.</p>
 <p>Hyperdrive will save the metadata (small) and the content (potentially large) separately. You can control where both of these are saved and how they are retrieved. These tweaks have huge impact on performance, stability, and user experience, so it&#39;s important to understand the tradeoffs.</p>
 <p>The first argument to <code>hyperdrive</code> will be the main database for all metadata and content. The <code>file</code> option can be supplied to specify how to read and write content data. If a <code>file</code> option is not supplied, the content will also be stored in the main database.</p>
 <pre><code class="lang-js"><span class="hljs-keyword">var</span> hyperdrive = <span class="hljs-built_in">require</span>(<span class="hljs-string">'hyperdrive'</span>)
 <span class="hljs-keyword">var</span> drive = hyperdrive(&lt;YOUR DATABASE HERE&gt;, {file: &lt;CONTENT DATABASE HERE&gt;})
 </code></pre>
-<h3 id="the-most-basic-example">The most basic example</h3>
-<pre><code class="lang-js"><span class="hljs-keyword">var</span> hyperdrive = <span class="hljs-built_in">require</span>(<span class="hljs-string">'hyperdrive'</span>)
+<h3 id="the-most-basic-example"><a href="#the-most-basic-example" class="anchor"></a>The most basic example</h3><pre><code class="lang-js"><span class="hljs-keyword">var</span> hyperdrive = <span class="hljs-built_in">require</span>(<span class="hljs-string">'hyperdrive'</span>)
 <span class="hljs-keyword">var</span> memdb = <span class="hljs-built_in">require</span>(<span class="hljs-string">'memdb'</span>)
 <span class="hljs-keyword">var</span> swarm = <span class="hljs-built_in">require</span>(<span class="hljs-string">'hyperdrive-archive-swarm'</span>)
 
@@ -62,18 +64,15 @@ swarm(archive)
 swarm(archive)</span>
 </code></pre>
 <p>For the full hyperdrive API and more examples, see the full <a href="/hyperdrive">hyperdrive documentation</a>.</p>
-<h2 id="patterns-for-browser-based-data-storage-and-transfer">Patterns for browser-based data storage and transfer</h2>
-<p>There are a million different ways to store and retrieve data in the browser, and all have their pros and cons depending on the use case. We&#39;ve compiled a variety of examples here to try to make it as clear as possible.</p>
-<h3 id="in-memory-storage">In-memory storage</h3>
-<p>When the user refreshes their browser, they will lose all previous keys and data. The user will no longer be able to write more data into the hyperdrive.</p>
+<h2 id="patterns-for-browser-based-data-storage-and-transfer"><a href="#patterns-for-browser-based-data-storage-and-transfer" class="anchor"></a>Patterns for browser-based data storage and transfer</h2><p>There are a million different ways to store and retrieve data in the browser, and all have their pros and cons depending on the use case. We&#39;ve compiled a variety of examples here to try to make it as clear as possible.</p>
+<h3 id="in-memory-storage"><a href="#in-memory-storage" class="anchor"></a>In-memory storage</h3><p>When the user refreshes their browser, they will lose all previous keys and data. The user will no longer be able to write more data into the hyperdrive.</p>
 <pre><code class="lang-js"><span class="hljs-keyword">var</span> hyperdrive = <span class="hljs-built_in">require</span>(<span class="hljs-string">'hyperdrive'</span>)
 <span class="hljs-keyword">var</span> memdb = <span class="hljs-built_in">require</span>(<span class="hljs-string">'memdb'</span>)
 
 <span class="hljs-keyword">var</span> drive = hyperdrive(memdb())
 <span class="hljs-keyword">var</span> archive = drive.createArchive()
 </code></pre>
-<h3 id="persistence-with-indexeddb">Persistence with IndexedDB</h3>
-<p>When the user refreshes their browser, their keys will be stored and retrieved.</p>
+<h3 id="persistence-with-indexeddb"><a href="#persistence-with-indexeddb" class="anchor"></a>Persistence with IndexedDB</h3><p>When the user refreshes their browser, their keys will be stored and retrieved.</p>
 <p>The best module to use for this is <code>level-browserify</code>:</p>
 <pre><code class="lang-js"><span class="hljs-keyword">var</span> hyperdrive = <span class="hljs-built_in">require</span>(<span class="hljs-string">'hyperdrive'</span>)
 <span class="hljs-keyword">var</span> level = <span class="hljs-built_in">require</span>(<span class="hljs-string">'level-browserify'</span>)
@@ -82,8 +81,7 @@ swarm(archive)</span>
 <span class="hljs-keyword">var</span> archive = drive.createArchive()
 </code></pre>
 <p>This will store all of the hyperdrive metadata <em>as well as content</em> in the client&#39;s IndexedDB. This is pretty inefficient. You&#39;ll notice that with this method that <em>IndexedDB will start to become full and the hyperdrive database will stop working as usual</em>.</p>
-<h3 id="persistent-metadata-in-indexeddb-with-in-memory-file-content">Persistent metadata in IndexedDB with in-memory file content</h3>
-<p>If you use level-browserify to store file content, you will quickly notice performance issues with large files. Writes after about 3.4GB will become blocked by the browser. You can avoid this by using in-memory storage for the file content.</p>
+<h3 id="persistent-metadata-in-indexeddb-with-in-memory-file-content"><a href="#persistent-metadata-in-indexeddb-with-in-memory-file-content" class="anchor"></a>Persistent metadata in IndexedDB with in-memory file content</h3><p>If you use level-browserify to store file content, you will quickly notice performance issues with large files. Writes after about 3.4GB will become blocked by the browser. You can avoid this by using in-memory storage for the file content.</p>
 <p>To do this, use <a href="https://github.com/mafintosh/random-access-file-reader">random-access-file-reader</a> as the file writer and reader for the hyperdrive.</p>
 <pre><code class="lang-js"><span class="hljs-keyword">var</span> hyperdrive = <span class="hljs-built_in">require</span>(<span class="hljs-string">'hyperdrive'</span>)
 <span class="hljs-keyword">var</span> level = <span class="hljs-built_in">require</span>(<span class="hljs-string">'level-browserify'</span>)
@@ -95,8 +93,7 @@ swarm(archive)</span>
 })
 </code></pre>
 <p>This works well for most cases until you want to write a file to hyperdrive that doesn&#39;t fit in memory.</p>
-<h3 id="writing-large-files-from-the-filesystem-to-the-browser">Writing large files from the filesystem to the browser</h3>
-<p>File writes are limited to the available memory on the machine. Files are buffered (read: copied) <em>into memory</em> while being written to the hyperdrive instance. This isn&#39;t ideal, but works as long as file sizes stay below system RAM limits.</p>
+<h3 id="writing-large-files-from-the-filesystem-to-the-browser"><a href="#writing-large-files-from-the-filesystem-to-the-browser" class="anchor"></a>Writing large files from the filesystem to the browser</h3><p>File writes are limited to the available memory on the machine. Files are buffered (read: copied) <em>into memory</em> while being written to the hyperdrive instance. This isn&#39;t ideal, but works as long as file sizes stay below system RAM limits.</p>
 <p>To fix this problem, you can use <a href="https://github.com/mafintosh/random-access-file-reader">random-access-file-reader</a> to read the files directly from the filesystem instead of buffering them into memory.</p>
 <p>Here we will create a simple program that creates a file &#39;drag and drop&#39; element on <code>document.body.</code> When the user drags files onto the element, pointers to them will be added to the <code>files</code> object.</p>
 <pre><code class="lang-js"><span class="hljs-keyword">var</span> drop = <span class="hljs-built_in">require</span>(<span class="hljs-string">'drag-drop'</span>)
@@ -129,8 +126,7 @@ drop(<span class="hljs-built_in">document</span>.body, <span class="hljs-functio
   archive.append(files[<span class="hljs-number">0</span>].name)
 })
 </code></pre>
-<h2 id="unsatisfied-">Unsatisfied?</h2>
-<p>If you still aren&#39;t satisfied, come over to our community channels and ask a question. It&#39;s probably a good one and we should cover it in the documentation. Thanks for trying it out, and PRs always welcome!</p>
+<h2 id="unsatisfied-"><a href="#unsatisfied-" class="anchor"></a>Unsatisfied?</h2><p>If you still aren&#39;t satisfied, come over to our community channels and ask a question. It&#39;s probably a good one and we should cover it in the documentation. Thanks for trying it out, and PRs always welcome!</p>
 <p><a href="http://webchat.freenode.net/?channels=dat"><img src="https://img.shields.io/badge/irc%20channel-%23dat%20on%20freenode-blue.svg" alt="#dat IRC channel on freenode"></a>
 <a href="https://gitter.im/datproject/discussions?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://badges.gitter.im/Join%20Chat.svg" alt="datproject/discussions"></a></p>
 </div>

@@ -14,11 +14,16 @@
     <div class="minidocs-header">
       <h1><a href="/"><img src="/dat-data-logo.svg" alt="Dat Data" class="minidocs-logo" /></a></h1>
     </div>
-    <div class="_606ae572 minidocs-contents">
+    <div class="_689fec56 minidocs-contents">
     <button class="minidocs-menu-toggle">Menu</button>
     <div class="minidocs-menu menu-closed menu-small">
       <div class="minidocs-menu-wrapper">
-        <div class="h1">Dat</div><div><a href="/dat" class="content-link ">Introduction</a></div><div><a href="/how-dat-works" class="content-link ">How Dat Works</a></div><div><a href="/terms" class="content-link ">Terminology</a></div><div><a href="/faq" class="content-link ">FAQ</a></div><div class="h1">Cookbook</div><div><a href="/browser" class="content-link ">Browser Dat</a></div><div><a href="/diy-dat" class="content-link ">DIY Dat</a></div><div class="h1">Ecosystem</div><div><a href="/ecosystem" class="content-link ">Overview</a></div><div><a href="/sleep" class="content-link active">SLEEP</a></div><div><a href="/hyperdrive" class="content-link ">Hyperdrive</a></div><div><a href="/hypercore" class="content-link ">Hypercore</a></div>
+        <div class="h1">Dat</div><div><a href="/dat" class="content-link ">Introduction</a></div><div><a href="/how-dat-works" class="content-link ">How Dat Works</a></div><div><a href="/terms" class="content-link ">Terminology</a></div><div><a href="/faq" class="content-link ">FAQ</a></div><div class="h1">Cookbook</div><div><a href="/browser" class="content-link ">Browser Dat</a></div><div><a href="/diy-dat" class="content-link ">DIY Dat</a></div><div class="h1">Ecosystem</div><div><a href="/ecosystem" class="content-link ">Overview</a></div><div>
+            <a href="/sleep" class="content-link active">SLEEP</a>
+            <div class="minidocs-menu-toc">
+              <a href="#syncable-lightweight-event-emitting-persistence" class="h4 content-link">Syncable Lightweight Event Emitting Persistence</a><a href="#version-2-0" class="h4 content-link">Version 2.0</a><a href="#registers" class="h3 content-link">Registers</a><a href="#header-format" class="h4 content-link">Header format</a><a href="#register-index-format" class="h4 content-link">Register Index format</a><a href="#register-data" class="h4 content-link">Register Data</a><a href="#example" class="h3 content-link">Example</a>
+            </div>
+          </div><div><a href="/hyperdrive" class="content-link ">Hyperdrive</a></div><div><a href="/hypercore" class="content-link ">Hypercore</a></div>
       </div>
     </div>
   </div>
@@ -28,13 +33,9 @@
         <div class="_3f4b1fbc minidocs-content">
     
     
-    <div><h1 id="sleep-data-format">SLEEP Data Format</h1>
-<h3 id="syncable-lightweight-event-emitting-persistence">Syncable Lightweight Event Emitting Persistence</h3>
-<h3 id="version-2-0">Version 2.0</h3>
-<p>SLEEP is a metadata format that allows a set of files to be accessed randomly, cryptographically verified, and dynamically updated. A SLEEP file contains content addressed file metadata in a representation specifically designed to allow partial streaming access to individual chunks of data. SLEEP files can be shared as a single downloadable file for easy distribution and we also specify a way to expose SLEEP over REST.</p>
+    <div><h1 id="sleep-data-format"><a href="#sleep-data-format" class="anchor"></a>SLEEP Data Format</h1><h3 id="syncable-lightweight-event-emitting-persistence"><a href="#syncable-lightweight-event-emitting-persistence" class="anchor"></a>Syncable Lightweight Event Emitting Persistence</h3><h3 id="version-2-0"><a href="#version-2-0" class="anchor"></a>Version 2.0</h3><p>SLEEP is a metadata format that allows a set of files to be accessed randomly, cryptographically verified, and dynamically updated. A SLEEP file contains content addressed file metadata in a representation specifically designed to allow partial streaming access to individual chunks of data. SLEEP files can be shared as a single downloadable file for easy distribution and we also specify a way to expose SLEEP over REST.</p>
 <p>The SLEEP format can be used in a similar way to how MD5 checksums are used over HTTP today, to verify the integrity of data downloads. Whereas MD5 or SHA are usually checksums of the whole data set, meaning consumers have to download the entire all available data before they are able to verify the integrity of any of it, SLEEP allows a set of data to be split in to many small pieces, each one getting it&#39;s own cryptographically secure checksum. This allows consumers to download subsets metadata and data, in whatever order they prefer, but allowing them to verify the integrity of each piece of data as it is accessed. It also includes cryptographic signatures allowing users to verify that data they received was created using a holder of a specific private key.</p>
-<h2 id="registers">Registers</h2>
-<p>SLEEP is designed around the concept of a register, an append only list that you can trust. The contents of a register are cryptographically fingerprinted and an aggregate checksum can be used to verify the contents of the register have not been tampered with. There are various ways to calculate these aggregate checksums but the data in a register is a binary append only feed, e.g. an list of buffers that can only be updated by placing new buffers at the end of the list.</p>
+<h2 id="registers"><a href="#registers" class="anchor"></a>Registers</h2><p>SLEEP is designed around the concept of a register, an append only list that you can trust. The contents of a register are cryptographically fingerprinted and an aggregate checksum can be used to verify the contents of the register have not been tampered with. There are various ways to calculate these aggregate checksums but the data in a register is a binary append only feed, e.g. an list of buffers that can only be updated by placing new buffers at the end of the list.</p>
 <p>SLEEP also provides an index that allows each piece of data in a register to be accessed randomly. In order to look up a specific piece of data in the register, you only need a small subset of the metadata in order to find it, making SLEEP suitable for live streaming or sparse download use cases.</p>
 <p>The register index is a Merkle tree where the leaf nodes are the hashes of the buffers in the register, and the rest of the nodes in the tree are derived Merkle hashes. A Merkle tree is defined as a tree where leaf nodes are a hash of some piece of data, and the rest of the nodes are the result of a hash of the concatenation of that nodes children.</p>
 <p>So, given a register with four values:</p>
@@ -124,12 +125,10 @@ hash(<span class="hljs-name">d</span>)
 }
 </code></pre>
 <p>The above representation of the tree is in JSON. However due to the properties of the in-order node indexes we can represent the same data in a flat index while still allowing traversals.</p>
-<h1 id="file-format">File format</h1>
-<p>SLEEP files should be named <code>sleep.dat</code> and have the following format:</p>
+<h1 id="file-format"><a href="#file-format" class="anchor"></a>File format</h1><p>SLEEP files should be named <code>sleep.dat</code> and have the following format:</p>
 <pre><code>&lt;<span class="hljs-keyword">Header</span>&gt;&lt;Register Index<span class="hljs-params">...</span>&gt;&lt;Register <span class="hljs-built_in">Data</span><span class="hljs-params">...</span>&gt;
 </code></pre><p>The format is a header followed by the register index. Order of the index is determined by an in-order node traversal. After the register index, the actual register entry data follows. The header length is variable width, prefixed with a varint. The Register Index is composed of fixed width metadata entries. The Register Data is composed of concatenated non-fixed width data pieces.</p>
-<h3 id="header-format">Header format</h3>
-<pre><code><span class="hljs-section">&lt;varint header-length&gt;</span><span class="hljs-section">&lt;header protobuf&gt;</span>
+<h3 id="header-format"><a href="#header-format" class="anchor"></a>Header format</h3><pre><code><span class="hljs-section">&lt;varint header-length&gt;</span><span class="hljs-section">&lt;header protobuf&gt;</span>
 </code></pre><p>The header protobuf has this schema:</p>
 <pre><code class="lang-protobuf"><span class="hljs-class"><span class="hljs-keyword">message</span> <span class="hljs-title">Header</span> </span>{
   <span class="hljs-keyword">required</span> <span class="hljs-built_in">bytes</span> datLink = <span class="hljs-number">1</span>;
@@ -141,8 +140,7 @@ hash(<span class="hljs-name">d</span>)
   <span class="hljs-keyword">optional</span> <span class="hljs-built_in">uint32</span> signatureLength = <span class="hljs-number">7</span> [default = <span class="hljs-number">64</span>];
 }
 </code></pre>
-<h3 id="register-index-format">Register Index format</h3>
-<p>For non-signed even (leaf) nodes:</p>
+<h3 id="register-index-format"><a href="#register-index-format" class="anchor"></a>Register Index format</h3><p>For non-signed even (leaf) nodes:</p>
 <pre><code><span class="hljs-section">&lt;8-byte-span-length&gt;</span><span class="hljs-section">&lt;data-hash&gt;</span>
 </code></pre><p>The 8-byte-span-length is an unsigned big endian 64 bit integer that should be number of cumulative bytes encompassed by all of the leaf nodes underneath the current node.</p>
 <p>For signed even (leaf) nodes:</p>
@@ -150,11 +148,9 @@ hash(<span class="hljs-name">d</span>)
 </code></pre><p>For odd (non-leaf) nodes:</p>
 <pre><code>&lt;<span class="hljs-number">8</span>-<span class="hljs-keyword">byte</span>-<span class="hljs-keyword">end</span>-<span class="hljs-built_in">offset</span>&gt;&lt;data-hash&gt;
 </code></pre><p>The 8-byte-end-offset is an unsigned big endian 64 bit integer that should be the absolute position in the file for the <strong>end</strong> of the piece data described by this node.</p>
-<h3 id="register-data">Register Data</h3>
-<p>The last section of the file is the actual data pieces, unmodified and concatenated together in sequential order.</p>
+<h3 id="register-data"><a href="#register-data" class="anchor"></a>Register Data</h3><p>The last section of the file is the actual data pieces, unmodified and concatenated together in sequential order.</p>
 <p>For the example tree above, the Register Data section would simply be <code>abcd</code>.</p>
-<h2 id="example">Example</h2>
-<p>Given a tree like this you might want to look up in a <code>meta.dat</code> file the metadata for a specific node:</p>
+<h2 id="example"><a href="#example" class="anchor"></a>Example</h2><p>Given a tree like this you might want to look up in a <code>meta.dat</code> file the metadata for a specific node:</p>
 <pre><code><span class="hljs-number">0</span>─┐  
   <span class="hljs-number">1</span>─┐
 <span class="hljs-number">2</span>─┘ │
