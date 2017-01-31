@@ -75,13 +75,16 @@ feed.on('download', function (block, data) {
 <pre><code class="lang-js">{
   <span class="hljs-attr">live</span>: <span class="hljs-literal">true</span>,
   <span class="hljs-attr">storage</span>: externalStorage,
-  <span class="hljs-attr">sparse</span>: <span class="hljs-literal">false</span>
+  <span class="hljs-attr">sparse</span>: <span class="hljs-literal">false</span>,
+  <span class="hljs-attr">verifyReplicationReads</span>: <span class="hljs-literal">false</span>
 }
 </code></pre>
 <p>Set <code>sparse</code> to <code>true</code> if you only want to download the pieces of the feed you are requesting / prioritizing. Otherwise the entire feed will be downloaded if nothing else is prioritized.</p>
+<p>Set <code>verifyReplicationReads</code> to <code>true</code> to automatically check the integrity of the feed-data during replication. This is computationally more intensive, but it allows the feed to recognize when local data has been changed or lost and correct its internal tracking.</p>
 <p>If you want to create a static feed, one you cannot reappend data to, pass the <code>{live: false}</code> option.
 The storage option allows you to store data outside of leveldb. This is very useful if you use hypercore to distribute files.</p>
 <p>See the <a href="#storage-api">Storage API</a> section for more info</p>
+<p>Set <code>key</code> and <code>secretKey</code> (which correspond to <code>publicKey</code> and <code>secretKey</code> of <code>sodium-signatures</code> key pairs) to specify the secret key. <em>Note:</em> do not use the same key pair for more than one feed, as keys are used to tell apart different feeds.</p>
 <h4 id="-code-var-stream-core-replicate-opts-code-"><a href="#-code-var-stream-core-replicate-opts-code-" class="anchor"></a><code>var stream = core.replicate(opts)</code></h4><p>Create a generic replication stream. Use the <code>feed.replicate(stream)</code> API described below to replicate specific feeds of data.
 Options include:</p>
 <pre><code class="lang-js">{
@@ -102,7 +105,19 @@ You can use the discovery key to find other peers sharing this feed without disc
 <h4 id="-code-feed-bytes-code-"><a href="#-code-feed-bytes-code-" class="anchor"></a><code>feed.bytes</code></h4><p>The total byte size of known data blocks in the feed.</p>
 <h4 id="-code-feed-open-cb-code-"><a href="#-code-feed-open-cb-code-" class="anchor"></a><code>feed.open(cb)</code></h4><p>Call this method to ensure that a feed is opened. You do not need to call this but the <code>.blocks</code> property will not be populated until the feed has been opened.</p>
 <h4 id="-code-feed-append-data-callback-code-"><a href="#-code-feed-append-data-callback-code-" class="anchor"></a><code>feed.append(data, callback)</code></h4><p>Append a block of data to the feed. If you want to append more than one block you can pass in an array.</p>
-<h4 id="-code-feed-get-index-callback-code-"><a href="#-code-feed-get-index-callback-code-" class="anchor"></a><code>feed.get(index, callback)</code></h4><p>Retrieve a block of data from the feed.</p>
+<h4 id="-code-feed-get-index-options-callback-code-"><a href="#-code-feed-get-index-options-callback-code-" class="anchor"></a><code>feed.get(index, [options,] callback)</code></h4><p>Retrieve a block of data from the feed. If the block is not locally-available, this call will queue the block for download and defer calling-back until the block is received. Options include:</p>
+<pre><code class="lang-js">{
+  <span class="hljs-attr">verify</span>: <span class="hljs-literal">false</span> <span class="hljs-comment">// verify the data against the feed checksum, and fail the get() if !==</span>
+  wait: <span class="hljs-literal">true</span> <span class="hljs-comment">// queue the download if not found. If false, will just respond with a notFound error</span>
+}
+</code></pre>
+<h4 id="-code-feed-verifystorage-callback-code-"><a href="#-code-feed-verifystorage-callback-code-" class="anchor"></a><code>feed.verifyStorage(callback)</code></h4><p>Do a full read of the feed&#39;s data from storage, and verify the data against the feed&#39;s checksums. If any blocks that were thought to be saved are found missing, they will be marked as absent.</p>
+<p>Use this as a way to correct the internal tracking of available data, if you think the files were modified externally. Be warned: it will require a lot of disk-reads, as every block has to be verified.</p>
+<p>Calls back with the following structure:</p>
+<pre><code class="lang-js">{
+  <span class="hljs-attr">numMissing</span>: number <span class="hljs-keyword">of</span> blocks discovered missing
+}
+</code></pre>
 <h4 id="-code-feed-blocksremaining-code-"><a href="#-code-feed-blocksremaining-code-" class="anchor"></a><code>feed.blocksRemaining()</code></h4><p>Get the number of blocks remaining to be downloaded.</p>
 <h4 id="-code-feed-prioritize-range-callback-code-"><a href="#-code-feed-prioritize-range-callback-code-" class="anchor"></a><code>feed.prioritize(range, [callback])</code></h4><p>Prioritize a range of blocks to download. Will call the callback when done.
 Range should look like this</p>
