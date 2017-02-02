@@ -10,11 +10,11 @@
 </head>
 <body>
 <div id="choo-root" class="minidocs">
-    <div class="_042bba9a minidocs-sidebar">
+    <div class="_2bbb10f8 minidocs-sidebar">
     <div class="minidocs-header">
       <h1><a href="/"><img src="/dat-data-logo.svg" alt="Dat Data" class="minidocs-logo" /></a></h1>
     </div>
-    <div class="_faf54cee minidocs-contents">
+    <div class="_689fec56 minidocs-contents">
     <button class="minidocs-menu-toggle">Menu</button>
     <div class="minidocs-menu menu-closed menu-small">
       <div class="minidocs-menu-wrapper">
@@ -28,12 +28,12 @@
     </div>
   </div>
   </div>
-    <div class="_41cec98c minidocs-main">
+    <div class="_571b6797 minidocs-main">
       <div class="markdown-body">
-        <div class="_84ce9ee9 minidocs-content">
+        <div class="_3f4b1fbc minidocs-content">
     
     
-    <div><h1 id="sleep-data-format"><a href="#sleep-data-format" class="anchor"></a>SLEEP Data Format</h1><h3 id="syncable-lightweight-event-emitting-persistence"><a href="#syncable-lightweight-event-emitting-persistence" class="anchor"></a>Syncable Lightweight Event Emitting Persistence</h3><h3 id="version-20"><a href="#version-20" class="anchor"></a>Version 2.0</h3><p>SLEEP is a metadata format that allows a set of files to be accessed randomly, cryptographically verified, and dynamically updated. A SLEEP file contains content addressed file metadata in a representation specifically designed to allow partial streaming access to individual chunks of data. SLEEP files can be shared as a single downloadable file for easy distribution and we also specify a way to expose SLEEP over REST.</p>
+    <div><h1 id="sleep-data-format"><a href="#sleep-data-format" class="anchor"></a>SLEEP Data Format</h1><h3 id="syncable-lightweight-event-emitting-persistence"><a href="#syncable-lightweight-event-emitting-persistence" class="anchor"></a>Syncable Lightweight Event Emitting Persistence</h3><h3 id="version-2-0"><a href="#version-2-0" class="anchor"></a>Version 2.0</h3><p>SLEEP is a metadata format that allows a set of files to be accessed randomly, cryptographically verified, and dynamically updated. A SLEEP file contains content addressed file metadata in a representation specifically designed to allow partial streaming access to individual chunks of data. SLEEP files can be shared as a single downloadable file for easy distribution and we also specify a way to expose SLEEP over REST.</p>
 <p>The SLEEP format can be used in a similar way to how MD5 checksums are used over HTTP today, to verify the integrity of data downloads. Whereas MD5 or SHA are usually checksums of the whole data set, meaning consumers have to download the entire all available data before they are able to verify the integrity of any of it, SLEEP allows a set of data to be split in to many small pieces, each one getting it&#39;s own cryptographically secure checksum. This allows consumers to download subsets metadata and data, in whatever order they prefer, but allowing them to verify the integrity of each piece of data as it is accessed. It also includes cryptographic signatures allowing users to verify that data they received was created using a holder of a specific private key.</p>
 <h2 id="registers"><a href="#registers" class="anchor"></a>Registers</h2><p>SLEEP is designed around the concept of a register, an append only list that you can trust. The contents of a register are cryptographically fingerprinted and an aggregate checksum can be used to verify the contents of the register have not been tampered with. There are various ways to calculate these aggregate checksums but the data in a register is a binary append only feed, e.g. an list of buffers that can only be updated by placing new buffers at the end of the list.</p>
 <p>SLEEP also provides an index that allows each piece of data in a register to be accessed randomly. In order to look up a specific piece of data in the register, you only need a small subset of the metadata in order to find it, making SLEEP suitable for live streaming or sparse download use cases.</p>
@@ -75,49 +75,49 @@ hash(<span class="hljs-name">d</span>)
 </ul>
 <p>When initializing a register an asymmetric Ed25519 keypair is derived. The private key is never shared. The public key is used as the URL for the register. When signing hashes in the tree the public key is used to generate an EdDSA signature. For the example register above, &#39;abcd&#39;, the register index (in JSON) would be:</p>
 <pre><code class="lang-js"><span class="hljs-keyword">var</span> keys = {
-  public: <span class="hljs-string">'cc0cf6eeb82ca946ca60265ce0863fb2b3e3075ae25cba14d162ef20e3f9f223'</span>,
-  private: <span class="hljs-string">'87399f90815db81e687efe4fd9fc60af336f4d9ae560fda106f94cb7a92a8804cc0cf6eeb82ca946ca60265ce0863fb2b3e3075ae25cba14d162ef20e3f9f223'</span>
+  <span class="hljs-attr">public</span>: <span class="hljs-string">'cc0cf6eeb82ca946ca60265ce0863fb2b3e3075ae25cba14d162ef20e3f9f223'</span>,
+  <span class="hljs-attr">private</span>: <span class="hljs-string">'87399f90815db81e687efe4fd9fc60af336f4d9ae560fda106f94cb7a92a8804cc0cf6eeb82ca946ca60265ce0863fb2b3e3075ae25cba14d162ef20e3f9f223'</span>
 }
 
 <span class="hljs-keyword">var</span> index = {
   <span class="hljs-comment">// sha256 of children[0].hash + children[1].hash</span>
   hash: <span class="hljs-string">'0440c655d63fec5c02cffd5d9b42d146aca03b255102b9b44b51c6a919b31351'</span>,
-  signature: <span class="hljs-string">'1713dfbaf4a7f288003394b72ec486aa4fa1a837aa0b08662b3a14b63381b84c2e6965e2638fb5375ae2e92b47c2ab8718ec1914778518fcb3c0563eb2c09604'</span>,
-  span: <span class="hljs-number">4</span>,
-  children: [
+  <span class="hljs-attr">signature</span>: <span class="hljs-string">'1713dfbaf4a7f288003394b72ec486aa4fa1a837aa0b08662b3a14b63381b84c2e6965e2638fb5375ae2e92b47c2ab8718ec1914778518fcb3c0563eb2c09604'</span>,
+  <span class="hljs-attr">span</span>: <span class="hljs-number">4</span>,
+  <span class="hljs-attr">children</span>: [
     {
       <span class="hljs-comment">// echo -n "$(echo -n "a" | shasum -a 256)$(echo -n "b" | shasum -a 256)" | shasum -a 256</span>
       hash: <span class="hljs-string">'9ad4d5608a7a40db60c35f255fad821b762a82de168b4f4ed477d5d899b11796'</span>,
-      signature: <span class="hljs-string">'2714b99e305ce46aa6d24eb2888cf0cbde33ad4a8bcd08705b59882837bf1e482f8dcab2ae94c2359914b1fe92831bfc73af99f1c6b1f5eba47efc4efa32de0d'</span>,
-      span: <span class="hljs-number">2</span>,
-      children: [
+      <span class="hljs-attr">signature</span>: <span class="hljs-string">'2714b99e305ce46aa6d24eb2888cf0cbde33ad4a8bcd08705b59882837bf1e482f8dcab2ae94c2359914b1fe92831bfc73af99f1c6b1f5eba47efc4efa32de0d'</span>,
+      <span class="hljs-attr">span</span>: <span class="hljs-number">2</span>,
+      <span class="hljs-attr">children</span>: [
         {
           <span class="hljs-comment">// echo -n "a" | shasum -a 256</span>
           hash: <span class="hljs-string">'ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb'</span>,
-          endByte: <span class="hljs-number">1</span>
+          <span class="hljs-attr">endByte</span>: <span class="hljs-number">1</span>
         },
         {
           <span class="hljs-comment">// echo -n "b" | shasum -a 256</span>
           hash: <span class="hljs-string">'3e23e8160039594a33894f6564e1b1348bbd7a0088d42c4acb73eeaed59c009d'</span>,
-          endByte: <span class="hljs-number">2</span>
+          <span class="hljs-attr">endByte</span>: <span class="hljs-number">2</span>
         }
       ]
     },
     {
       <span class="hljs-comment">// echo -n "$(echo -n "c" | shasum -a 256)$(echo -n "d" | shasum -a 256)" | shasum -a 256</span>
       hash: <span class="hljs-string">'09114d1a8a78b5d091e492c524ad7f8e941f403db0a6d3d52d36f17b9a86ce1c'</span>,
-      signature: <span class="hljs-string">'6ac5e25206f69f22612e9b58c14f9ae6738233a57ab7f6e10c1384c4e074f6c8c606edbd95a9c099a0120947866079e3d13ef66dd7d5ed1756a89a5e9032a20d'</span>,
-      span: <span class="hljs-number">2</span>,
-      children: [
+      <span class="hljs-attr">signature</span>: <span class="hljs-string">'6ac5e25206f69f22612e9b58c14f9ae6738233a57ab7f6e10c1384c4e074f6c8c606edbd95a9c099a0120947866079e3d13ef66dd7d5ed1756a89a5e9032a20d'</span>,
+      <span class="hljs-attr">span</span>: <span class="hljs-number">2</span>,
+      <span class="hljs-attr">children</span>: [
         {
           <span class="hljs-comment">// echo -n "c" | shasum -a 256</span>
           hash: <span class="hljs-string">'2e7d2c03a9507ae265ecf5b5356885a53393a2029d241394997265a1a25aefc6'</span>,
-          endByte: <span class="hljs-number">3</span>
+          <span class="hljs-attr">endByte</span>: <span class="hljs-number">3</span>
         },
         {
           <span class="hljs-comment">// echo -n "d" | shasum -a 256</span>
           hash: <span class="hljs-string">'18ac3e7343f016890c510e93f935261169d9e3f565436429830faf0934f4f8e4'</span>,
-          endByte: <span class="hljs-number">4</span>
+          <span class="hljs-attr">endByte</span>: <span class="hljs-number">4</span>
         }
       ]
     }
@@ -126,7 +126,7 @@ hash(<span class="hljs-name">d</span>)
 </code></pre>
 <p>The above representation of the tree is in JSON. However due to the properties of the in-order node indexes we can represent the same data in a flat index while still allowing traversals.</p>
 <h1 id="file-format"><a href="#file-format" class="anchor"></a>File format</h1><p>SLEEP files should be named <code>sleep.dat</code> and have the following format:</p>
-<pre><code>&lt;<span class="hljs-keyword">Header</span>&gt;&lt;Register Index<span class="hljs-attr">...</span>&gt;&lt;Register <span class="hljs-built_in">Data</span><span class="hljs-attr">...</span>&gt;
+<pre><code>&lt;<span class="hljs-keyword">Header</span>&gt;&lt;Register Index<span class="hljs-params">...</span>&gt;&lt;Register <span class="hljs-built_in">Data</span><span class="hljs-params">...</span>&gt;
 </code></pre><p>The format is a header followed by the register index. Order of the index is determined by an in-order node traversal. After the register index, the actual register entry data follows. The header length is variable width, prefixed with a varint. The Register Index is composed of fixed width metadata entries. The Register Data is composed of concatenated non-fixed width data pieces.</p>
 <h3 id="header-format"><a href="#header-format" class="anchor"></a>Header format</h3><pre><code><span class="hljs-section">&lt;varint header-length&gt;</span><span class="hljs-section">&lt;header protobuf&gt;</span>
 </code></pre><p>The header protobuf has this schema:</p>
