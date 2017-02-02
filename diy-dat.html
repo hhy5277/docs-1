@@ -10,11 +10,11 @@
 </head>
 <body>
 <div id="choo-root" class="minidocs">
-    <div class="_2bbb10f8 minidocs-sidebar">
+    <div class="_042bba9a minidocs-sidebar">
     <div class="minidocs-header">
       <h1><a href="/"><img src="/dat-data-logo.svg" alt="Dat Data" class="minidocs-logo" /></a></h1>
     </div>
-    <div class="_689fec56 minidocs-contents">
+    <div class="_faf54cee minidocs-contents">
     <button class="minidocs-menu-toggle">Menu</button>
     <div class="minidocs-menu menu-closed menu-small">
       <div class="minidocs-menu-wrapper">
@@ -28,9 +28,9 @@
     </div>
   </div>
   </div>
-    <div class="_571b6797 minidocs-main">
+    <div class="_41cec98c minidocs-main">
       <div class="markdown-body">
-        <div class="_3f4b1fbc minidocs-content">
+        <div class="_84ce9ee9 minidocs-content">
     
     
     <div><h1 id="build-with-dat"><a href="#build-with-dat" class="anchor"></a>Build with Dat</h1><p>In this guide, we will show how to develop applications with the Dat ecosystem. The Dat ecosystem is very modular making it easy to develop custom applications using Dat.</p>
@@ -95,14 +95,14 @@ touch index.js
 <span class="hljs-keyword">var</span> db = memdb()
 <span class="hljs-keyword">var</span> drive = Hyperdrive(db)
 <span class="hljs-keyword">var</span> archive = drive.createArchive(link, {
-  <span class="hljs-attr">file</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">name</span>) </span>{
+  file: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">name</span>) </span>{
     <span class="hljs-keyword">return</span> raf(path.join(<span class="hljs-string">'download'</span>, name)) <span class="hljs-comment">// download into a "download" dir</span>
   }
 })
 <span class="hljs-keyword">var</span> swarm = Swarm(archive)
 </code></pre>
 <p>Now that we are setup, we can work with the archive. The <code>archive.download</code> function downloads the file content (to wherever you specified in the file option). To download all the files, we will need a list of files and then we will call download on each of them. <code>archive.list</code> will give us the list of the files. We use the stream-each module to make it easy to iterate over each item in the archive, then exit when the stream is finished.</p>
-<pre><code class="lang-js"><span class="hljs-keyword">var</span> stream = archive.list({<span class="hljs-attr">live</span>: <span class="hljs-literal">false</span>}) <span class="hljs-comment">// Use {live: false} for now to make the stream easier to handle.</span>
+<pre><code class="lang-js"><span class="hljs-keyword">var</span> stream = archive.list({live: <span class="hljs-literal">false</span>}) <span class="hljs-comment">// Use {live: false} for now to make the stream easier to handle.</span>
 each(stream, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">entry, next</span>) </span>{
   archive.download(entry, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err</span>) </span>{
     <span class="hljs-keyword">if</span> (err) <span class="hljs-keyword">return</span> <span class="hljs-built_in">console</span>.error(err)

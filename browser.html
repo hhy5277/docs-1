@@ -10,11 +10,11 @@
 </head>
 <body>
 <div id="choo-root" class="minidocs">
-    <div class="_2bbb10f8 minidocs-sidebar">
+    <div class="_042bba9a minidocs-sidebar">
     <div class="minidocs-header">
       <h1><a href="/"><img src="/dat-data-logo.svg" alt="Dat Data" class="minidocs-logo" /></a></h1>
     </div>
-    <div class="_689fec56 minidocs-contents">
+    <div class="_faf54cee minidocs-contents">
     <button class="minidocs-menu-toggle">Menu</button>
     <div class="minidocs-menu menu-closed menu-small">
       <div class="minidocs-menu-wrapper">
@@ -28,9 +28,9 @@
     </div>
   </div>
   </div>
-    <div class="_571b6797 minidocs-main">
+    <div class="_41cec98c minidocs-main">
       <div class="markdown-body">
-        <div class="_3f4b1fbc minidocs-content">
+        <div class="_84ce9ee9 minidocs-content">
     
     
     <div><h1 id="browser-dat"><a href="#browser-dat" class="anchor"></a>Browser Dat</h1><p>Dat is written in JavaScript, so naturally, it can work entirely in the browser! The great part about this is that as more peers connect to each other in their client, the site assets will be shared between users rather hitting any server.</p>
@@ -89,7 +89,7 @@ swarm(archive)</span>
 
 <span class="hljs-keyword">var</span> drive = hyperdrive(level(<span class="hljs-string">'./mydb'</span>))
 <span class="hljs-keyword">var</span> archive = drive.createArchive({
-  <span class="hljs-attr">file</span>: ram
+  file: ram
 })
 </code></pre>
 <p>This works well for most cases until you want to write a file to hyperdrive that doesn&#39;t fit in memory.</p>
@@ -115,7 +115,7 @@ drop(<span class="hljs-built_in">document</span>.body, <span class="hljs-functio
 <span class="hljs-keyword">var</span> drive = hyperdrive(memdb())
 
 <span class="hljs-keyword">var</span> archive = drive.createArchive({
-  <span class="hljs-attr">file</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">name</span>) </span>{
+  file: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">name</span>) </span>{
     <span class="hljs-keyword">return</span> reader(files[name])
   }
 })
